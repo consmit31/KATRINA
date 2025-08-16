@@ -3,18 +3,28 @@
 import { createContext, useContext, useEffect, useReducer } from "react";
 import Issue from "../dataTypes/Issue";
 import Template from "../dataTypes/Template";
+import compileTemplate from "../utils/compileTemplate";
 
 /** Types */
 interface FocusState {
+    focusedComponent: "IssueSelector" | "TemplateForm";
+
     issues: Issue[];
     focusedIssueIndex: number;
     openIssue?: Issue;
 
     templates?: Template[];
     focusedTemplateIndex?: number;
+    selectedTemplate?: Template;
+
+    focusedFieldIndex?: number;
+
+    templateFormValues?: { [fieldLabel: string]: string };
+    compiledTemplateText?: string;
 }
 
 type FocusAction =
+    | {type: "SET_FOCUSED_COMPONENT", component: "IssueSelector" | "TemplateForm"}
     | {type: "INCREMENT_FOCUSED_ISSUE"}
     | {type: "DECREMENT_FOCUSED_ISSUE"}
     | {type: "SET_OPEN_ISSUE"}
@@ -22,6 +32,11 @@ type FocusAction =
     | {type: "INCREMENT_FOCUSED_TEMPLATE"}
     | {type: "DECREMENT_FOCUSED_TEMPLATE"}
     | {type: "SELECT_TEMPLATE"}
+    | {type: "CLEAR_FORM"}
+    | {type: "DECREMENT_FOCUSED_FIELD"}
+    | {type: "INCREMENT_FOCUSED_FIELD"}
+    | {type: "SET_TEMPLATE_FIELD_VALUE", fieldLabel: string, value: string}
+    | {type: "SUBMIT_TEMPLATE_FORM"}
 
 /** Reducer */
 
@@ -30,6 +45,9 @@ const FocusReducer = (
     action: FocusAction
 ): FocusState => {
     switch (action.type) {
+        case "SET_FOCUSED_COMPONENT":
+            return {...state, focusedComponent: action.component};
+
         case "INCREMENT_FOCUSED_ISSUE":
             if (state.focusedIssueIndex < state.issues.length - 1) {
                 return {...state, focusedIssueIndex: state.focusedIssueIndex + 1};
@@ -60,7 +78,13 @@ const FocusReducer = (
             return {...state,
                     openIssue: undefined,
                     templates: undefined,
-                    focusedTemplateIndex: undefined};
+                    focusedTemplateIndex: undefined,
+                    focusedComponent: "IssueSelector",
+                    selectedTemplate: undefined,
+                    focusedFieldIndex: undefined,
+                    templateFormValues: undefined,
+                    compiledTemplateText: undefined
+                };
 
         case "INCREMENT_FOCUSED_TEMPLATE":
             if (state.focusedTemplateIndex! < state.templates!.length - 1) {
@@ -86,8 +110,54 @@ const FocusReducer = (
             }
 
             const template: Template = state.templates[state.focusedTemplateIndex];
-            console.log(`Selected template: ${template.name}`)
+            return {...state,
+                    selectedTemplate: template,
+                    focusedComponent: "TemplateForm",
+                    openIssue: undefined,
+                    focusedFieldIndex: 0
+                };
+
+        case "INCREMENT_FOCUSED_FIELD":
+            if (state.focusedFieldIndex! < state.selectedTemplate!.fields.length - 1) {
+                return {...state, focusedFieldIndex: state.focusedFieldIndex! + 1};
+            }
             return state;
+
+        case "DECREMENT_FOCUSED_FIELD":
+            if (state.focusedFieldIndex! > 0) {
+                return {...state, focusedFieldIndex: state.focusedFieldIndex! - 1};
+            }
+            return state;
+
+
+        case "SET_TEMPLATE_FIELD_VALUE":
+            const { fieldLabel, value } = action;
+            return {
+                ...state,
+                templateFormValues: {
+                    ...state.templateFormValues,
+                    [fieldLabel]: value
+                }
+            };
+
+        case "SUBMIT_TEMPLATE_FORM":
+            if (!state.selectedTemplate) {
+                console.error("No template selected");
+                return state;
+            }
+
+            if (!state.templateFormValues) {
+                console.error("No template form values");
+                return state;
+            }
+
+            const compiledTemplate = compileTemplate(state.selectedTemplate, state.templateFormValues);
+            console.log("Compiled Template:\n", compiledTemplate);
+            return {
+                ...state,
+                compiledTemplateText: compiledTemplate
+            };
+
         default:
             return state
     }
@@ -108,20 +178,99 @@ export const FocusProvider = ({ children }: {children: React.ReactNode }) => {
             {
                 name: "Mi.gov",
                 templates: [
-                    {name: "MiLogin: PW", content: ""},
-                    {name: "MiLogin: Dupe. Acct", content: ""},
-                    {name: "MiLogin: Inac. Acct", content: ""}
+                    {
+                        name: "MiLogin: PW",
+                        kba: "KBA123",
+                        fields: [
+                            { 
+                                type: 'text',
+                                label: "Username", 
+                                allowCustom: true,
+                            },
+                            { 
+                                type: 'selector',
+                                label: "Password", 
+                                options: ["password", "text", "email"],
+                                allowCustom: false
+                            },
+                        ]
+                    },
+                    {
+                        name: "MiLogin: Dupe. Acct",
+                        kba: "KBA124",
+                        fields: [
+                            {
+                                type: 'text',
+                                label: "Username",
+                                allowCustom: true,
+                            },
+                            {
+                                type: 'selector',
+                                label: "Password", options: ["password"], allowCustom: false }
+                        ]
+                    },
+                    {
+                        name: "MiLogin: Inac. Acct",
+                        kba: "KBA125",
+                        fields: [
+                            {
+                                type: 'text',
+                                label: "Username",
+                                allowCustom: true,
+                            },
+                            {
+                                type: 'selector',
+                                label: "Password", options: ["password"], allowCustom: false
+                            }
+                        ]
+                    }
                 ]
             },
             {
                 name: "Windows",
                 templates: [
-                    {name: "Locked account", content: ""},
-                    {name: "Password reset", content: ""}
+                    {
+                        name: "Locked account",
+                        kba: "KBA126",
+                        fields: [
+                            {
+                                type: 'text',
+                                label: "Username",
+                                options: ["text"],
+                                allowCustom: true
+                            },
+                            {
+                                type: 'selector',
+                                label: "Password",
+                                options: ["password"],
+                                allowCustom: false
+                            }
+                        ]
+                    },
+                    {
+                        name: "Password reset",
+                        kba: "KBA127",
+                        fields: [
+                            {
+                                type: 'text',
+                                label: "Username",
+                                options: ["text"],
+                                allowCustom: true
+                            },
+                            {
+                                type: 'selector',
+                                label: "Password",
+                                options: ["password"],
+                                allowCustom: false
+                            }
+                        ]
+                    }
                 ]
             }
-        ],
+        ]
+,
         focusedIssueIndex: 0,
+        focusedComponent: "IssueSelector"
     };
 
 
@@ -131,35 +280,69 @@ export const FocusProvider = ({ children }: {children: React.ReactNode }) => {
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             switch (e.key) {
-                case "k":
-                    // Move focus index up
-                    e.preventDefault();
-                    if (state.openIssue != undefined) {
-                        dispatch({type: "DECREMENT_FOCUSED_TEMPLATE"});
-                    } else {
-                        dispatch({ type: "DECREMENT_FOCUSED_ISSUE" });
+                case "Tab":
+                    console.log(`state.openIssue: ${state.openIssue} \n state.selectedTemplate: ${state.selectedTemplate}\n state.focusedComponent: ${state.focusedComponent}`);
+
+                    if (e.shiftKey) {
+                        // Move focus index up; Previous item
+                        e.preventDefault();
+
+                        // Previous issue if no issue is open and focused component is issue selector
+                        if (state.openIssue === undefined && state.focusedComponent === "IssueSelector") {
+                            dispatch({ type: "DECREMENT_FOCUSED_ISSUE" });
+                            break;
+                        }
+
+                        // Previous template if issue is open and focused component is issue selector
+                        if (state.openIssue !== undefined && state.focusedComponent === "IssueSelector") {
+                            dispatch({ type: "DECREMENT_FOCUSED_TEMPLATE" });
+                            break;
+                        }
+
+                        // Previous field if template is selected and focus is on template form
+                        if (state.selectedTemplate !== undefined && state.focusedComponent !== "IssueSelector") {
+                            dispatch({ type: "DECREMENT_FOCUSED_FIELD" });
+                            break;
+                        }
+
                     }
-                    
-                    break;
-                case "j":
-                    // Move focus index down
+
+                    // Move focus index up; Next item
                     e.preventDefault();
-                    if (state.openIssue != undefined) {
-                        dispatch({ type: "INCREMENT_FOCUSED_TEMPLATE" });
-                    } else {
+
+                    // Next issue if no issue is open and focused component is issue selector
+                    if (state.openIssue === undefined && state.focusedComponent === "IssueSelector") {
+                        console.log("Incrementing focused issue index");
                         dispatch({ type: "INCREMENT_FOCUSED_ISSUE" });
+                        break;
                     }
+
+                    // Next template if issue is open and focused component is issue selector
+                    if (state.openIssue !== undefined && state.focusedComponent === "IssueSelector") {
+                        console.log("Incrementing focused template index");
+                        dispatch({ type: "INCREMENT_FOCUSED_TEMPLATE" });
+                        break;
+                    }
+
+                    // Next field if template is selected and focus is not on issue selector
+                    if (state.selectedTemplate !== undefined && state.focusedComponent === "TemplateForm") {
+                        dispatch({ type: "INCREMENT_FOCUSED_FIELD" });
+                        break;
+                    }
+
+                    
                     break;
                 case "Enter":
                     e.preventDefault();
                     if (e.shiftKey) {
                         dispatch({ type: "CLOSE_OPEN_ISSUE" });
-                    } else if (!state.openIssue) {
+                    } else if (!state.openIssue && state.focusedComponent === "IssueSelector") {
                         dispatch({ type: "SET_OPEN_ISSUE" });
-                    } else {
+                    } else if (state.openIssue && state.focusedComponent === "IssueSelector") {
                         dispatch({type: "SELECT_TEMPLATE"});
+                    } else if (state.selectedTemplate && state.focusedComponent === "TemplateForm") {
+                        dispatch({type: "SUBMIT_TEMPLATE_FORM"});
                     }
-                   
                     break;
             }
         }
