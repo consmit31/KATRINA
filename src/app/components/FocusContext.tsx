@@ -7,7 +7,7 @@ import compileTemplate from "../utils/compileTemplate";
 
 /** Types */
 interface FocusState {
-    focusedComponent: "IssueSelector" | "TemplateForm";
+    focusedComponent: "IssueSelector" | "TemplateForm" | "NoteField";
 
     issues: Issue[];
     focusedIssueIndex: number;
@@ -21,6 +21,8 @@ interface FocusState {
 
     templateFormValues?: { [fieldLabel: string]: string };
     compiledTemplateText?: string;
+
+    noteText?: string;
 }
 
 type FocusAction =
@@ -37,6 +39,7 @@ type FocusAction =
     | {type: "INCREMENT_FOCUSED_FIELD"}
     | {type: "SET_TEMPLATE_FIELD_VALUE", fieldLabel: string, value: string}
     | {type: "SUBMIT_TEMPLATE_FORM"}
+    | {type: "SET_NOTE_TEXT", text: string};
 
 /** Reducer */
 
@@ -152,10 +155,10 @@ const FocusReducer = (
             }
 
             const compiledTemplate = compileTemplate(state.selectedTemplate, state.templateFormValues);
-            console.log("Compiled Template:\n", compiledTemplate);
             return {
                 ...state,
-                compiledTemplateText: compiledTemplate
+                compiledTemplateText: compiledTemplate,
+                focusedComponent: "NoteField"
             };
 
         default:
@@ -281,8 +284,6 @@ export const FocusProvider = ({ children }: {children: React.ReactNode }) => {
         const handleKeyDown = (e: KeyboardEvent) => {
             switch (e.key) {
                 case "Tab":
-                    console.log(`state.openIssue: ${state.openIssue} \n state.selectedTemplate: ${state.selectedTemplate}\n state.focusedComponent: ${state.focusedComponent}`);
-
                     if (e.shiftKey) {
                         // Move focus index up; Previous item
                         e.preventDefault();
@@ -333,7 +334,11 @@ export const FocusProvider = ({ children }: {children: React.ReactNode }) => {
                     
                     break;
                 case "Enter":
-                    e.preventDefault();
+                    if (state.focusedComponent === "NoteField") {
+                        console.log("Enter key pressed while focused on note field")
+                        e.preventDefault();
+                    }
+
                     if (e.shiftKey) {
                         dispatch({ type: "CLOSE_OPEN_ISSUE" });
                     } else if (!state.openIssue && state.focusedComponent === "IssueSelector") {
