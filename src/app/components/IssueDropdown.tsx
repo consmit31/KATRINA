@@ -2,43 +2,60 @@
 
 import React, { useEffect } from 'react'
 import Issue from '../dataTypes/Issue'
-import { useFocusContext } from './FocusContext'
+
+import { useAppDispatch, useAppSelector } from '@redux/hooks'
+import { setActiveComponent } from '@redux/activeComponentSlice'
+import { setActiveTemplate } from '@redux/activeTemplateSlice';
 
 function IssueDropdown({ issue, index }: { issue: Issue, index: number }) {
-    const { state, dispatch } = useFocusContext();
-
     const [isOpen, setIsOpen] = React.useState(false);
-    const [isHighlighted, setIsHighlighted] = React.useState(false);
-    
-    useEffect(() => {
-        console.log(`state.openIssue: ${state.openIssue}`);
-        console.log(`issue: ${issue.name}`);
-        if (state.openIssue && state.openIssue.name === issue.name) {
-            setIsOpen(true);
-        } else {
-            setIsOpen(false);
-        }
-    }, [state.openIssue, issue.name]);
+    const dispatch = useAppDispatch();
 
+    const handleButtonClick = () => {
+        setIsOpen(!isOpen);
+        if (!isOpen) {
+            // Focus first list item after state update
+            setTimeout(() => {
+                const firstListItem = document.querySelector(`ul li:first-child`) as HTMLElement;
+                firstListItem?.focus();
+            }, 0);
+        }   
+    }
+    const handleKeyDown = (event: React.KeyboardEvent) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            dispatch(setActiveTemplate(event.currentTarget.textContent || ""));
+            dispatch(setActiveComponent("TemplateForm"));
+        }
+    }
+    
 
     return (
-        <div>
+        <button 
+            className='focus:bg-gray-400'
+            onClick={handleButtonClick}
+        >
             <span className='flex'>
-                <h2 className='px-1'>{issue.name}</h2>
-                <button>
-                    {isOpen ? "▼" : "▶"}
-                </button>
+            <h2 className='px-1'>{issue.name}</h2>
+            <div>
+                {isOpen ? "▼" : "▶"}
+            </div>
             </span>
             {isOpen && (
-                <ul>
-                    {issue.templates.map((template, index) => (
-                        <li key={template.name} className={`mx-10 ${state.focusedTemplateIndex === index ? "bg-gray-200" : ""}`}>
-                            {template.name}
-                        </li>
-                    ))}
-                </ul>
+            <ul>
+                {issue.templateNames.map((templateName, index) => (
+                <li 
+                    key={templateName}
+                    className={"mx-10 focus:bg-gray-200"} 
+                    tabIndex={0}
+                    onKeyDown={(e) => handleKeyDown(e)}
+                >
+                    {templateName}
+                </li>
+                ))}
+            </ul>
             )}
-        </div>
+        </button>
     )
 }
 

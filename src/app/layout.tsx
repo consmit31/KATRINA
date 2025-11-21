@@ -12,7 +12,7 @@ export default function RootLayout({
         <header>
           <span className="flex justify-between px-10 bg-gray-700">
             <p>KATRINA</p>
-            <Link href={"./"}>About</Link>
+            <Link href={"./"} tabIndex={-1}>About</Link>
           </span>
           <div>
             {/* <p>Knowledge-base Assistant for Ticket Resolution & Incident Navigation Automation</p> */}

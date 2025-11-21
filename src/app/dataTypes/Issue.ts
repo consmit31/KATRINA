@@ -2,7 +2,7 @@ import Template from "./Template";
 
 interface Issue {
     name: string;
-    templates: Template[];
+    templateNames: string[];
 }
 
 export default Issue;

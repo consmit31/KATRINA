@@ -20,7 +20,11 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
+      "@dataTypes/*": ["./src/app/dataTypes/*"],
       "@utils/*": ["./src/app/utils/*"],
+      "@hooks/*": ["./src/app/hooks/*"],
+      "@components/*": ["./src/app/components/*"],
+      "@redux/*": ["./src/app/redux/*"],
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

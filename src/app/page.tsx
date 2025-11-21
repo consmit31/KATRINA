@@ -1,14 +1,20 @@
 "use client";
-
+import { Provider } from "react-redux";
 import { useEffect, useState } from "react";
+
 import IssueSelector from "./components/IssueSelector"
-import { FocusProvider } from "./components/FocusContext";
 import TemplateForm from "./components/TemplateForm";
 import NoteField from "./components/NoteField";
 import NewTemplateModal from "./components/NewTemplateModal";
 
-export default function Home() {
+import { store } from "./redux/store";
+
+import Template from "./dataTypes/Template";
+import { useIssueStorage } from "./hooks/useIssueStorage";
+
+function HomeContent() {
   const [showNewTemplateModal, setShowNewTemplateModal] = useState(false);
+  const { refreshIssues } = useIssueStorage();
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -25,17 +31,37 @@ export default function Home() {
     };
   }, []);
 
+  const handleCloseModal = () => {
+    setShowNewTemplateModal(false);
+  };
+
+  const handleTemplateCreated = (template: Template) => {
+    console.log('New template created:', template);
+    // You could add logic here to refresh templates in your app state
+  };
+
   return (
-    <FocusProvider>
-      <div className="h-full">
-        {showNewTemplateModal && <NewTemplateModal />}
-        <IssueSelector/>
-        <span className="flex flex-row w-full">
-          <TemplateForm/>
-          <NoteField/>
-        </span>
-      </div>
-    </FocusProvider>
+    <div className="h-full">
+      {showNewTemplateModal && (
+        <NewTemplateModal 
+          onClose={handleCloseModal}
+          onTemplateCreated={handleTemplateCreated}
+        />
+      )}
+      <IssueSelector/>
+      <span className="flex flex-row w-full">
+        <TemplateForm/>
+        <NoteField/>
+      </span>
+    </div>
+  );
+}
+
+export default function Home() {
+  return (
+    <Provider store={store}>
+      <HomeContent />
+    </Provider>
   );
 }
 

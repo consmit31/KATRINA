@@ -1,118 +1,54 @@
 "use client"
 
 import React, { useEffect } from 'react'
-import Issue from '../dataTypes/Issue'
 import IssueDropdown from './IssueDropdown'
-import { useFocusContext } from './FocusContext'
+
+import { useAppSelector } from '@redux/hooks'
+import { selectActiveTemplateName } from '@redux/activeTemplateSlice'
+import { selectActiveComponent } from '@redux/activeComponentSlice'
+import { selectIssueRefreshTrigger } from '@redux/dataRefreshSlice'
+import useIssueStorage from '@hooks/useIssueStorage'
+
 
 function IssueSelector() {
-    const issues: Issue[] = [
-            {
-                name: "Mi.gov",
-                templates: [
-                    {
-                        name: "MiLogin: PW",
-                        kba: "KBA123",
-                        fields: [
-                            { 
-                                type: 'text',
-                                label: "Username", 
-                                allowCustom: true,
-                            },
-                            { 
-                                type: 'selector',
-                                label: "Password", 
-                                options: ["password", "text", "email"],
-                                allowCustom: false
-                            },
-                        ]
-                    },
-                    {
-                        name: "MiLogin: Dupe. Acct",
-                        kba: "KBA124",
-                        fields: [
-                            {
-                                type: 'text',
-                                label: "Username",
-                                allowCustom: true,
-                            },
-                            {
-                                type: 'selector',
-                                label: "Password", options: ["password"], allowCustom: false }
-                        ]
-                    },
-                    {
-                        name: "MiLogin: Inac. Acct",
-                        kba: "KBA125",
-                        fields: [
-                            {
-                                type: 'text',
-                                label: "Username",
-                                allowCustom: true,
-                            },
-                            {
-                                type: 'selector',
-                                label: "Password", options: ["password"], allowCustom: false
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
-                name: "Windows",
-                templates: [
-                    {
-                        name: "Locked account",
-                        kba: "KBA126",
-                        fields: [
-                            {
-                                type: 'text',
-                                label: "Username",
-                                options: ["text"],
-                                allowCustom: true
-                            },
-                            {
-                                type: 'selector',
-                                label: "Password",
-                                options: ["password"],
-                                allowCustom: false
-                            }
-                        ]
-                    },
-                    {
-                        name: "Password reset",
-                        kba: "KBA127",
-                        fields: [
-                            {
-                                type: 'text',
-                                label: "Username",
-                                options: ["text"],
-                                allowCustom: true
-                            },
-                            {
-                                type: 'selector',
-                                label: "Password",
-                                options: ["password"],
-                                allowCustom: false
-                            }
-                        ]
-                    }
-                ]
-            }
-        ];
+    const { issues, loading, error, refreshIssues } = useIssueStorage();
 
-    const { state, dispatch } = useFocusContext();
+    const activeComponent = useAppSelector(selectActiveComponent);
+    const activeTemplateName = useAppSelector(selectActiveTemplateName);
+    const issueRefreshTrigger = useAppSelector(selectIssueRefreshTrigger);
 
-    
+    useEffect(() => {
+        // Refresh issues when the refresh trigger changes (e.g., when a new template is created)
+        if (issueRefreshTrigger > 0) {
+            refreshIssues();
+        }
+    }, [issueRefreshTrigger, refreshIssues]);
 
-    if (state.focusedComponent === "IssueSelector") {
+    // Handle loading and error states
+    if (loading) {
+        return (
+            <div className="flex flex-col bg-white text-black m-3 p-3 h-min-content">
+                <span>Loading templates...</span>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="flex flex-col bg-white text-black m-3 p-3 h-min-content">
+                <span className="text-red-500">Error loading templates: {error}</span>
+            </div>
+        );
+    }
+
+    if (activeComponent === "IssueSelector") {
         return (
             <div
-                className={`flex flex-col bg-white text-black m-3 p-3 ${state.focusedComponent === "IssueSelector" ? 'h-1/2' : 'h-min-content'}`}
-                tabIndex={0}
+                className={`flex flex-col bg-white text-black m-3 p-3 ${activeComponent === "IssueSelector" ? 'h-1/2' : 'h-min-content'}`}
+                tabIndex={-1}
             >
                 {issues.map((issue, index) => (
-                    <div className={`${state.focusedIssueIndex === index && state.openIssue === undefined ? 'bg-gray-300' : 'bg-transparent'}`} key={issue.name} >
+                    <div className={"focus:bg-gray-300"} key={issue.name} >
                         <IssueDropdown issue={issue} index={index} />
                     </div>
                 ))}
@@ -122,7 +58,7 @@ function IssueSelector() {
         return (
             <div className="flex flex-col bg-white text-black m-3 p-3 h-min-content" tabIndex={0}>
                 <span>
-                    {state.selectedTemplate?.name}: {state.selectedTemplate?.kba}
+                    {activeTemplateName}
                 </span>
             </div>
         );

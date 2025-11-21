@@ -1,6 +1,6 @@
 import Template from "../dataTypes/Template";
 
-export default function parseTemplate(text: String): Template { 
+export default function parseTemplate(text: string): Template { 
     // Extract each line from the text, trimming whitespace and colons
     const lines = text.split('\n').map(line => line.trim().replace(/:$/, '')).filter(line => line.length > 0);
     
@@ -8,12 +8,6 @@ export default function parseTemplate(text: String): Template {
     const fields = lines.map(line => {
         let label = line;
         let value = undefined;
-        
-        // Check for predefined Selector values using criteria
-        // - In parentheses separated by slashes or 'or' (If options are Yes or No, simplify to Y and N)
-        // - Two words separated by 'or'
-        // Do not include parentheses with sentences not separated by slashes or 'or'
-        // Do not change the label regardless of default value presence
         
         // First check for parentheses with valid selector options
         const parenMatch = line.match(/\(([^)]+)\)/);
