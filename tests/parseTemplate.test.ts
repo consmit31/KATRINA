@@ -13,6 +13,7 @@ describe("parseTemplate Tests", () => {
         const parsed = parseTemplate(smartDevKba);
 
         expect(parseTemplate(smartDevKba)).toEqual({
+            issue: '',
             name: '',
             kba: '',
             fields: [
@@ -81,6 +82,7 @@ describe("parseTemplate Tests", () => {
 
     test("MI Login KBA parsing", () => {
         expect(parseTemplate(miLoginKba)).toEqual({
+            issue: '',
             name: '',
             kba: '',
             fields: [
@@ -135,6 +137,7 @@ describe("parseTemplate Tests", () => {
 
     test("Password KBA parsing", () => {
         expect(parseTemplate(pwKba)).toEqual({
+            issue: '',
             name: '',
             kba: '',
             fields: [

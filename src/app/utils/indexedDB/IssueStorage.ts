@@ -1,5 +1,3 @@
-import Issue from "../../dataTypes/Issue";
-
 let db: IDBDatabase;
 let dbReady = false;
 let dbInitPromise: Promise<void> | null = null;

@@ -49,7 +49,7 @@ function IssueSelector() {
             >
                 {issues.map((issue, index) => (
                     <div className={"focus:bg-gray-300"} key={issue.name} >
-                        <IssueDropdown issue={issue} index={index} />
+                        <IssueDropdown issue={issue}/>
                     </div>
                 ))}
             </div>

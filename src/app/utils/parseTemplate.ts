@@ -60,6 +60,7 @@ export default function parseTemplate(text: string): Template {
     });
 
     return {
+        issue: '',
         name: '',
         kba: '',
         fields

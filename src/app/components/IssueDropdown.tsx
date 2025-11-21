@@ -1,13 +1,13 @@
 "use client"
 
-import React, { useEffect } from 'react'
+import React from 'react'
 import Issue from '../dataTypes/Issue'
 
-import { useAppDispatch, useAppSelector } from '@redux/hooks'
+import { useAppDispatch } from '@redux/hooks'
 import { setActiveComponent } from '@redux/activeComponentSlice'
 import { setActiveTemplate } from '@redux/activeTemplateSlice';
 
-function IssueDropdown({ issue, index }: { issue: Issue, index: number }) {
+function IssueDropdown({ issue  }: { issue: Issue }) {
     const [isOpen, setIsOpen] = React.useState(false);
     const dispatch = useAppDispatch();
 
@@ -43,7 +43,7 @@ function IssueDropdown({ issue, index }: { issue: Issue, index: number }) {
             </span>
             {isOpen && (
             <ul>
-                {issue.templateNames.map((templateName, index) => (
+                {issue.templateNames.map((templateName) => (
                 <li 
                     key={templateName}
                     className={"mx-10 focus:bg-gray-200"} 

@@ -63,17 +63,20 @@ const NewTemplateModal = ({ onClose, onTemplateCreated }: NewTemplateModalProps)
     return parsedTemplate.fields.length > 0;
   }
 
-  const isValidTemplate = () => {
-    if (!isValidKba()) return false;
-
-    if (!isValidName()) return false;
-
-    if (!isValidFields()) return false;
-    return true;
-  }
-
   // Check for template validity whenever parsedTemplate changes
   useEffect(() => {
+    const isValidTemplate = () => {
+      if (!isValidIssue()) return false;
+
+      if (!isValidKba()) return false;
+
+      if (!isValidName()) return false;
+
+      if (!isValidFields()) return false;
+
+      return true;
+    }
+
     const isValid = isValidTemplate();
     setValidTemplate(isValid);
   }, [parsedTemplate])
@@ -119,7 +122,7 @@ const NewTemplateModal = ({ onClose, onTemplateCreated }: NewTemplateModalProps)
     
     try {
       // Add new template to storage
-      const templateId = await addNewTemplate(parsedTemplate);
+      await addNewTemplate(parsedTemplate);
       
       // Add issue to storage or link template to issue if needed
       if (getIssue(parsedTemplate.issue) === null) {

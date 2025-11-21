@@ -1,6 +1,6 @@
 "use client";
 
-import React, { use, useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Template from '@dataTypes/Template';
 
 import useTemplateStorage from '@hooks/useTemplateStorage';
@@ -30,7 +30,7 @@ function TemplateForm()  {
   return (
     <div className='flex flex-col bg-white text-black m-3 p-3 w-1/2'>
       <div>
-        {activeTemplate?.fields.map((field, index) => {
+        {activeTemplate?.fields.map((field) => {
           switch (field.type){
             case "selector":
               return (

@@ -1,7 +1,6 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "./store";
-import Template from "../dataTypes/Template";
 
 export interface ActiveTemplateState {
     activeTemplateId: string | null;

@@ -9,11 +9,12 @@ import NewTemplateModal from "./components/NewTemplateModal";
 
 import { store } from "./redux/store";
 
-import Template from "./dataTypes/Template";
 import { useIssueStorage } from "./hooks/useIssueStorage";
+import ToolsModal from "./components/ToolsModal";
 
 function HomeContent() {
   const [showNewTemplateModal, setShowNewTemplateModal] = useState(false);
+  const [showToolsModal, setShowToolsModal] = useState(false);
   const { refreshIssues } = useIssueStorage();
 
   useEffect(() => {
@@ -21,6 +22,11 @@ function HomeContent() {
       if (event.ctrlKey && event.key === 'z') {
         event.preventDefault();
         setShowNewTemplateModal(prev => !prev);
+      }
+
+      if (event.ctrlKey && event.key === 't') {
+        event.preventDefault();
+        setShowToolsModal(prev => !prev);
       }
     };
 
@@ -31,27 +37,35 @@ function HomeContent() {
     };
   }, []);
 
-  const handleCloseModal = () => {
-    setShowNewTemplateModal(false);
-  };
-
-  const handleTemplateCreated = (template: Template) => {
-    console.log('New template created:', template);
-    // You could add logic here to refresh templates in your app state
-  };
-
   return (
     <div className="h-full">
       {showNewTemplateModal && (
         <NewTemplateModal 
-          onClose={handleCloseModal}
-          onTemplateCreated={handleTemplateCreated}
+          onClose={() => setShowNewTemplateModal(false)}
         />
       )}
+
+      {showToolsModal && (
+        <div>
+          <ToolsModal
+            onClose={() => setShowToolsModal(false)}
+          />
+        </div>
+        )}
       <IssueSelector/>
       <span className="flex flex-row w-full">
         <TemplateForm/>
         <NoteField/>
+      </span>
+      <span>
+        <button
+          className="m-3 p-2 bg-blue-500 text-white rounded"
+          onClick={() => {
+            refreshIssues();
+          }}
+        >
+          Tools
+        </button>
       </span>
     </div>
   );
