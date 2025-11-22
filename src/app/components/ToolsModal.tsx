@@ -1,4 +1,5 @@
 import React from 'react'
+import ImportToolContent from './ImportToolContent';
 
 interface ToolsModalProps {
   onClose?: () => void;
@@ -67,13 +68,7 @@ const ToolsModal = ({ onClose }: ToolsModalProps) => {
             {(() => {
                 switch (selectedTool) {
                     case "Import":
-                        return (
-                            <div>
-                                <h3 className="text-lg font-medium mb-3">Import Template Data</h3>
-                                <p className="text-gray-600 mb-4">Import template data from a file or external source.</p>
-                                Import tool content will go here
-                            </div>
-                        );
+                        return <ImportToolContent/>; 
                     case "Export":
                         return (
                             <div>

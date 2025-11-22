@@ -4,9 +4,9 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 // Read test data from external files (not tracked by git)
-const smartDevKba = fs.readFileSync(path.join(__dirname, '../test-data/smart-device-kba.txt'), 'utf8');
-const miLoginKba = fs.readFileSync(path.join(__dirname, '../test-data/mi-login-kba.txt'), 'utf8');
-const pwKba = fs.readFileSync(path.join(__dirname, '../test-data/pw-kba.txt'), 'utf8');
+const smartDevKba = fs.readFileSync(path.join(__dirname, '../test-data/parseTemplateData/smart-device-kba.txt'), 'utf8');
+const miLoginKba = fs.readFileSync(path.join(__dirname, '../test-data/parseTemplateData/mi-login-kba.txt'), 'utf8');
+const pwKba = fs.readFileSync(path.join(__dirname, '../test-data/parseTemplateData/pw-kba.txt'), 'utf8');
 
 describe("parseTemplate Tests", () => {
     test("Smart device KBA parsing", () => {
