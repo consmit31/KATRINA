@@ -1,7 +1,23 @@
 import Template from "@dataTypes/Template";
 import Issue from "@dataTypes/Issue";
 
-export function parseInput(issueText: string, templateText: string) {}
+export function parseInput(issueText: string, templateText: string) {
+    if (!validateIssueJson(issueText)) {
+        throw new Error("Invalid issue JSON format");
+    }
+    if (!validateTemplateJson(templateText)) {
+        throw new Error("Invalid template JSON format");
+    }
+
+    const issues: Issue[] = JSON.parse(issueText);
+    const templates: Template[] = JSON.parse(templateText);
+
+    if (!confirmMatchingTemplates(issues, templates)) {
+        throw new Error("Mismatch between issues and templates");
+    }
+
+    return { issues, templates };
+}
 
 export function validateIssueJson(issueText: string) : boolean {
     try {
