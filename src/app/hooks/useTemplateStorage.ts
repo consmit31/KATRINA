@@ -6,6 +6,8 @@ import {
   getTemplateByName, 
   updateTemplate, 
   deleteTemplate, 
+  deleteTemplateByName,
+  updateTemplateByName,
   getTemplatesByKba 
 } from '@/app/utils/indexedDB/TemplateStorage';
 
@@ -17,7 +19,9 @@ interface UseTemplateStorageReturn {
   // Operations
   addNewTemplate: (template: Template) => Promise<void>;
   updateExistingTemplate: (id: number, template: Template) => Promise<void>;
+  updateTemplateByOriginalName: (originalName: string, template: Template) => Promise<void>;
   removeTemplate: (id: number) => Promise<void>;
+  removeTemplateByName: (name: string) => Promise<void>;
   getTemplate: (name: string) => Promise<Template | undefined>;
   getByKba: (kba: string) => Promise<Template[]>;
   refreshTemplates: () => Promise<void>;
@@ -84,6 +88,32 @@ export const useTemplateStorage = (): UseTemplateStorageReturn => {
     }
   }, [refreshTemplates]);
 
+  // Remove template by name
+  const removeTemplateByName = useCallback(async (name: string): Promise<void> => {
+    try {
+      setError(null);
+      await deleteTemplateByName(name);
+      await refreshTemplates(); // Refresh to get updated list
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to delete template';
+      setError(errorMessage);
+      throw new Error(errorMessage);
+    }
+  }, [refreshTemplates]);
+
+  // Update template by original name (handles name changes)
+  const updateTemplateByOriginalName = useCallback(async (originalName: string, template: Template): Promise<void> => {
+    try {
+      setError(null);
+      await updateTemplateByName(originalName, template);
+      await refreshTemplates(); // Refresh to get updated list
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to update template';
+      setError(errorMessage);
+      throw new Error(errorMessage);
+    }
+  }, [refreshTemplates]);
+
   // Get single template
   const getTemplate = useCallback(async (name: string): Promise<Template | undefined> => {
     try {
@@ -124,7 +154,9 @@ export const useTemplateStorage = (): UseTemplateStorageReturn => {
     error,
     addNewTemplate,
     updateExistingTemplate,
+    updateTemplateByOriginalName,
     removeTemplate,
+    removeTemplateByName,
     getTemplate,
     getByKba,
     refreshTemplates,

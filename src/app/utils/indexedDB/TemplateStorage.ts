@@ -128,7 +128,8 @@ export async function updateTemplate(id: number, template: Template): Promise<vo
     const transaction = getRWTransaction();
     const objectStore = transaction.objectStore("templates");
     
-    const request = objectStore.put(template, id);
+    // Since keyPath is "name", we don't need to pass the id parameter
+    const request = objectStore.put(template);
     
     request.onsuccess = () => {
       resolve();
@@ -156,6 +157,52 @@ export async function deleteTemplate(id: number): Promise<void> {
     request.onerror = () => {
       reject(new Error("Failed to delete template"));
     };
+  });
+}
+
+// New function to delete template by name (more appropriate for this keyPath setup)
+export async function deleteTemplateByName(name: string): Promise<void> {
+  await waitForDB();
+  
+  return new Promise((resolve, reject) => {
+    const transaction = getRWTransaction();
+    const objectStore = transaction.objectStore("templates");
+    
+    const request = objectStore.delete(name);
+    
+    request.onsuccess = () => {
+      resolve();
+    };
+    
+    request.onerror = () => {
+      reject(new Error("Failed to delete template"));
+    };
+  });
+}
+
+// New function to update template, handling potential name changes
+export async function updateTemplateByName(originalName: string, template: Template): Promise<void> {
+  await waitForDB();
+  
+  return new Promise((resolve, reject) => {
+    const transaction = getRWTransaction();
+    const objectStore = transaction.objectStore("templates");
+    
+    // If name changed, we need to delete the old entry first
+    if (originalName !== template.name) {
+      const deleteRequest = objectStore.delete(originalName);
+      deleteRequest.onsuccess = () => {
+        const addRequest = objectStore.put(template);
+        addRequest.onsuccess = () => resolve();
+        addRequest.onerror = () => reject(new Error("Failed to update template with new name"));
+      };
+      deleteRequest.onerror = () => reject(new Error("Failed to delete old template entry"));
+    } else {
+      // Same name, just update
+      const request = objectStore.put(template);
+      request.onsuccess = () => resolve();
+      request.onerror = () => reject(new Error("Failed to update template"));
+    }
   });
 }
 
