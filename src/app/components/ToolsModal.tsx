@@ -1,6 +1,7 @@
 import React from 'react'
-import ImportToolContent from './ImportToolContent';
-import ViewToolContent from './ViewToolContent';
+import ImportToolContent from './toolContent/ImportToolContent';
+import ViewToolContent from './toolContent/ViewToolContent';
+import ReportingToolContent from './toolContent/ReportingToolContent';
 
 interface ToolsModalProps {
   onClose?: () => void;
@@ -98,19 +99,7 @@ const ToolsModal = ({ onClose }: ToolsModalProps) => {
                     case "View All":
                         return <ViewToolContent/>;
                     case "BR/FR":
-                        return (
-                            <div>
-                                <h3 className="text-lg font-medium mb-3">Bug Report & Feature Request</h3>
-                                <p className="text-gray-600 mb-4">Report bugs or request new features.</p>
-                                Bug report tool content will go here
-                            </div>
-                        );
-                    default:
-                        return (
-                            <p className="text-gray-500 italic text-center">
-                                Select a tool to see its options and functionality.
-                            </p>
-                        );
+                        return <ReportingToolContent/>; 
                 }
             })()}
           </div>

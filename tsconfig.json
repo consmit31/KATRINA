@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "ES2017",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -19,12 +23,24 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"],
-      "@dataTypes/*": ["./src/app/dataTypes/*"],
-      "@utils/*": ["./src/app/utils/*"],
-      "@hooks/*": ["./src/app/hooks/*"],
-      "@components/*": ["./src/app/components/*"],
-      "@redux/*": ["./src/app/redux/*"],
+      "@/*": [
+        "./src/*"
+      ],
+      "@dataTypes/*": [
+        "./src/app/dataTypes/*"
+      ],
+      "@utils/*": [
+        "./src/app/utils/*"
+      ],
+      "@hooks/*": [
+        "./src/app/hooks/*"
+      ],
+      "@components/*": [
+        "./src/app/components/*"
+      ],
+      "@redux/*": [
+        "./src/app/redux/*"
+      ]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

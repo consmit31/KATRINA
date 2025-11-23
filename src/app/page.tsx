@@ -57,16 +57,6 @@ function HomeContent() {
         <TemplateForm/>
         <NoteField/>
       </span>
-      <span>
-        <button
-          className="m-3 p-2 bg-blue-500 text-white rounded"
-          onClick={() => {
-            refreshIssues();
-          }}
-        >
-          Tools
-        </button>
-      </span>
     </div>
   );
 }
