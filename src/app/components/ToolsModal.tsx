@@ -2,6 +2,7 @@ import React from 'react'
 import ImportToolContent from './toolContent/ImportToolContent';
 import ViewToolContent from './toolContent/ViewToolContent';
 import ReportingToolContent from './toolContent/ReportingToolContent';
+import ExportToolContent from './toolContent/ExportToolContent';
 
 interface ToolsModalProps {
   onClose?: () => void;
@@ -89,13 +90,7 @@ const ToolsModal = ({ onClose }: ToolsModalProps) => {
                     case "Import":
                         return <ImportToolContent/>; 
                     case "Export":
-                        return (
-                            <div>
-                                <h3 className="text-lg font-medium mb-3">Export Template Data</h3>
-                                <p className="text-gray-600 mb-4">Export your template data to a file.</p>
-                                Export tool content will go here
-                            </div>
-                        );
+                        return <ExportToolContent/>; 
                     case "View All":
                         return <ViewToolContent/>;
                     case "BR/FR":

@@ -32,33 +32,33 @@ function initializeDB(): Promise<void> {
 
       objectStore.createIndex("name", "name", { unique: true });
       
-      // Pre-populate with some default issues
-      objectStore.transaction.oncomplete = () => {
-        const issueObjectStore = db.transaction("issues", "readwrite").objectStore("issues");
+      // // Pre-populate with some default issues
+      // objectStore.transaction.oncomplete = () => {
+      //   const issueObjectStore = db.transaction("issues", "readwrite").objectStore("issues");
         
-        const defaultIssues: StoredIssue[] = [
-          {
-            name: "Mi.gov",
-            templateNames: ["MiLogin: PW", "MiLogin: Dupe. Acct", "MiLogin: Inac. Acct"]
-          },
-          {
-            name: "Windows",
-            templateNames: ["Locked account", "Password reset"]
-          },
-          {
-            name: "Office 365",
-            templateNames: ["Account locked", "Password expired", "MFA issues"]
-          },
-          {
-            name: "VPN",
-            templateNames: ["Connection failed", "Authentication error", "Network timeout"]
-          }
-        ];
+      //   const defaultIssues: StoredIssue[] = [
+      //     {
+      //       name: "Mi.gov",
+      //       templateNames: ["MiLogin: PW", "MiLogin: Dupe. Acct", "MiLogin: Inac. Acct"]
+      //     },
+      //     {
+      //       name: "Windows",
+      //       templateNames: ["Locked account", "Password reset"]
+      //     },
+      //     {
+      //       name: "Office 365",
+      //       templateNames: ["Account locked", "Password expired", "MFA issues"]
+      //     },
+      //     {
+      //       name: "VPN",
+      //       templateNames: ["Connection failed", "Authentication error", "Network timeout"]
+      //     }
+      //   ];
         
-        defaultIssues.forEach(issue => {
-          issueObjectStore.add(issue);
-        });
-      };
+      //   defaultIssues.forEach(issue => {
+      //     issueObjectStore.add(issue);
+      //   });
+      // };
     };
 
     request.onsuccess = (event) => {
