@@ -7,11 +7,27 @@ import useTemplateStorage from '@hooks/useTemplateStorage';
 
 import { useAppSelector } from '@redux/hooks';
 import { selectActiveTemplateName } from '@redux/activeTemplateSlice';
+import { selectActiveComponent } from '@redux/activeComponentSlice'
 
 function TemplateForm()  {
   const activeTemplateName = useAppSelector(selectActiveTemplateName);
   const { getTemplate } = useTemplateStorage();
   const [activeTemplate, setActiveTemplate] = useState<Template | null>(null);
+
+  const activeComponent = useAppSelector(selectActiveComponent);
+
+  const handleFieldChange = (label: string, value: string) => {
+    if (!activeTemplate) return;
+
+    const updatedFields = activeTemplate.fields.map(field => {
+      if (field.label === label) {
+        return { ...field, value };
+      }
+      return field;
+    });
+
+    setActiveTemplate({ ...activeTemplate, fields: updatedFields });
+  };
 
   useEffect(() => {
     if (activeTemplateName) {
@@ -23,9 +39,11 @@ function TemplateForm()  {
       };
       fetchTemplate();
     }
-  }, [activeTemplateName, getTemplate]);
 
-  console.log("Active Template:", activeTemplate);
+    if (activeComponent !== "TemplateForm") {
+      setActiveTemplate(null);
+    }
+  }, [activeTemplateName, getTemplate, activeComponent]);
 
   return (
     <div className='flex flex-col bg-white text-black m-3 p-3 w-1/2'>
@@ -37,14 +55,12 @@ function TemplateForm()  {
                 <span key={field.label} className={"flex flex-row mx-1 p-1 justify-between focus:bg-gray-200"}>
                   <label>{field.label}</label>
                   <select
-                    value={field.options![0]}
-                    // onChange={(e) => handleFieldChange(field.label, e.target.value)}
-                    // ref={el => { selectRefs.current[index] = el; }}
-                    // tabIndex={state.focusedFieldIndex === index ? 0 : -1}
-                  >
+                    value={field.value || field.options![0]}
+                    onChange={(e) => {handleFieldChange(field.label, e.target.value)}}
+                    >
                     {field.options!.map((option) => (
                       <option key={option} value={option}>
-                        {option}
+                        {option}  
                       </option>
                     ))}
                   </select>
