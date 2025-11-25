@@ -7,7 +7,7 @@ function ExportToolContent() {
   const { templates, loading: templatesLoading } = useTemplateStorage();
   const [exportStatus, setExportStatus] = useState<string>('');
 
-  const downloadJSON = (data: any, filename: string) => {
+  const downloadJSON = (data: object, filename: string) => {
     const jsonString = JSON.stringify(data, null, 2);
     const blob = new Blob([jsonString], { type: 'application/json' });
     const url = URL.createObjectURL(blob);

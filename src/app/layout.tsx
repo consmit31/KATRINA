@@ -3,6 +3,14 @@ import "./globals.css";
 
 import ShortcutsTooltips from "./components/ShortcutsTooltips";
 
+export const metadata = {
+  title: 'KATRINA',
+  description: 'Knowledge-base Assistant for Ticket Resolution & Incident Navigation Automation',
+  icons: {
+    icon: './favicon.ico',
+  },
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{

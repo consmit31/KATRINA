@@ -6,11 +6,13 @@ import Template from '@dataTypes/Template';
 import useTemplateStorage from '@hooks/useTemplateStorage';
 
 import { useAppSelector } from '@redux/hooks';
-import { selectActiveTemplateName } from '@redux/activeTemplateSlice';
+import { useAppDispatch } from '@redux/hooks';
+import { selectActiveTemplateName, updateFieldValue, setTemplateFields } from '@redux/activeTemplateSlice';
 import { selectActiveComponent } from '@redux/activeComponentSlice'
 
 function TemplateForm()  {
   const activeTemplateName = useAppSelector(selectActiveTemplateName);
+  const dispatch = useAppDispatch();
   const { getTemplate } = useTemplateStorage();
   const [activeTemplate, setActiveTemplate] = useState<Template | null>(null);
 
@@ -26,6 +28,8 @@ function TemplateForm()  {
       return field;
     });
 
+    dispatch(updateFieldValue({ label, value }));
+
     setActiveTemplate({ ...activeTemplate, fields: updatedFields });
   };
 
@@ -35,6 +39,7 @@ function TemplateForm()  {
         const template = await getTemplate(activeTemplateName);
         if (template) {
           setActiveTemplate(template);
+          dispatch(setTemplateFields(template.fields));
         }
       };
       fetchTemplate();
@@ -43,7 +48,7 @@ function TemplateForm()  {
     if (activeComponent !== "TemplateForm") {
       setActiveTemplate(null);
     }
-  }, [activeTemplateName, getTemplate, activeComponent]);
+  }, [activeTemplateName, getTemplate, activeComponent, dispatch]);
 
   return (
     <div className='flex flex-col bg-white text-black m-3 p-3 w-1/2'>
@@ -73,10 +78,7 @@ function TemplateForm()  {
                     <label>{field.label}</label>
                     <input 
                       type="text" 
-                      
-                      // onChange={(e) => handleFieldChange(field.label, e.target.value)}
-                      // ref={el => { inputRefs.current[index] = el; }}
-                      // tabIndex={state.focusedFieldIndex === index ? 0 : -1}
+                      onChange={(e) => handleFieldChange(field.label, e.target.value)}
                       className='border border-gray-300 rounded mx-1' />
                   </span>
                 );

@@ -47,7 +47,7 @@ function IssueSelector() {
                 className={`flex flex-col bg-white text-black m-3 p-3 ${activeComponent === "IssueSelector" ? 'h-1/2' : 'h-min-content'}`}
                 tabIndex={-1}
             >
-                {issues.map((issue, index) => (
+                {issues.map((issue) => (
                     <div className={"focus:bg-gray-300"} key={issue.name} >
                         <IssueDropdown issue={issue}/>
                     </div>

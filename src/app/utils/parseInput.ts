@@ -1,14 +1,7 @@
 import Template from "@dataTypes/Template";
 import Issue from "@dataTypes/Issue";
 
-// Interface for exported data with metadata
-interface ExportedData {
-  exportDate?: string;
-  totalIssues?: number;
-  totalTemplates?: number;
-  issues?: Issue[];
-  templates?: Template[];
-}
+// Interface for exported data with metadata (removed unused ExportedData)
 
 // Interface for combined export format
 interface CombinedExportData {
@@ -89,74 +82,94 @@ export function parseCombinedImport(combinedText: string) {
 }
 
 // Validate issue array (legacy format)
-export function validateIssueArray(issues: any[]): boolean {
+export function validateIssueArray(issues: unknown[]): boolean {
     try {
         for (const issue of issues) {
-            if (typeof issue.name !== 'string' || !Array.isArray(issue.templateNames)) {
+            if (typeof issue !== 'object' || issue === null) {
                 return false;
             }
-            for (const templateName of issue.templateNames) {
+            const issueObj = issue as Record<string, unknown>;
+            if (typeof issueObj.name !== 'string' || !Array.isArray(issueObj.templateNames)) {
+                return false;
+            }
+            for (const templateName of issueObj.templateNames) {
                 if (typeof templateName !== 'string') {
                     return false;
                 }
             }
         }
         return true;
-    } catch (e) {
+    } catch {
         return false;
     }
 }
 
 // Validate template array (legacy format)
-export function validateTemplateArray(templates: any[]): boolean {
+export function validateTemplateArray(templates: unknown[]): boolean {
     try {
         for (const template of templates) {
-            if (typeof template.issue !== 'string' || 
-                typeof template.name !== 'string' || 
-                typeof template.kba !== 'string' || 
-                !Array.isArray(template.fields)) {
+            if (typeof template !== 'object' || template === null) {
+                return false;
+            }
+            const templateObj = template as Record<string, unknown>;
+            if (typeof templateObj.issue !== 'string' || 
+                typeof templateObj.name !== 'string' || 
+                typeof templateObj.kba !== 'string' || 
+                !Array.isArray(templateObj.fields)) {
                 return false;
             }
         }
         return true;
-    } catch (e) {
+    } catch {
         return false;
     }
 }
 
 // Validate exported issue data with metadata
-export function validateExportedIssueData(data: any): boolean {
+export function validateExportedIssueData(data: unknown): boolean {
     try {
-        if (!data.issues || !Array.isArray(data.issues)) {
+        if (typeof data !== 'object' || data === null) {
             return false;
         }
-        return validateIssueArray(data.issues);
-    } catch (e) {
+        const dataObj = data as Record<string, unknown>;
+        if (!dataObj.issues || !Array.isArray(dataObj.issues)) {
+            return false;
+        }
+        return validateIssueArray(dataObj.issues);
+    } catch {
         return false;
     }
 }
 
 // Validate exported template data with metadata
-export function validateExportedTemplateData(data: any): boolean {
+export function validateExportedTemplateData(data: unknown): boolean {
     try {
-        if (!data.templates || !Array.isArray(data.templates)) {
+        if (typeof data !== 'object' || data === null) {
             return false;
         }
-        return validateTemplateArray(data.templates);
-    } catch (e) {
+        const dataObj = data as Record<string, unknown>;
+        if (!dataObj.templates || !Array.isArray(dataObj.templates)) {
+            return false;
+        }
+        return validateTemplateArray(dataObj.templates);
+    } catch {
         return false;
     }
 }
 
 // Validate combined export data
-export function validateCombinedExportData(data: any): boolean {
+export function validateCombinedExportData(data: unknown): boolean {
     try {
-        if (!data.issues || !Array.isArray(data.issues) ||
-            !data.templates || !Array.isArray(data.templates)) {
+        if (typeof data !== 'object' || data === null) {
             return false;
         }
-        return validateIssueArray(data.issues) && validateTemplateArray(data.templates);
-    } catch (e) {
+        const dataObj = data as Record<string, unknown>;
+        if (!dataObj.issues || !Array.isArray(dataObj.issues) ||
+            !dataObj.templates || !Array.isArray(dataObj.templates)) {
+            return false;
+        }
+        return validateIssueArray(dataObj.issues) && validateTemplateArray(dataObj.templates);
+    } catch {
         return false;
     }
 }
@@ -170,7 +183,7 @@ export function validateIssueJson(issueText: string): boolean {
         } else {
             return validateExportedIssueData(data);
         }
-    } catch (e) {
+    } catch {
         return false;
     }
 }
@@ -183,7 +196,7 @@ export function validateTemplateJson(templateText: string): boolean {
         } else {
             return validateExportedTemplateData(data);
         }
-    } catch (e) {
+    } catch {
         return false;
     }
 }

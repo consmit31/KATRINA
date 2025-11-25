@@ -24,6 +24,7 @@ interface UseTemplateStorageReturn {
   removeTemplateByName: (name: string) => Promise<void>;
   getTemplate: (name: string) => Promise<Template | undefined>;
   getByKba: (kba: string) => Promise<Template[]>;
+  getKbaByName: (name: string) => Promise<string | undefined>;
   refreshTemplates: () => Promise<void>;
   
   // State management
@@ -138,6 +139,19 @@ export const useTemplateStorage = (): UseTemplateStorageReturn => {
     }
   }, []);
 
+  // Get KBA by template name
+  const getKbaByName = useCallback(async (name: string): Promise<string | undefined> => {
+    try {
+      setError(null);
+      const template = await getTemplateByName(name);
+      return template?.kba;
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to get KBA by template name';
+      setError(errorMessage);
+      throw new Error(errorMessage);
+    }
+  }, []);
+
   // Clear error
   const clearError = useCallback(() => {
     setError(null);
@@ -159,6 +173,7 @@ export const useTemplateStorage = (): UseTemplateStorageReturn => {
     removeTemplateByName,
     getTemplate,
     getByKba,
+    getKbaByName,
     refreshTemplates,
     clearError,
   };

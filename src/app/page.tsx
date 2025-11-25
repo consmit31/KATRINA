@@ -12,8 +12,6 @@ import { useAppDispatch } from '@redux/hooks'
 import { setActiveComponent } from '@redux/activeComponentSlice'
 import { resetActiveTemplate } from '@redux/activeTemplateSlice';
 
-
-import { useIssueStorage } from "./hooks/useIssueStorage";
 import ToolsModal from "./components/ToolsModal";
 
 function HomeContent() {
@@ -21,7 +19,6 @@ function HomeContent() {
 
   const [showNewTemplateModal, setShowNewTemplateModal] = useState(false);
   const [showToolsModal, setShowToolsModal] = useState(false);
-  const { refreshIssues } = useIssueStorage();
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -51,7 +48,7 @@ function HomeContent() {
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, []);
+  }, [dispatch]);
 
   return (
     <div className="h-full">

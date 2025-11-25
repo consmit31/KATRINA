@@ -25,7 +25,7 @@ function ReportingToolContent() {
         <div className="bg-red-50 border border-red-200 rounded-lg p-4">
           <h3 className="text-lg font-semibold text-red-800 mb-3">🐛 Report a Bug</h3>
           <p className="text-gray-700 mb-3">
-            Found something that isn't working correctly? Help us improve by reporting bugs.
+            Found something that isn&apos;t working correctly? Help us improve by reporting bugs.
           </p>
           <a 
             href="https://github.com/consmit31/KATRINA/issues/new?labels=bug&template=bug_report.md" 
@@ -40,7 +40,7 @@ function ReportingToolContent() {
         <div className="bg-green-50 border border-green-200 rounded-lg p-4">
           <h3 className="text-lg font-semibold text-green-800 mb-3">💡 Request Feature</h3>
           <p className="text-gray-700 mb-3">
-            Have an idea for a new feature or improvement? We'd love to hear about it!
+            Have an idea for a new feature or improvement? We&apos;d love to hear about it!
           </p>
           <a 
             href="https://github.com/consmit31/katrina_mkii/issues/new?labels=enhancement&template=feature_request.md" 
@@ -56,18 +56,18 @@ function ReportingToolContent() {
       <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
         <h3 className="text-lg font-semibold text-gray-800 mb-3">📋 How to Submit an Issue</h3>
         <div className="space-y-2 text-gray-700">
-          <p><strong>New to GitHub Issues?</strong> Don't worry! Here's how to get started:</p>
+          <p><strong>New to GitHub Issues?</strong> Don&apos;t worry! Here&apos;s how to get started:</p>
           <ol className="list-decimal list-inside space-y-2 ml-4">
             <li>Click one of the buttons above (Report Bug or Request Feature)</li>
-            <li>You'll need a GitHub account - it's free to create one</li>
+            <li>You&apos;ll need a GitHub account - it&apos;s free to create one</li>
             <li>Fill out the issue template with as much detail as possible:
               <ul className="list-disc list-inside ml-6 mt-1 space-y-1">
                 <li><strong>For bugs:</strong> Describe what happened, what you expected, and steps to reproduce</li>
-                <li><strong>For features:</strong> Explain what you'd like to see and why it would be useful</li>
+                <li><strong>For features:</strong> Explain what you&apos;d like to see and why it would be useful</li>
               </ul>
             </li>
             <li>Add screenshots or examples if they help explain your issue</li>
-            <li>Click "Submit new issue" when you're done</li>
+            <li>Click Submit new issue&quot; when you&apos;re done</li>
           </ol>
           <p className="mt-3 text-sm text-gray-600">
             <strong>Tip:</strong> Be as specific as possible! The more details you provide, 

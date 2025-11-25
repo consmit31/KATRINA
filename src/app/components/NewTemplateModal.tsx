@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import parseTemplate from '@utils/parseTemplate'
 import Template from '@dataTypes/Template'
 import TemplateField from '@dataTypes/TemplateField'
@@ -46,22 +46,22 @@ const NewTemplateModal = ({ onClose, onTemplateCreated }: NewTemplateModalProps)
     }
   }, [inputText])
 
-  const isValidIssue = () => {
+  const isValidIssue = useCallback(() => {
     return parsedTemplate.issue.trim().length > 0;
-  }
+  }, [parsedTemplate.issue]);
 
-  const isValidKba = () => {
+  const isValidKba = useCallback(() => {
     const kbaPattern = /^KBA\d{8}$/;
     return kbaPattern.test(parsedTemplate.kba); 
-  }
+  }, [parsedTemplate.kba]);
 
-  const isValidName = () => {
+  const isValidName = useCallback(() => {
     return parsedTemplate.name.trim().length > 0;
-  }
+  }, [parsedTemplate.name]);
 
-  const isValidFields = () => {
+  const isValidFields = useCallback(() => {
     return parsedTemplate.fields.length > 0;
-  }
+  }, [parsedTemplate.fields]);
 
   // Check for template validity whenever parsedTemplate changes
   useEffect(() => {
@@ -79,7 +79,7 @@ const NewTemplateModal = ({ onClose, onTemplateCreated }: NewTemplateModalProps)
 
     const isValid = isValidTemplate();
     setValidTemplate(isValid);
-  }, [parsedTemplate])
+  }, [parsedTemplate, isValidIssue, isValidKba, isValidName, isValidFields]);
 
   const handleTemplateNameChange = (newName: string) => {
     setParsedTemplate(prev => ({ ...prev, name: newName }))
