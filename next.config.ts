@@ -1,13 +1,25 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: 'export',
+  // For Docker/server deployment, comment out 'output: export'
+  // output: 'export',
+  
+  // Enable standalone output for Docker
+  output: 'standalone',
+  
   trailingSlash: true,
   images: {
     unoptimized: true
   },
-  assetPrefix: './',
+  
+  // Remove assetPrefix for server deployment
+  // assetPrefix: './',
   basePath: '',
+  
+  // Optional: Enable experimental features for better performance
+  experimental: {
+    serverComponentsExternalPackages: []
+  }
 };
 
 export default nextConfig;
