@@ -157,49 +157,80 @@ const NewTemplateModal = ({ onClose, onTemplateCreated }: NewTemplateModalProps)
   )
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-4xl max-h-90vh overflow-y-auto">
-        <h2 className="text-xl font-semibold mb-4">New Template</h2>
-        
-        <div className="grid grid-cols-2 gap-6">
+    <div className="flex items-center justify-center min-h-screen p-4">
+      <div className="bg-card rounded-2xl shadow-2xl border w-full max-w-6xl max-h-[90vh] overflow-hidden animate-fadeIn">
+        {/* Header */}
+        <div className="flex items-center justify-between p-6 border-b bg-gradient-to-r from-primary/5 to-blue-600/5">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center">
+              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+            </div>
+            <div>
+              <h2 className="text-xl font-semibold text-card-foreground">Create New Template</h2>
+              <p className="text-sm text-muted-foreground">Build and configure your template</p>
+            </div>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-accent rounded-lg transition-colors focus-ring"
+            disabled={saving}
+          >
+            <svg className="w-5 h-5 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <div className="flex flex-col lg:flex-row h-full max-h-[calc(90vh-120px)] overflow-hidden">
           {/* Input Section */}
-          <div>
-            <label htmlFor="template-input" className="block text-sm font-medium text-gray-700 mb-2">
-              Template Text
-            </label>
-            <textarea
-              id="template-input"
-              value={inputText}
-              onChange={(e) => setInputText(e.target.value)}
-              className="w-full h-80 p-3 border text-black border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Enter template text here..."
-            />
+          <div className="flex-1 p-6 border-r">
+            <div className="h-full flex flex-col">
+              <div className="flex items-center justify-between mb-4">
+                <label htmlFor="template-input" className="text-sm font-medium text-card-foreground">
+                  Template Text
+                </label>
+                <div className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
+                  {inputText.length} characters
+                </div>
+              </div>
+              <textarea
+                id="template-input"
+                value={inputText}
+                onChange={(e) => setInputText(e.target.value)}
+                className="flex-1 p-4 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-colors resize-none font-mono text-sm"
+                placeholder="Enter your template text here...&#10;&#10;Example:&#10;Issue: Login Problem&#10;Name: Reset Password&#10;KBA: Steps to reset user password&#10;&#10;Field: Username [text]&#10;Field: Email [text]"
+              />
+            </div>
           </div>
 
-          {/* Output Section */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Parsed Template
-            </label>
-            <div className="h-80 p-3 border text-black border-gray-300 rounded-md bg-gray-50 overflow-y-auto">
+          {/* Configuration Section */}
+          <div className="flex-1 flex flex-col overflow-hidden">
+            <div className="p-6 border-b">
+              <h3 className="text-lg font-medium text-card-foreground mb-1">Template Configuration</h3>
+              <p className="text-sm text-muted-foreground">Review and modify parsed template details</p>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto p-6 space-y-6">
               {/* Issue */}
-              <div className="mb-3">
-                <label className="flex items-center text-xs font-medium text-gray-600 mb-1">
-                  Issue
+              <div className="space-y-2">
+                <label className="flex items-center text-sm font-medium text-card-foreground">
+                  Issue Category
                   <ValidationIndicator isValid={isValidIssue()} />
                 </label>
                 <input
                   type="text"
                   value={parsedTemplate.issue}
                   onChange={(e) => setParsedTemplate(prev => ({ ...prev, issue: e.target.value }))}
-                  className="w-full p-2 text-sm border border-gray-200 rounded focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Enter issue"
+                  className="w-full p-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-colors"
+                  placeholder="Enter issue category"
                 />
               </div>
               
               {/* Template Name */} 
-              <div className="mb-3">
-                <label className="flex items-center text-xs font-medium text-gray-600 mb-1">
+              <div className="space-y-2">
+                <label className="flex items-center text-sm font-medium text-card-foreground">
                   Template Name
                   <ValidationIndicator isValid={isValidName()} />
                 </label>
@@ -207,7 +238,7 @@ const NewTemplateModal = ({ onClose, onTemplateCreated }: NewTemplateModalProps)
                   type="text"
                   value={parsedTemplate.name}
                   onChange={(e) => handleTemplateNameChange(e.target.value)}
-                  className="w-full p-2 text-sm border border-gray-200 rounded focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full p-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-colors"
                   placeholder="Enter template name"
                 />
               </div>

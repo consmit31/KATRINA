@@ -51,39 +51,70 @@ function TemplateForm()  {
   }, [activeTemplateName, getTemplate, activeComponent, dispatch]);
 
   return (
-    <div className='flex flex-col bg-white text-black m-3 p-3 w-1/2'>
-      <div>
-        {activeTemplate?.fields.map((field) => {
-          switch (field.type){
-            case "selector":
-              return (
-                <span key={field.label} className={"flex flex-row mx-1 p-1 justify-between focus:bg-gray-200"}>
-                  <label>{field.label}</label>
-                  <select
-                    value={field.value || field.options![0]}
-                    onChange={(e) => {handleFieldChange(field.label, e.target.value)}}
-                    >
-                    {field.options!.map((option) => (
-                      <option key={option} value={option}>
-                        {option}  
-                      </option>
-                    ))}
-                  </select>
-                </span>
-              )
+    <div className='bg-card border rounded-xl shadow-lg flex-1 lg:flex-none lg:w-1/2 transition-all duration-300'>
+      <div className="p-6">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-lg font-semibold text-card-foreground">Template Configuration</h2>
+          {activeTemplate && (
+            <div className="text-sm text-muted-foreground bg-primary/10 text-primary px-3 py-1 rounded-full">
+              {activeTemplate.name}
+            </div>
+          )}
+        </div>
+        
+        {!activeTemplate ? (
+          <div className="flex items-center justify-center h-32 text-muted-foreground">
+            <div className="text-center">
+              <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-muted flex items-center justify-center">
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <p className="text-sm">Select a template to configure</p>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {activeTemplate?.fields.map((field) => {
+              switch (field.type){
+                case "selector":
+                  return (
+                    <div key={field.label} className="space-y-2">
+                      <label className="text-sm font-medium text-card-foreground">
+                        {field.label}
+                      </label>
+                      <select
+                        value={field.value || field.options![0]}
+                        onChange={(e) => {handleFieldChange(field.label, e.target.value)}}
+                        className="w-full px-3 py-2 bg-input border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-colors"
+                        >
+                        {field.options!.map((option) => (
+                          <option key={option} value={option}>
+                            {option}  
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )
 
-              case "text":
-                return (
-                  <span key={field.label} className={"flex flex-row my-1 p-1 justify-between focus:bg-gray-200"}>
-                    <label>{field.label}</label>
-                    <input 
-                      type="text" 
-                      onChange={(e) => handleFieldChange(field.label, e.target.value)}
-                      className='border border-gray-300 rounded mx-1' />
-                  </span>
-                );
-          }
-        })}
+                  case "text":
+                    return (
+                      <div key={field.label} className="space-y-2">
+                        <label className="text-sm font-medium text-card-foreground">
+                          {field.label}
+                        </label>
+                        <input 
+                          type="text" 
+                          onChange={(e) => handleFieldChange(field.label, e.target.value)}
+                          placeholder={`Enter ${field.label.toLowerCase()}...`}
+                          className="w-full px-3 py-2 bg-input border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-colors"
+                        />
+                      </div>
+                    );
+              }
+            })}
+          </div>
+        )}
       </div>
     </div>
   )

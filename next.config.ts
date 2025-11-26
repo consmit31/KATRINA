@@ -15,11 +15,6 @@ const nextConfig: NextConfig = {
   // Remove assetPrefix for server deployment
   // assetPrefix: './',
   basePath: '',
-  
-  // Optional: Enable experimental features for better performance
-  experimental: {
-    serverComponentsExternalPackages: []
-  }
 };
 
 export default nextConfig;

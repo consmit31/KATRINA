@@ -51,25 +51,33 @@ function HomeContent() {
   }, [dispatch]);
 
   return (
-    <div className="h-full">
+    <div className="h-full bg-background">
       {showNewTemplateModal && (
-        <NewTemplateModal 
-          onClose={() => setShowNewTemplateModal(false)}
-        />
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm animate-fadeIn">
+          <NewTemplateModal 
+            onClose={() => setShowNewTemplateModal(false)}
+          />
+        </div>
       )}
 
       {showToolsModal && (
-        <div>
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm animate-fadeIn">
           <ToolsModal
             onClose={() => setShowToolsModal(false)}
           />
         </div>
-        )}
-      <IssueSelector/>
-      <span className="flex flex-row w-full">
-        <TemplateForm/>
-        <NoteField/>
-      </span>
+      )}
+      
+      <div className="h-full flex flex-col p-4 gap-4 max-w-7xl mx-auto">
+        <div className="animate-fadeIn">
+          <IssueSelector/>
+        </div>
+        
+        <div className="flex flex-row lg:flex-row gap-4 flex-1 animate-slideInFromRight">
+          <TemplateForm/>
+          <NoteField/>
+        </div>
+      </div>
     </div>
   );
 }

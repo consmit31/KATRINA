@@ -53,15 +53,42 @@ function NoteField() {
     };
 
     return (
-        <div className='bg-white text-black m-3 p-3 w-1/2'>
-            <label htmlFor="notes"></label>
-            <textarea 
-                className="w-full h-full flex text-black"
-                id="notes"
-                defaultValue={""}
-            >
-
-            </textarea>
+        <div className='bg-card border rounded-xl shadow-lg flex-1 lg:flex-none lg:w-1/2 transition-all duration-300'>
+            <div className="p-6 h-full flex flex-col">
+                <div className="flex items-center justify-between mb-4">
+                    <h2 className="text-lg font-semibold text-card-foreground">Notes & Output</h2>
+                    <div className="flex items-center space-x-2">
+                        <button 
+                            onClick={() => {
+                                const textArea = document.getElementById("notes") as HTMLTextAreaElement;
+                                if (textArea) {
+                                    navigator.clipboard.writeText(textArea.value);
+                                }
+                            }}
+                            className="text-xs text-muted-foreground hover:text-foreground transition-colors px-2 py-1 rounded bg-muted hover:bg-muted/80"
+                            title="Copy to clipboard"
+                        >
+                            Copy
+                        </button>
+                        <button 
+                            onClick={clearTextArea}
+                            className="text-xs text-muted-foreground hover:text-foreground transition-colors px-2 py-1 rounded bg-muted hover:bg-muted/80"
+                            title="Clear notes"
+                        >
+                            Clear
+                        </button>
+                    </div>
+                </div>
+                
+                <div className="flex-1">
+                    <textarea 
+                        className="w-full h-full min-h-[300px] p-4 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-colors resize-none font-mono text-sm leading-relaxed"
+                        id="notes"
+                        placeholder="Template output will appear here...\n\nYou can also add your own notes and modifications."
+                        defaultValue={""}
+                    />
+                </div>
+            </div>
         </div>
     )
 }

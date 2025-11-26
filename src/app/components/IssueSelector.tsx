@@ -27,16 +27,22 @@ function IssueSelector() {
     // Handle loading and error states
     if (loading) {
         return (
-            <div className="flex flex-col bg-white text-black m-3 p-3 h-min-content">
-                <span>Loading templates...</span>
+            <div className="bg-card border rounded-xl p-6 shadow-md animate-pulse">
+                <div className="flex items-center space-x-3">
+                    <div className="h-4 w-4 bg-primary/20 rounded-full animate-pulse"></div>
+                    <span className="text-muted-foreground">Loading templates...</span>
+                </div>
             </div>
         );
     }
 
     if (error) {
         return (
-            <div className="flex flex-col bg-white text-black m-3 p-3 h-min-content">
-                <span className="text-red-500">Error loading templates: {error}</span>
+            <div className="bg-card border border-red-200 rounded-xl p-6 shadow-md">
+                <div className="flex items-center space-x-3">
+                    <div className="h-4 w-4 bg-red-500 rounded-full"></div>
+                    <span className="text-red-600 font-medium">Error loading templates: {error}</span>
+                </div>
             </div>
         );
     }
@@ -44,22 +50,36 @@ function IssueSelector() {
     if (activeComponent === "IssueSelector") {
         return (
             <div
-                className={`flex flex-col bg-white text-black m-3 p-3 ${activeComponent === "IssueSelector" ? 'h-1/2' : 'h-min-content'}`}
+                className={`bg-card border rounded-xl shadow-lg transition-all duration-300 ${activeComponent === "IssueSelector" ? 'min-h-[400px]' : 'min-h-fit'}`}
                 tabIndex={-1}
             >
-                {issues.map((issue) => (
-                    <div className={"focus:bg-gray-300"} key={issue.name} >
-                        <IssueDropdown issue={issue}/>
+                <div className="p-6">
+                    <div className="flex items-center justify-between mb-4">
+                        <h2 className="text-lg font-semibold text-card-foreground">Available Templates</h2>
+                        <div className="text-sm text-muted-foreground bg-muted px-3 py-1 rounded-full">
+                            {issues.length} templates
+                        </div>
                     </div>
-                ))}
+                    
+                    <div tabIndex={-1} className="space-y-2 max-h-80 overflow-y-auto scrollbar">
+                        {issues.map((issue) => (
+                            <div key={issue.name} className="border border-border/50 rounded-lg hover:border-border transition-colors">
+                                <IssueDropdown issue={issue}/>
+                            </div>
+                        ))}
+                    </div>
+                </div>
             </div>
         )
     } else {
         return (
-            <div className="flex flex-col bg-white text-black m-3 p-3 h-min-content" tabIndex={0}>
-                <span>
-                    {activeTemplateName}
-                </span>
+            <div className="bg-card border rounded-xl p-4 shadow-md" tabIndex={0}>
+                <div className="flex items-center space-x-3">
+                    <div className="w-3 h-3 rounded-full bg-primary"></div>
+                    <span className="font-medium text-card-foreground">
+                        Selected: {activeTemplateName}
+                    </span>
+                </div>
             </div>
         );
     }
