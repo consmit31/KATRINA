@@ -2,11 +2,13 @@ import { combineReducers, configureStore, type Action , type ThunkAction } from 
 import activeComponentReducer from './activeComponentSlice';
 import activeTemplateReducer from './activeTemplateSlice';
 import dataRefreshReducer from './dataRefreshSlice';
+import contactInfoReducer from './contactInformationSlice';
 
 const rootReducer = combineReducers({
     activeComponent: activeComponentReducer,
     activeTemplate: activeTemplateReducer,
-    dataRefresh: dataRefreshReducer
+    dataRefresh: dataRefreshReducer,
+    contactInfo: contactInfoReducer,
 })
 
 export const store = configureStore({
