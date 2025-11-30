@@ -6,7 +6,7 @@
 
 ## Overview
 
-KATRINA MKII is a Next.js-based web application designed to help users create, manage, and fill out predefined templates efficiently. Whether you're handling support tickets, generating reports, or managing standardized documentation, KATRINA provides an intuitive interface to streamline your workflow.
+KATRINA is a Next.js-based web application designed to help users create, manage, and fill out predefined templates efficiently. Whether you're handling support tickets, generating reports, or managing standardized documentation, KATRINA provides an intuitive interface to streamline your workflow.
 
 ## Key Features
 
@@ -169,4 +169,4 @@ If you encounter any issues or have questions:
 
 ---
 
-**KATRINA MKII** - Making template management simple, secure, and efficient.
+**KATRINA** - Making template management simple, secure, and efficient.

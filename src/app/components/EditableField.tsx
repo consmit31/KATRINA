@@ -85,7 +85,7 @@ const EditableField: React.FC<EditableFieldProps> = ({
   }
 
   return (
-    <div className="border border-gray-200 rounded-lg bg-white">
+    <div className="border border-gray-200 rounded-lg bg-card">
       {/* Collapsed Header */}
       <div 
         className="p-3 cursor-pointer hover:bg-gray-50 flex items-center justify-between"
