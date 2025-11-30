@@ -84,7 +84,7 @@ function NoteField() {
                     <textarea 
                         className="w-full h-full min-h-[300px] p-4 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-colors resize-none font-mono text-sm leading-relaxed"
                         id="notes"
-                        placeholder="Template output will appear here...\n\nYou can also add your own notes and modifications."
+                        placeholder={`Template output will appear here...`}
                         defaultValue={""}
                     />
                 </div>

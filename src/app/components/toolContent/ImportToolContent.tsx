@@ -155,14 +155,14 @@ function ImportToolContent() {
     <div className="space-y-6">
       <div className="border-b border-gray-200 pb-4">
         <h3 className="text-lg font-medium text-gray-900">Import Data</h3>
-        <p className="text-sm text-gray-600 mt-1">
-          Import issues and templates from JSON files. Supports both legacy format and new export format with metadata.
+        <p className="text-sm text-accent-foreground mt-1">
+          Import issues and templates from files
         </p>
       </div>
 
       {/* Import Mode Selection */}
       <div className="space-y-3">
-        <label className="text-sm font-medium text-gray-700">Import Mode:</label>
+        <label className="text-sm font-medium text-accent-foreground">Import Mode:</label>
         <div className="flex space-x-4">
           <label className="flex items-center">
             <input
@@ -177,7 +177,7 @@ function ImportToolContent() {
               className="mr-2"
               disabled={isLoading}
             />
-            <span className="text-sm text-gray-700">Separate Files (Issues + Templates)</span>
+            <span className="text-sm text-accent-foreground">Separate Files (Issues + Templates)</span>
           </label>
           <label className="flex items-center">
             <input
@@ -192,7 +192,7 @@ function ImportToolContent() {
               className="mr-2"
               disabled={isLoading}
             />
-            <span className="text-sm text-gray-700">Combined File (Complete Export)</span>
+            <span className="text-sm text-accent-foreground">Combined File (Complete Export)</span>
           </label>
         </div>
       </div>
@@ -202,7 +202,7 @@ function ImportToolContent() {
         <div className="space-y-4">
           {/* Issues File Upload */}
           <div>
-            <label htmlFor="issueFileInput" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="issueFileInput" className="block text-sm font-medium text-accent-foreground mb-2">
               Issues File (.txt or .json)
             </label>
             <input
@@ -218,14 +218,11 @@ function ImportToolContent() {
                 ✓ Selected: {issueFile.name}
               </p>
             )}
-            <p className="text-sm text-gray-500 mt-1">
-              Supports both legacy format (direct array) and new export format (with metadata).
-            </p>
           </div>
 
           {/* Templates File Upload */}
           <div>
-            <label htmlFor="templateFileInput" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="templateFileInput" className="block text-sm font-medium text-accent-foreground mb-2">
               Templates File (.txt or .json)
             </label>
             <input
@@ -241,9 +238,6 @@ function ImportToolContent() {
                 ✓ Selected: {templateFile.name}
               </p>
             )}
-            <p className="text-sm text-gray-500 mt-1">
-              Supports both legacy format (direct array) and new export format (with metadata).
-            </p>
           </div>
         </div>
       ) : (

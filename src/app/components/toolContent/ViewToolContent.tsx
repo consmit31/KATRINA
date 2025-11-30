@@ -121,6 +121,28 @@ function ViewToolContent() {
         }
     }
 
+    const handleClearAllData = async () => {
+        if (window.confirm('Are you sure you want to delete ALL issues and templates? This action cannot be undone.')) {
+            try {
+                // Delete all issues
+                const deleteIssuePromises = issues.map(issue => removeIssue(issue.name))
+                await Promise.all(deleteIssuePromises)
+                
+                // Delete all templates
+                const deleteTemplatePromises = templates.map(template => removeTemplateByName(template.name))
+                await Promise.all(deleteTemplatePromises)
+                
+                // Refresh both data sets
+                await Promise.all([refreshIssues(), refreshTemplates()])
+                
+                console.log('All data cleared successfully')
+            } catch (error) {
+                console.error('Failed to clear all data:', error)
+                alert('An error occurred while clearing data. Please try again.')
+            }
+        }
+    }
+
     const addTemplateNameToIssue = () => {
         if (editingIssue) {
             setEditingIssue({
@@ -219,6 +241,12 @@ function ViewToolContent() {
                     >
                         Templates ({templates.length})
                     </button>
+                    <button
+                        onClick={handleClearAllData}
+                        className="px-4 py-2 rounded bg-red-500 text-white hover:bg-red-600"
+                    >
+                        Clear All Data
+                    </button>
                 </div>
 
                 {/* Search */}
@@ -264,8 +292,12 @@ function ViewToolContent() {
                 {activeTab === 'issues' && (
                     <div>
                         {editingIssue && (
-                            <div className="mb-6 p-4 border-2 border-blue-300 rounded-lg bg-blue-50">
-                                <h3 className="text-lg font-medium mb-3">Editing Issue: {editingIssue.originalName}</h3>
+                            <div className="mb-6 p-4 border-3 border-card rounded-lg bg-card">
+                                <span className='flex'>
+                                    <h3 className="text-lg font-medium mb-3">Editing Issue: &nbsp;</h3>
+                                    <h3 className="text-lg text-accent-foreground font-medium mb-3">{editingIssue.originalName}</h3>
+                                </span>
+                                
 
                                 <div className="mb-4">
                                     <label className="block text-sm font-medium mb-2">Issue Name:</label>
@@ -273,7 +305,7 @@ function ViewToolContent() {
                                         type="text"
                                         value={editingIssue.name}
                                         onChange={(e) => setEditingIssue({ ...editingIssue, name: e.target.value })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded"
+                                        className="w-full px-3 py-2 border border-gray-300 text-accent-foreground rounded"
                                     />
                                 </div>
 
@@ -285,7 +317,7 @@ function ViewToolContent() {
                                                 type="text"
                                                 value={templateName}
                                                 onChange={(e) => updateTemplateNameInIssue(index, e.target.value)}
-                                                className="flex-1 px-3 py-2 border border-gray-300 rounded mr-2"
+                                                className="flex-1 px-3 py-2 border border-gray-300 rounded text-accent-foreground mr-2"
                                                 placeholder="Template name"
                                             />
                                             <button
@@ -298,7 +330,7 @@ function ViewToolContent() {
                                     ))}
                                     <button
                                         onClick={addTemplateNameToIssue}
-                                        className="px-3 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+                                        className="px-3 py-2 bg-green-600 text-white rounded hover:bg-green-700 w-full"
                                     >
                                         Add Template Name
                                     </button>
@@ -323,14 +355,14 @@ function ViewToolContent() {
 
                         <div className="space-y-4">
                             {filteredIssues.map((issue) => (
-                                <div key={issue.name} className="p-4 border border-gray-300 rounded-lg">
+                                <div key={issue.name} className="p-4 border rounded-lg">
                                     <div className="flex justify-between items-start">
                                         <div className="flex-1">
-                                            <h3 className="text-lg font-medium mb-2">{issue.name}</h3>
+                                            <h3 className="text-lg text-accent-foreground font-medium mb-2">{issue.name}</h3>
                                             <div className="mb-2">
                                                 <span className="text-sm font-medium text-gray-600">Templates: </span>
                                                 {issue.templateNames.length > 0 ? (
-                                                    <span className="text-sm text-gray-800">
+                                                    <span className="text-sm text-accent-foreground">
                                                         {issue.templateNames.join(', ')}
                                                     </span>
                                                 ) : (
@@ -508,17 +540,17 @@ function ViewToolContent() {
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-2 text-sm">
                                                 <div>
                                                     <span className="font-medium text-gray-600">Issue: </span>
-                                                    <span className="text-gray-800">{template.issue}</span>
+                                                    <span className="text-accent-foreground">{template.issue}</span>
                                                 </div>
                                                 <div>
                                                     <span className="font-medium text-gray-600">KBA: </span>
-                                                    <span className="text-gray-800">{template.kba}</span>
+                                                    <span className="text-accent-foreground">{template.kba}</span>
                                                 </div>
                                             </div>
                                             <div className="mb-2">
                                                 <span className="text-sm font-medium text-gray-600">Fields ({template.fields.length}): </span>
                                                 {template.fields.length > 0 ? (
-                                                    <span className="text-sm text-gray-800">
+                                                    <span className="text-sm text-accent-foreground">
                                                         {template.fields.map(f => f.label).join(', ')}
                                                     </span>
                                                 ) : (
@@ -529,7 +561,7 @@ function ViewToolContent() {
                                         <div className="flex space-x-2 ml-4">
                                             <button
                                                 onClick={() => handleEditTemplate(template)}
-                                                className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600"
+                                                className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700"
                                             >
                                                 Edit
                                             </button>

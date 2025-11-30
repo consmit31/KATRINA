@@ -26,13 +26,13 @@ export default function RootLayout({
           <div className="flex h-16 items-center justify-between px-6 lg:px-8">
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
-                <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center">
+                <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-green-700 to-blue-500 flex items-center justify-center">
                   <Image src="/favicon.ico" alt="KATRINA Logo" width={32} height={32} />
                 </div>
                 <div>
                   <h1 className="text-xl font-bold text-gradient">KATRINA</h1>
                   <p className="text-xs text-muted-foreground hidden sm:block">
-                    Knowledge-base Assistant for Ticket Resolution
+                    Knowledge-base Assistant for Ticket Resolution & Incident Navigation Automation
                   </p>
                 </div>
               </div>

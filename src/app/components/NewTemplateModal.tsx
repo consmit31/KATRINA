@@ -124,10 +124,13 @@ const NewTemplateModal = ({ onClose, onTemplateCreated }: NewTemplateModalProps)
       // Add new template to storage
       await addNewTemplate(parsedTemplate);
       
-      // Add issue to storage or link template to issue if needed
-      if (getIssue(parsedTemplate.issue) === null) {
+      // Check if issue exists and create or update accordingly
+      const existingIssue = await getIssue(parsedTemplate.issue);
+      if (!existingIssue) {
+        // Issue doesn't exist, create it with the new template
         await addNewIssue(parsedTemplate.issue, [parsedTemplate.name]);
       } else {
+        // Issue exists, add template to existing issue
         await addTemplateToExistingIssue(parsedTemplate.issue, parsedTemplate.name);
       }
       
@@ -298,7 +301,7 @@ const NewTemplateModal = ({ onClose, onTemplateCreated }: NewTemplateModalProps)
           </div>
         )}
 
-        <div className="flex justify-end space-x-2 mt-6">
+        <div className="flex justify-end space-x-2 mt-6 mr-6 mb-6">
           <button 
             className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
             onClick={onClose}

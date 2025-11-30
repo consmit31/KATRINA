@@ -56,7 +56,7 @@ function TemplateForm()  {
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-lg font-semibold text-card-foreground">Template Configuration</h2>
           {activeTemplate && (
-            <div className="text-sm text-muted-foreground bg-primary/10 text-primary px-3 py-1 rounded-full">
+            <div className="text-sm bg-primary/10 text-primary px-3 py-1 rounded-full">
               {activeTemplate.name}
             </div>
           )}

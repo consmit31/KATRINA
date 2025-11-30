@@ -30,10 +30,10 @@ const ToolsModal = ({ onClose }: ToolsModalProps) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-4xl h-[90vh] flex flex-col">
+      <div className="bg-card rounded-lg shadow-xl w-full max-w-4xl h-[90vh] flex flex-col">
         <div className="p-6 pb-4 border-b border-gray-200">
           <span className="flex justify-between items-center">
-              <h2 className="text-xl text-gray-600 font-semibold">Tools</h2>
+              <h2 className="text-xl text-accent-foreground font-semibold">Tools</h2>
               <button className="text-white bg-red-600 rounded px-2 py-1 hover:bg-red-700 transition-colors" onClick={onClose}>X</button>
           </span>
         </div>
@@ -84,7 +84,7 @@ const ToolsModal = ({ onClose }: ToolsModalProps) => {
         </div>
 
           {/* Content Area - scrollable tool-specific content */}
-          <div className="flex-1 overflow-y-auto bg-gray-50 p-4">
+          <div className="flex-1 overflow-y-auto bg-card p-4">
             {(() => {
                 switch (selectedTool) {
                     case "Import":
