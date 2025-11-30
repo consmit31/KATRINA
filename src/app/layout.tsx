@@ -1,4 +1,3 @@
-import Link from "next/link";
 import Image from "next/image";
 
 import "./globals.css";
@@ -42,13 +41,6 @@ export default function RootLayout({
               <ThemeToggle />
               <div className="h-6 w-px bg-border"></div>
               <ShortcutsButton/>
-              <Link 
-                href="./" 
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-3 py-2 rounded-md hover:bg-accent focus-ring"
-                tabIndex={-1}
-              >
-                About
-              </Link>
             </nav>
           </div>
         </header>

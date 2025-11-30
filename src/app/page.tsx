@@ -6,6 +6,7 @@ import IssueSelector from "./components/IssueSelector"
 import TemplateForm from "./components/TemplateForm";
 import NoteField from "./components/NoteField";
 import NewTemplateModal from "./components/NewTemplateModal";
+import ContactInfo from "./components/ContactInfo";
 
 import { store } from "./redux/store";
 import { useAppDispatch } from '@redux/hooks'
@@ -72,6 +73,7 @@ function HomeContent() {
       
       <div className="h-full flex flex-col p-4 gap-4 max-w-7xl mx-auto">
         <div className="animate-fadeIn">
+          <ContactInfo/> 
           <IssueSelector/>
         </div>
         

@@ -12,7 +12,7 @@ function ShortcutsButton() {
             <div className="relative group">
                 <button 
                     onClick={() => setShowModal(true)}
-                    className="flex items-center space-x-2 px-3 py-2 text-sm bg-muted hover:bg-accent rounded-lg transition-colors focus-ring"
+                    className="flex items-center space-x-2 px-3 py-2 text-sm bg-muted cursor-pointer hover:bg-accent rounded-lg transition-colors focus-ring"
                     title="Configure keyboard shortcuts"
                 >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
