@@ -3,7 +3,7 @@ import Image from "next/image";
 
 import "./globals.css";
 
-import ShortcutsTooltips from "./components/ShortcutsTooltips";
+import ShortcutsButton from "./components/ShortcutsTooltips";
 import ThemeToggle from "./components/ThemeToggle";
 
 export const metadata = {
@@ -41,7 +41,7 @@ export default function RootLayout({
             <nav className="flex items-center space-x-3">
               <ThemeToggle />
               <div className="h-6 w-px bg-border"></div>
-              <ShortcutsTooltips/>
+              <ShortcutsButton/>
               <Link 
                 href="./" 
                 className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors px-3 py-2 rounded-md hover:bg-accent focus-ring"

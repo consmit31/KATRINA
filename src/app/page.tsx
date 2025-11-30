@@ -13,29 +13,31 @@ import { setActiveComponent } from '@redux/activeComponentSlice'
 import { resetActiveTemplate } from '@redux/activeTemplateSlice';
 
 import ToolsModal from "./components/ToolsModal";
+import { useKeyboardShortcuts } from '@hooks/useKeyboardShortcuts';
 
 function HomeContent() {
   const dispatch = useAppDispatch();
+  const { matchesShortcut } = useKeyboardShortcuts();
 
   const [showNewTemplateModal, setShowNewTemplateModal] = useState(false);
   const [showToolsModal, setShowToolsModal] = useState(false);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      // Show New Template Modal on Ctrl+Y
-      if (event.ctrlKey && event.key === 'y') {
+      // Show New Template Modal
+      if (matchesShortcut(event, 'newTemplate')) {
         event.preventDefault();
         setShowNewTemplateModal(prev => !prev);
       }
 
-      // Show Tools Modal on Ctrl+T
-      if (event.ctrlKey && event.key === 't') {
+      // Show Tools Modal
+      if (matchesShortcut(event, 'toolsModal')) {
         event.preventDefault();
         setShowToolsModal(prev => !prev);
       }
 
-      // Reset selected template on Ctrl+R
-      if (event.ctrlKey && event.key === 'r') {
+      // Reset selected template
+      if (matchesShortcut(event, 'resetTemplate')) {
         event.preventDefault();
         dispatch(resetActiveTemplate());
         dispatch(setActiveComponent("IssueSelector"));
@@ -48,7 +50,7 @@ function HomeContent() {
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [dispatch]);
+  }, [dispatch, matchesShortcut]);
 
   return (
     <div className="h-full bg-background">
