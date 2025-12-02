@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback} from 'react'
 import Template from '@dataTypes/Template';
 
 import useTemplateStorage from '@hooks/useTemplateStorage';
@@ -10,7 +10,7 @@ import { useAppDispatch } from '@redux/hooks';
 import { selectActiveTemplateName, updateFieldValue, setTemplateFields } from '@redux/activeTemplateSlice';
 import { selectContactName, selectContactUserId, selectContactEmail, selectContactPhone } from '@redux/contactInformationSlice';
 import { selectActiveComponent } from '@redux/activeComponentSlice'
-import { userIdFieldToPopulate, nameFieldToPopulate, emailFieldToPopulate, phoneFieldToPopulate } from '../utils/populateFromContactInfo';
+import { userIdFieldToPopulate, nameFieldToPopulate, emailFieldToPopulate, phoneFieldToPopulate } from '@utils/populateFromContactInfo';
 
 function TemplateForm()  {
   const activeTemplateName = useAppSelector(selectActiveTemplateName);
@@ -25,7 +25,7 @@ function TemplateForm()  {
 
   const activeComponent = useAppSelector(selectActiveComponent);
 
-  const handleFieldChange = (label: string, value: string) => {
+  const  handleFieldChange = useCallback((label: string, value: string) => {
     if (!activeTemplate) return;
 
     const updatedFields = activeTemplate.fields.map(field => {
@@ -38,7 +38,7 @@ function TemplateForm()  {
     dispatch(updateFieldValue({ label, value }));
 
     setActiveTemplate({ ...activeTemplate, fields: updatedFields });
-  };
+  }, [activeTemplate, dispatch]);
    
   useEffect(() => {
     if (!activeTemplate) return;
@@ -47,7 +47,7 @@ function TemplateForm()  {
     if (fieldToPopulate) {
       handleFieldChange(fieldToPopulate, contactUserId);
     }
-  }, [contactUserId]);
+  }, [handleFieldChange, activeTemplate, contactUserId]);
 
   useEffect(() => {
     if (!activeTemplate) return;
@@ -56,7 +56,7 @@ function TemplateForm()  {
     if (fieldToPopulate) {
       handleFieldChange(fieldToPopulate, contactName);
     }
-  }, [contactName]);
+  }, [handleFieldChange, activeTemplate, contactName]);
 
   useEffect(() => {
     if (!activeTemplate) return;
@@ -65,7 +65,7 @@ function TemplateForm()  {
     if (fieldToPopulate) {
       handleFieldChange(fieldToPopulate, contactEmail);
     }
-  }, [contactEmail]);
+  }, [handleFieldChange, activeTemplate, contactEmail]);
 
   useEffect(() => {
     if (!activeTemplate) return;
@@ -74,7 +74,7 @@ function TemplateForm()  {
     if (fieldToPopulate) {
       handleFieldChange(fieldToPopulate, contactPhone);
     }
-  }, [contactPhone]);
+  }, [handleFieldChange, activeTemplate, contactPhone]);
 
   useEffect(() => {
     if (activeTemplateName) {

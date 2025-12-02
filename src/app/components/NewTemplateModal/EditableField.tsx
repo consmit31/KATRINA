@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import TemplateField from '../dataTypes/TemplateField'
+import TemplateField from '@dataTypes/TemplateField'
 
 interface EditableFieldProps {
   field: TemplateField

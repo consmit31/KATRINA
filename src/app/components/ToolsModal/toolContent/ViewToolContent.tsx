@@ -28,7 +28,7 @@ function ViewToolContent() {
         issues,
         loading: issuesLoading,
         error: issuesError,
-        updateExistingIssue,
+        // updateExistingIssue,
         updateExistingIssueByName,
         removeIssue,
         refreshIssues,

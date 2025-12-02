@@ -2,8 +2,8 @@ import Image from "next/image";
 
 import "./globals.css";
 
-import ShortcutsButton from "./components/ShortcutsTooltips";
-import ThemeToggle from "./components/ThemeToggle";
+import ShortcutsButton from "@components/Header/ShortcutsButton";
+import ThemeToggle from "@components/Header/ThemeToggle";
 
 export const metadata = {
   title: 'KATRINA',

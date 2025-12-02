@@ -42,8 +42,8 @@ const defaultShortcuts: ShortcutConfig[] = [
 const ShortcutsModal = ({ onClose }: ShortcutsModalProps) => {
   const [shortcuts, setShortcuts] = useState<ShortcutConfig[]>([]);
   const [editingShortcut, setEditingShortcut] = useState<string | null>(null);
-  const [pendingKey, setPendingKey] = useState<string>('');
-  const [pendingModifiers, setPendingModifiers] = useState({
+  const [ , setPendingKey] = useState<string>('');
+  const [ , setPendingModifiers] = useState({
     ctrl: false,
     alt: false,
     shift: false,

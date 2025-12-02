@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useIssueStorage } from '@/app/hooks/useIssueStorage';
-import { useTemplateStorage } from '@/app/hooks/useTemplateStorage';
+import { useIssueStorage } from '@hooks/useIssueStorage';
+import { useTemplateStorage } from '@hooks/useTemplateStorage';
 
 function ExportToolContent() {
   const { issues, loading: issuesLoading } = useIssueStorage();

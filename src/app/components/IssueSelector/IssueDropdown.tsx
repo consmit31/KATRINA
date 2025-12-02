@@ -1,8 +1,8 @@
 "use client"
 
 import React from 'react'
-import Issue from '../dataTypes/Issue'
-import Template from '../dataTypes/Template'
+import Issue from '@dataTypes/Issue'
+import Template from '@dataTypes/Template'
 import useTemplateStorage from '@hooks/useTemplateStorage'
 
 import { useAppDispatch } from '@redux/hooks'

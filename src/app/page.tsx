@@ -2,18 +2,18 @@
 import { Provider } from "react-redux";
 import { useEffect, useState } from "react";
 
-import IssueSelector from "./components/IssueSelector"
-import TemplateForm from "./components/TemplateForm";
-import NoteField from "./components/NoteField";
-import NewTemplateModal from "./components/NewTemplateModal";
-import ContactInfo from "./components/ContactInfo";
+import IssueSelector from "@components/IssueSelector/IssueSelector"
+import TemplateForm from "@components/TemplateForm/TemplateForm";
+import NoteField from "@components/NoteField/NoteField";
+import NewTemplateModal from "@components/NewTemplateModal/NewTemplateModal";
+import ContactInfo from "@components/ContactInfo/ContactInfo";
 
-import { store } from "./redux/store";
+import { store } from "@redux/store";
 import { useAppDispatch } from '@redux/hooks'
 import { setActiveComponent } from '@redux/activeComponentSlice'
 import { resetActiveTemplate } from '@redux/activeTemplateSlice';
 
-import ToolsModal from "./components/ToolsModal";
+import ToolsModal from "@components/ToolsModal/ToolsModal";
 import { useKeyboardShortcuts } from '@hooks/useKeyboardShortcuts';
 import Template from '@dataTypes/Template';
 

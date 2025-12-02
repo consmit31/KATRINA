@@ -1,10 +1,10 @@
 "use client"
 
 import React, { useEffect } from 'react'
-import { selectActiveTemplateName, selectTemplateFields } from '../redux/activeTemplateSlice';
-import { useAppSelector } from '../redux/hooks';
-import { useTemplateStorage } from '../hooks/useTemplateStorage';
-import { selectActiveComponent } from '../redux/activeComponentSlice';
+import { selectActiveTemplateName, selectTemplateFields } from '../../redux/activeTemplateSlice';
+import { useAppSelector } from '@redux/hooks';
+import { useTemplateStorage } from '@hooks/useTemplateStorage';
+import { selectActiveComponent } from '@redux/activeComponentSlice';
 
 function NoteField() {
     const activeTemplateName = useAppSelector(selectActiveTemplateName);
