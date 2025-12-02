@@ -25,10 +25,27 @@ const NewTemplateModal = ({ onClose, onTemplateCreated, copyFromTemplate }: NewT
   const [validTemplate, setValidTemplate] = useState<boolean>(false);
   const [saving, setSaving] = useState<boolean>(false);
   const [showTemplateSelector, setShowTemplateSelector] = useState<boolean>(false);
+  const [existingIssueNames, setExistingIssueNames] = useState<string[]>([]);
+  const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState<boolean>(false);
+  const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState<number>(-1);
   
   const { addNewTemplate, error, clearError, templates } = useTemplateStorage();
-  const { addNewIssue, getIssue, addTemplateToExistingIssue} = useIssueStorage();
+  const { addNewIssue, getIssue, addTemplateToExistingIssue, getIssueNames} = useIssueStorage();
   const dispatch = useAppDispatch();
+
+  // Load existing issue names on component mount
+  useEffect(() => {
+    const loadIssueNames = async () => {
+      try {
+        const names = await getIssueNames();
+        setExistingIssueNames(names);
+      } catch (error) {
+        console.error('Failed to load issue names:', error);
+      }
+    };
+    loadIssueNames();
+  }, [getIssueNames]);
 
   // Initialize with copied template if provided
   useEffect(() => {
@@ -128,6 +145,61 @@ const NewTemplateModal = ({ onClose, onTemplateCreated, copyFromTemplate }: NewT
     }));
   }
 
+  // Handle issue input change with suggestions
+  const handleIssueChange = (value: string) => {
+    setParsedTemplate(prev => ({ ...prev, issue: value }));
+    
+    if (value.trim().length > 0) {
+      const filtered = existingIssueNames.filter(name =>
+        name.toLowerCase().includes(value.toLowerCase())
+      );
+      setFilteredSuggestions(filtered);
+      setShowSuggestions(filtered.length > 0 && value.trim() !== '');
+      setSelectedSuggestionIndex(-1);
+    } else {
+      setFilteredSuggestions([]);
+      setShowSuggestions(false);
+      setSelectedSuggestionIndex(-1);
+    }
+  };
+
+  // Handle suggestion selection
+  const handleSuggestionSelect = (suggestion: string) => {
+    setParsedTemplate(prev => ({ ...prev, issue: suggestion }));
+    setShowSuggestions(false);
+    setSelectedSuggestionIndex(-1);
+  };
+
+  // Handle keyboard navigation for suggestions
+  const handleIssueKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!showSuggestions || filteredSuggestions.length === 0) return;
+
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        setSelectedSuggestionIndex(prev => 
+          prev < filteredSuggestions.length - 1 ? prev + 1 : 0
+        );
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        setSelectedSuggestionIndex(prev => 
+          prev > 0 ? prev - 1 : filteredSuggestions.length - 1
+        );
+        break;
+      case 'Enter':
+        e.preventDefault();
+        if (selectedSuggestionIndex >= 0) {
+          handleSuggestionSelect(filteredSuggestions[selectedSuggestionIndex]);
+        }
+        break;
+      case 'Escape':
+        setShowSuggestions(false);
+        setSelectedSuggestionIndex(-1);
+        break;
+    }
+  };
+
   const handleCopyFromTemplate = (templateToCopy: Template) => {
     setParsedTemplate({
       issue: templateToCopy.issue,
@@ -222,7 +294,7 @@ const NewTemplateModal = ({ onClose, onTemplateCreated, copyFromTemplate }: NewT
                 <div className="flex items-center space-x-2">
                   <button
                     onClick={() => setShowTemplateSelector(!showTemplateSelector)}
-                    className="text-xs bg-accent text-accent-foreground px-2 py-1 rounded-full hover:bg-accent/80 transition-colors"
+                    className="text-xs bg-accent text-accent-foreground px-2 py-1 rounded-full cursor-pointer hover:bg-accent/80 transition-colors"
                     title="Copy from existing template"
                   >
                     Copy from Template
@@ -280,18 +352,60 @@ const NewTemplateModal = ({ onClose, onTemplateCreated, copyFromTemplate }: NewT
             
             <div className="flex-1 overflow-y-auto p-6 space-y-6">
               {/* Issue */}
-              <div className="space-y-2">
+              <div className="space-y-2 relative">
                 <label className="flex items-center text-sm font-medium text-card-foreground">
                   Issue Category
                   <ValidationIndicator isValid={isValidIssue()} />
+                  {existingIssueNames.length > 0 && (
+                    <span className="ml-2 text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">
+                      {existingIssueNames.length} existing
+                    </span>
+                  )}
                 </label>
-                <input
-                  type="text"
-                  value={parsedTemplate.issue}
-                  onChange={(e) => setParsedTemplate(prev => ({ ...prev, issue: e.target.value }))}
-                  className="w-full p-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-colors"
-                  placeholder="Enter issue category"
-                />
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={parsedTemplate.issue}
+                    onChange={(e) => handleIssueChange(e.target.value)}
+                    onKeyDown={handleIssueKeyDown}
+                    onFocus={() => {
+                      if (parsedTemplate.issue.trim() && filteredSuggestions.length > 0) {
+                        setShowSuggestions(true);
+                      }
+                    }}
+                    onBlur={() => {
+                      // Delay hiding to allow for click on suggestion
+                      setTimeout(() => setShowSuggestions(false), 150);
+                    }}
+                    className="w-full p-3 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-colors"
+                    placeholder="Enter issue category (type to see suggestions)"
+                    autoComplete="off"
+                  />
+                  
+                  {/* Suggestions Dropdown */}
+                  {showSuggestions && filteredSuggestions.length > 0 && (
+                    <div className="absolute z-10 w-full mt-1 bg-popover border border-border rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                      {filteredSuggestions.map((suggestion, index) => (
+                        <button
+                          key={index}
+                          type="button"
+                          onClick={() => handleSuggestionSelect(suggestion)}
+                          className={`w-full text-left px-3 py-2 text-sm transition-colors ${
+                            index === selectedSuggestionIndex
+                              ? 'bg-accent text-accent-foreground'
+                              : 'hover:bg-accent/50 text-popover-foreground'
+                          }`}
+                          onMouseEnter={() => setSelectedSuggestionIndex(index)}
+                        >
+                          <div className="flex items-center justify-between">
+                            <span>{suggestion}</span>
+                            <span className="text-xs text-muted-foreground">existing</span>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
               
               {/* Template Name */} 
