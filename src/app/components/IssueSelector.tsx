@@ -8,9 +8,13 @@ import { selectActiveTemplateName } from '@redux/activeTemplateSlice'
 import { selectActiveComponent } from '@redux/activeComponentSlice'
 import { selectIssueRefreshTrigger } from '@redux/dataRefreshSlice'
 import useIssueStorage from '@hooks/useIssueStorage'
+import Template from '@dataTypes/Template'
 
+interface IssueSelectorProps {
+  onCopyTemplate?: (template: Template) => void;
+}
 
-function IssueSelector() {
+function IssueSelector({ onCopyTemplate }: IssueSelectorProps) {
     const { issues, loading, error, refreshIssues } = useIssueStorage();
 
     const activeComponent = useAppSelector(selectActiveComponent);
@@ -64,7 +68,7 @@ function IssueSelector() {
                     <div tabIndex={-1} className="space-y-2 max-h-80 overflow-y-auto scrollbar">
                         {issues.map((issue) => (
                             <div key={issue.name} className="border border-border/50 rounded-lg hover:border-border transition-colors">
-                                <IssueDropdown issue={issue}/>
+                                <IssueDropdown issue={issue} onCopyTemplate={onCopyTemplate}/>
                             </div>
                         ))}
                     </div>

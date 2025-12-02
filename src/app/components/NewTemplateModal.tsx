@@ -11,9 +11,10 @@ import { triggerAllRefresh } from '@redux/dataRefreshSlice'
 interface NewTemplateModalProps {
   onClose?: () => void;
   onTemplateCreated?: (template: Template) => void;
+  copyFromTemplate?: Template;
 }
 
-const NewTemplateModal = ({ onClose, onTemplateCreated }: NewTemplateModalProps) => {
+const NewTemplateModal = ({ onClose, onTemplateCreated, copyFromTemplate }: NewTemplateModalProps) => {
   const [inputText, setInputText] = useState('')
   const [parsedTemplate, setParsedTemplate] = useState<Template>({
     issue: '',
@@ -23,10 +24,23 @@ const NewTemplateModal = ({ onClose, onTemplateCreated }: NewTemplateModalProps)
   })
   const [validTemplate, setValidTemplate] = useState<boolean>(false);
   const [saving, setSaving] = useState<boolean>(false);
+  const [showTemplateSelector, setShowTemplateSelector] = useState<boolean>(false);
   
-  const { addNewTemplate, error, clearError } = useTemplateStorage();
+  const { addNewTemplate, error, clearError, templates } = useTemplateStorage();
   const { addNewIssue, getIssue, addTemplateToExistingIssue} = useIssueStorage();
   const dispatch = useAppDispatch();
+
+  // Initialize with copied template if provided
+  useEffect(() => {
+    if (copyFromTemplate) {
+      setParsedTemplate({
+        issue: copyFromTemplate.issue,
+        name: `${copyFromTemplate.name} (Copy)`,
+        kba: copyFromTemplate.kba,
+        fields: [...copyFromTemplate.fields] // Deep copy the fields array
+      });
+    }
+  }, [copyFromTemplate]);
 
   // Parse template whenever input text changes
   useEffect(() => {
@@ -111,7 +125,18 @@ const NewTemplateModal = ({ onClose, onTemplateCreated }: NewTemplateModalProps)
     setParsedTemplate(prev => ({
       ...prev,
       fields: [...prev.fields, newField]
-    }))
+    }));
+  }
+
+  const handleCopyFromTemplate = (templateToCopy: Template) => {
+    setParsedTemplate({
+      issue: templateToCopy.issue,
+      name: `${templateToCopy.name} (Copy)`,
+      kba: templateToCopy.kba,
+      fields: [...templateToCopy.fields] // Deep copy the fields array
+    });
+    setInputText(''); // Clear input text when copying
+    setShowTemplateSelector(false);
   }
 
   const handleCreateTemplate = async () => {
@@ -194,10 +219,48 @@ const NewTemplateModal = ({ onClose, onTemplateCreated }: NewTemplateModalProps)
                 <label htmlFor="template-input" className="text-sm font-medium text-card-foreground">
                   Template Text
                 </label>
-                <div className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
-                  {inputText.length} characters
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={() => setShowTemplateSelector(!showTemplateSelector)}
+                    className="text-xs bg-accent text-accent-foreground px-2 py-1 rounded-full hover:bg-accent/80 transition-colors"
+                    title="Copy from existing template"
+                  >
+                    Copy from Template
+                  </button>
+                  <div className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
+                    {inputText.length} characters
+                  </div>
                 </div>
               </div>
+              
+              {/* Template Selector */}
+              {showTemplateSelector && (
+                <div className="mb-4 p-3 bg-accent/20 border border-accent rounded-lg">
+                  <h4 className="text-sm font-medium mb-2">Select Template to Copy From:</h4>
+                  <div className="max-h-32 overflow-y-auto space-y-1">
+                    {templates.length === 0 ? (
+                      <p className="text-xs text-muted-foreground italic">No templates available</p>
+                    ) : (
+                      templates.map((template, index) => (
+                        <button
+                          key={index}
+                          onClick={() => handleCopyFromTemplate(template)}
+                          className="w-full text-left p-2 text-xs bg-card hover:bg-accent rounded border transition-colors"
+                        >
+                          <div className="font-medium">{template.name}</div>
+                          <div className="text-muted-foreground">{template.issue} • {template.fields.length} fields</div>
+                        </button>
+                      ))
+                    )}
+                  </div>
+                  <button
+                    onClick={() => setShowTemplateSelector(false)}
+                    className="mt-2 text-xs text-muted-foreground hover:text-card-foreground transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              )}
               <textarea
                 id="template-input"
                 value={inputText}

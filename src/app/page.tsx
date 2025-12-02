@@ -15,6 +15,7 @@ import { resetActiveTemplate } from '@redux/activeTemplateSlice';
 
 import ToolsModal from "./components/ToolsModal";
 import { useKeyboardShortcuts } from '@hooks/useKeyboardShortcuts';
+import Template from '@dataTypes/Template';
 
 function HomeContent() {
   const dispatch = useAppDispatch();
@@ -22,6 +23,17 @@ function HomeContent() {
 
   const [showNewTemplateModal, setShowNewTemplateModal] = useState(false);
   const [showToolsModal, setShowToolsModal] = useState(false);
+  const [templateToCopy, setTemplateToCopy] = useState<Template | undefined>(undefined);
+
+  const handleCopyTemplate = (template: Template) => {
+    setTemplateToCopy(template);
+    setShowNewTemplateModal(true);
+  };
+
+  const handleCloseNewTemplateModal = () => {
+    setShowNewTemplateModal(false);
+    setTemplateToCopy(undefined);
+  };
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -58,7 +70,8 @@ function HomeContent() {
       {showNewTemplateModal && (
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm animate-fadeIn">
           <NewTemplateModal 
-            onClose={() => setShowNewTemplateModal(false)}
+            onClose={handleCloseNewTemplateModal}
+            copyFromTemplate={templateToCopy}
           />
         </div>
       )}
@@ -74,7 +87,7 @@ function HomeContent() {
       <div className="h-full flex flex-col p-4 gap-4 max-w-7xl mx-auto">
         <div className="animate-fadeIn">
           <ContactInfo/> 
-          <IssueSelector/>
+          <IssueSelector onCopyTemplate={handleCopyTemplate}/>
         </div>
         
         <div className="flex flex-row lg:flex-row gap-4 flex-1 animate-slideInFromRight">
