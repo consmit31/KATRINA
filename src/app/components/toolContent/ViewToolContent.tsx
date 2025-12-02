@@ -4,6 +4,8 @@ import { useTemplateStorage } from '@/app/hooks/useTemplateStorage'
 import Template from '@/app/dataTypes/Template'
 import TemplateField from '@/app/dataTypes/TemplateField'
 import { StoredIssue } from '@/app/utils/indexedDB/IssueStorage'
+import { useAppDispatch } from '@/app/redux/hooks'
+import { triggerIssueRefresh, triggerTemplateRefresh, triggerAllRefresh } from '@/app/redux/dataRefreshSlice'
 
 interface EditingIssue {
     name: string
@@ -20,11 +22,14 @@ interface EditingTemplate {
 }
 
 function ViewToolContent() {
+    const dispatch = useAppDispatch()
+    
     const {
         issues,
         loading: issuesLoading,
         error: issuesError,
         updateExistingIssue,
+        updateExistingIssueByName,
         removeIssue,
         refreshIssues,
         clearError: clearIssuesError
@@ -79,9 +84,11 @@ function ViewToolContent() {
         if (!editingIssue) return
 
         try {
-            await updateExistingIssue(editingIssue.originalName, editingIssue.templateNames)
+            await updateExistingIssueByName(editingIssue.originalName, editingIssue.name, editingIssue.templateNames)
             setEditingIssue(null)
             await refreshIssues()
+            // Trigger global refresh to update other components
+            dispatch(triggerIssueRefresh())
         } catch (error) {
             console.error('Failed to update issue:', error)
         }
@@ -94,6 +101,8 @@ function ViewToolContent() {
             await updateTemplateByOriginalName(editingTemplate.originalName, editingTemplate)
             setEditingTemplate(null)
             await refreshTemplates()
+            // Trigger global refresh to update other components
+            dispatch(triggerTemplateRefresh())
         } catch (error) {
             console.error('Failed to update template:', error)
         }
@@ -104,6 +113,8 @@ function ViewToolContent() {
             try {
                 await removeIssue(issueName)
                 await refreshIssues()
+                // Trigger global refresh to update other components
+                dispatch(triggerIssueRefresh())
             } catch (error) {
                 console.error('Failed to delete issue:', error)
             }
@@ -115,6 +126,8 @@ function ViewToolContent() {
             try {
                 await removeTemplateByName(templateName)
                 await refreshTemplates()
+                // Trigger global refresh to update other components
+                dispatch(triggerTemplateRefresh())
             } catch (error) {
                 console.error('Failed to delete template:', error)
             }
@@ -134,6 +147,9 @@ function ViewToolContent() {
                 
                 // Refresh both data sets
                 await Promise.all([refreshIssues(), refreshTemplates()])
+                
+                // Trigger global refresh to update other components
+                dispatch(triggerAllRefresh())
                 
                 console.log('All data cleared successfully')
             } catch (error) {

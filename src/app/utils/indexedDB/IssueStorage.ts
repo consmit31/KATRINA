@@ -181,6 +181,40 @@ export async function updateIssue(issueName: string, templateNames: string[]): P
   });
 }
 
+// New function to update issue, handling potential name changes
+export async function updateIssueByName(originalName: string, newName: string, templateNames: string[]): Promise<void> {
+  await waitForDB();
+  
+  return new Promise((resolve, reject) => {
+    const transaction = getRWTransaction();
+    const objectStore = transaction.objectStore("issues");
+    
+    // If name changed, we need to delete the old entry first
+    if (originalName !== newName) {
+      const deleteRequest = objectStore.delete(originalName);
+      deleteRequest.onsuccess = () => {
+        const storedIssue: StoredIssue = {
+          name: newName,
+          templateNames: templateNames
+        };
+        const addRequest = objectStore.put(storedIssue);
+        addRequest.onsuccess = () => resolve();
+        addRequest.onerror = () => reject(new Error("Failed to update issue with new name"));
+      };
+      deleteRequest.onerror = () => reject(new Error("Failed to delete old issue entry"));
+    } else {
+      // Same name, just update
+      const storedIssue: StoredIssue = {
+        name: newName,
+        templateNames: templateNames
+      };
+      const request = objectStore.put(storedIssue);
+      request.onsuccess = () => resolve();
+      request.onerror = () => reject(new Error("Failed to update issue"));
+    }
+  });
+}
+
 export async function deleteIssue(issueName: string): Promise<void> {
   await waitForDB();
   

@@ -4,6 +4,7 @@ import {
   getAllIssues,
   getIssueByName,
   updateIssue,
+  updateIssueByName,
   deleteIssue,
   addTemplateToIssue,
   removeTemplateFromIssue,
@@ -20,6 +21,7 @@ interface UseIssueStorageReturn {
   // Operations
   addNewIssue: (issueName: string, templateNames: string[]) => Promise<void>;
   updateExistingIssue: (issueName: string, templateNames: string[]) => Promise<void>;
+  updateExistingIssueByName: (originalName: string, newName: string, templateNames: string[]) => Promise<void>;
   removeIssue: (issueName: string) => Promise<void>;
   getIssue: (issueName: string) => Promise<StoredIssue | undefined>;
   addTemplateToExistingIssue: (issueName: string, templateName: string) => Promise<void>;
@@ -69,6 +71,19 @@ export const useIssueStorage = (): UseIssueStorageReturn => {
     try {
       setError(null);
       await updateIssue(issueName, templateNames);
+      await refreshIssues(); // Refresh to get updated list
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to update issue';
+      setError(errorMessage);
+      throw new Error(errorMessage);
+    }
+  }, [refreshIssues]);
+
+  // Update existing issue by name (handles name changes)
+  const updateExistingIssueByName = useCallback(async (originalName: string, newName: string, templateNames: string[]): Promise<void> => {
+    try {
+      setError(null);
+      await updateIssueByName(originalName, newName, templateNames);
       await refreshIssues(); // Refresh to get updated list
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to update issue';
@@ -168,6 +183,7 @@ export const useIssueStorage = (): UseIssueStorageReturn => {
     error,
     addNewIssue,
     updateExistingIssue,
+    updateExistingIssueByName,
     removeIssue,
     getIssue,
     addTemplateToExistingIssue,
