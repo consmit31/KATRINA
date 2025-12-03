@@ -68,7 +68,7 @@ function IssueSelector({ onCopyTemplate }: IssueSelectorProps) {
                     <div tabIndex={-1} className="space-y-2 max-h-80 overflow-y-auto scrollbar">
                         {issues.map((issue) => (
                             <div key={issue.name} className="border border-border/50 rounded-lg hover:border-border transition-colors">
-                                <IssueDropdown issue={issue} onCopyTemplate={onCopyTemplate}/>
+                                <IssueDropdown issue={issue}/>
                             </div>
                         ))}
                     </div>

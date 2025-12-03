@@ -2,8 +2,6 @@
 
 import React from 'react'
 import Issue from '@dataTypes/Issue'
-import Template from '@dataTypes/Template'
-import useTemplateStorage from '@hooks/useTemplateStorage'
 
 import { useAppDispatch } from '@redux/hooks'
 import { setActiveComponent } from '@redux/activeComponentSlice'
@@ -11,23 +9,11 @@ import { setActiveTemplate } from '@redux/activeTemplateSlice';
 
 interface IssueDropdownProps {
   issue: Issue;
-  onCopyTemplate?: (template: Template) => void;
 }
 
-function IssueDropdown({ issue, onCopyTemplate }: IssueDropdownProps) {
+function IssueDropdown({ issue }: IssueDropdownProps) {
     const [isOpen, setIsOpen] = React.useState(false);
     const dispatch = useAppDispatch();
-    const { getTemplate } = useTemplateStorage();
-
-    const handleCopyTemplate = async (templateName: string, event: React.MouseEvent) => {
-        event.stopPropagation();
-        if (onCopyTemplate) {
-            const template = await getTemplate(templateName);
-            if (template) {
-                onCopyTemplate(template);
-            }
-        }
-    };
 
     const handleButtonClick = () => {
         setIsOpen(!isOpen);
@@ -101,18 +87,6 @@ function IssueDropdown({ issue, onCopyTemplate }: IssueDropdownProps) {
                                     <span>{templateName}</span>
                                 </div>
                             </button>
-                            {onCopyTemplate && (
-                                <button
-                                    className="p-2 text-muted-foreground hover:text-card-foreground hover:bg-accent/50 rounded-r-md transition-all duration-150 opacity-0 group-hover:opacity-100 focus:opacity-100 focus-ring"
-                                    onClick={(e) => handleCopyTemplate(templateName, e)}
-                                    title={`Copy ${templateName}`}
-                                    tabIndex={0}
-                                >
-                                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                                    </svg>
-                                </button>
-                            )}
                         </div>
                     ))}
                 </div>

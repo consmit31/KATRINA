@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 
 import { useAppDispatch } from '@redux/hooks';
 import { setName, setUserId, setEmail, setPhone } from '@redux/contactInformationSlice';
+import AddFieldButton from './AddFieldButton';
+import ContactField from './ContactField';
 
 const ContactInfo = () => {
   const dispatch = useAppDispatch();
@@ -44,77 +46,57 @@ const ContactInfo = () => {
         <div className='flex flex-col space-y-2'>
             <div className='flex items-center space-x-2'>
               <label className='text-accent-foreground'>User ID</label>
-              <button
-                onClick={() => addField('userId')}
-                className='w-5 h-5 rounded-full bg-accent hover:bg-accent/80 flex items-center justify-center text-accent-foreground text-xs font-bold transition-colors'
-                title='Add another User ID field'
-              >
-                +
-              </button>
+              <AddFieldButton 
+                onAddField={() => addField('userId')}
+                fieldType='User ID'
+              />
             </div>
-            <input 
+            <ContactField
               type="text"
-              autoComplete='off'
-              placeholder='User ID' 
-              onChange={(e) => dispatch(setUserId(e.target.value))}
-              className='border border-accent rounded-lg bg-foreground/10 px-2 py-1' 
+              allowDelete={false}
+              placeholder="User ID"
+              onFieldChange={(e: React.ChangeEvent<HTMLInputElement>) => dispatch(setUserId(e.target.value))}
             />
             {additionalFields.userId.map((value, index) => (
-              <div key={index} className='flex space-x-1'>
-                <input 
-                  type="text"
-                  autoComplete='off'
-                  placeholder={`User ID ${index + 2}`}
-                  value={value}
-                  onChange={(e) => updateAdditionalField('userId', index, e.target.value)}
-                  className='border border-accent rounded-lg bg-foreground/10 px-2 py-1 flex-1' 
-                />
-                <button
-                  onClick={() => removeField('userId', index)}
-                  className='w-6 h-6 rounded bg-red-500/20 hover:bg-red-500/30 flex items-center justify-center text-red-500 text-xs transition-colors'
-                  title='Remove field'
-                >
-                  ×
-                </button>
-              </div>
+              <ContactField
+                key={index}
+                type="text"
+                allowDelete={true}
+                index={index}
+                value={value}
+                placeholder="User ID"
+                onFieldChange={(e: React.ChangeEvent<HTMLInputElement>) => updateAdditionalField('userId', index, e.target.value)}
+                onRemoveField={() => removeField('userId', index)}
+              />
             ))}
         </div>
 
         <div className='flex flex-col space-y-2'>
             <div className='flex items-center space-x-2'>
               <label className='text-accent-foreground'>Name</label>
-              <button
-                onClick={() => addField('name')}
-                className='w-5 h-5 rounded-full bg-accent hover:bg-accent/80 flex items-center justify-center text-accent-foreground text-xs font-bold transition-colors'
-                title='Add another Name field'
-              >
-                +
-              </button>
+              <AddFieldButton 
+                onAddField={() => addField('name')}
+                fieldType='Name'
+              />
             </div>
-            <input 
-              type="text" 
-              autoComplete='off' 
-              placeholder='Name' 
-              onChange={(e) => dispatch(setName(e.target.value))}
-              className='border border-accent rounded-lg bg-foreground/10 px-2 py-1' 
+            <ContactField
+              type="text"
+              allowDelete={false}
+              placeholder="Name"
+              onFieldChange={(e: React.ChangeEvent<HTMLInputElement>) => dispatch(setName(e.target.value))}
             />
             {additionalFields.name.map((value, index) => (
               <div key={index} className='flex space-x-1'>
-                <input 
-                  type="text"
-                  autoComplete='off'
-                  placeholder={`Name ${index + 2}`}
-                  value={value}
-                  onChange={(e) => updateAdditionalField('name', index, e.target.value)}
-                  className='border border-accent rounded-lg bg-foreground/10 px-2 py-1 flex-1' 
-                />
-                <button
-                  onClick={() => removeField('name', index)}
-                  className='w-6 h-6 rounded bg-red-500/20 hover:bg-red-500/30 flex items-center justify-center text-red-500 text-xs transition-colors'
-                  title='Remove field'
-                >
-                  ×
-                </button>
+                <ContactField
+                type="text"
+                key={index}
+                allowDelete={true}
+                index={index}
+                value={value}
+                placeholder="Name"
+                onFieldChange={(e: React.ChangeEvent<HTMLInputElement>) => updateAdditionalField('name', index, e.target.value)}
+                onRemoveField={() => removeField('name', index)}
+              />
               </div>
             ))}
         </div>
@@ -122,59 +104,44 @@ const ContactInfo = () => {
         <div className='flex flex-col space-y-2'>
             <div className='flex items-center space-x-2'>
               <label className='text-accent-foreground'>Phone</label>
-              <button
-                onClick={() => addField('phone')}
-                className='w-5 h-5 rounded-full bg-accent hover:bg-accent/80 flex items-center justify-center text-accent-foreground text-xs font-bold transition-colors'
-                title='Add another Phone field'
-              >
-                +
-              </button>
+              <AddFieldButton 
+                onAddField={() => addField('phone')}
+                fieldType='Phone'
+              />
             </div>
-            <input 
-              type="tel" 
-              autoComplete='off' 
-              placeholder='Phone' 
-              onChange={(e) => dispatch(setPhone(e.target.value))}
-              className='border border-accent rounded-lg bg-foreground/10 px-2 py-1' 
+            <ContactField
+              type="tel"
+              allowDelete={false}
+              placeholder="Phone"
+              onFieldChange={(e: React.ChangeEvent<HTMLInputElement>) => dispatch(setPhone(e.target.value))}
             />
             {additionalFields.phone.map((value, index) => (
-              <div key={index} className='flex space-x-1'>
-                <input 
-                  type="tel"
-                  autoComplete='off'
-                  placeholder={`Phone ${index + 2}`}
-                  value={value}
-                  onChange={(e) => updateAdditionalField('phone', index, e.target.value)}
-                  className='border border-accent rounded-lg bg-foreground/10 px-2 py-1 flex-1' 
-                />
-                <button
-                  onClick={() => removeField('phone', index)}
-                  className='w-6 h-6 rounded bg-red-500/20 hover:bg-red-500/30 flex items-center justify-center text-red-500 text-xs transition-colors'
-                  title='Remove field'
-                >
-                  ×
-                </button>
-              </div>
+              <ContactField
+                type="tel"
+                key={index}
+                allowDelete={true}
+                index={index}
+                value={value}
+                placeholder="Phone"
+                onFieldChange={(e: React.ChangeEvent<HTMLInputElement>) => updateAdditionalField('phone', index, e.target.value)}
+                onRemoveField={() => removeField('phone', index)}
+              />
             ))}
         </div>
 
         <div className='flex flex-col space-y-2'>
             <div className='flex items-center space-x-2'>
               <label className='text-accent-foreground'>Email</label>
-              <button
-                onClick={() => addField('email')}
-                className='w-5 h-5 rounded-full bg-accent hover:bg-accent/80 flex items-center justify-center text-accent-foreground text-xs font-bold transition-colors'
-                title='Add another Email field'
-              >
-                +
-              </button>
+              <AddFieldButton 
+                onAddField={() => addField('email')}
+                fieldType='Email'
+              />
             </div>
-            <input 
-              type="email" 
-              autoComplete='off' 
-              placeholder='Email' 
-              onChange={(e) => dispatch(setEmail(e.target.value))}
-              className='border border-accent rounded-lg bg-foreground/10 px-2 py-1' 
+            <ContactField
+              type="email"
+              allowDelete={false}
+              placeholder="Email"
+              onFieldChange={(e: React.ChangeEvent<HTMLInputElement>) => dispatch(setEmail(e.target.value))}
             />
             {additionalFields.email.map((value, index) => (
               <div key={index} className='flex space-x-1'>

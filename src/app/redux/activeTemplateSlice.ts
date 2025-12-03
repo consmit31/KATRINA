@@ -10,7 +10,7 @@ export interface ActiveTemplateState {
 
 const initialState: ActiveTemplateState = {
     activeTemplateId: null,
-    templateFields: undefined
+    templateFields: []
 };
 
 export const activeTemplateSlice = createSlice({
@@ -23,6 +23,7 @@ export const activeTemplateSlice = createSlice({
 
         resetActiveTemplate: (state) => {
             state.activeTemplateId = initialState.activeTemplateId;
+            state.templateFields = initialState.templateFields;
         }, 
 
         setTemplateFields: (state, action: PayloadAction<TemplateField[]>) => {

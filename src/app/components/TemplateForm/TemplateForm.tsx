@@ -1,22 +1,21 @@
 "use client";
 
-import React, { useEffect, useState, useCallback} from 'react'
-import Template from '@dataTypes/Template';
+import React, { useEffect, useCallback} from 'react'
 
 import useTemplateStorage from '@hooks/useTemplateStorage';
 
 import { useAppSelector } from '@redux/hooks';
 import { useAppDispatch } from '@redux/hooks';
-import { selectActiveTemplateName, updateFieldValue, setTemplateFields } from '@redux/activeTemplateSlice';
+import { selectActiveTemplateName, selectTemplateFields, updateFieldValue, setTemplateFields } from '@redux/activeTemplateSlice';
 import { selectContactName, selectContactUserId, selectContactEmail, selectContactPhone } from '@redux/contactInformationSlice';
 import { selectActiveComponent } from '@redux/activeComponentSlice'
 import { userIdFieldToPopulate, nameFieldToPopulate, emailFieldToPopulate, phoneFieldToPopulate } from '@utils/populateFromContactInfo';
 
 function TemplateForm()  {
   const activeTemplateName = useAppSelector(selectActiveTemplateName);
+  const templateFields = useAppSelector(selectTemplateFields);
   const dispatch = useAppDispatch();
   const { getTemplate } = useTemplateStorage();
-  const [activeTemplate, setActiveTemplate] = useState<Template | null>(null);
   
   const contactUserId = useAppSelector(selectContactUserId);
   const contactName = useAppSelector(selectContactName);
@@ -25,71 +24,71 @@ function TemplateForm()  {
 
   const activeComponent = useAppSelector(selectActiveComponent);
 
-  const  handleFieldChange = useCallback((label: string, value: string) => {
-    if (!activeTemplate) return;
-
-    const updatedFields = activeTemplate.fields.map(field => {
-      if (field.label === label) {
-        return { ...field, value };
-      }
-      return field;
-    });
-
+  const handleFieldChange = useCallback((label: string, value: string) => {
     dispatch(updateFieldValue({ label, value }));
-
-    setActiveTemplate({ ...activeTemplate, fields: updatedFields });
-  }, [activeTemplate, dispatch]);
+  }, [dispatch]);
    
   useEffect(() => {
-    if (!activeTemplate) return;
+    if (!templateFields || templateFields.length === 0) return;
 
-    const fieldToPopulate = userIdFieldToPopulate(activeTemplate?.fields);
-    if (fieldToPopulate) {
-      handleFieldChange(fieldToPopulate, contactUserId);
+    const fieldToPopulate = userIdFieldToPopulate(templateFields);
+    if (fieldToPopulate && contactUserId) {
+      // Only update if the current value is different to prevent loops
+      const currentField = templateFields.find(f => f.label === fieldToPopulate);
+      if (currentField && currentField.value !== contactUserId) {
+        handleFieldChange(fieldToPopulate, contactUserId);
+      }
     }
-  }, [handleFieldChange, activeTemplate, contactUserId]);
+  }, [templateFields, contactUserId, handleFieldChange]);
 
   useEffect(() => {
-    if (!activeTemplate) return;
+    if (!templateFields || templateFields.length === 0) return;
 
-    const fieldToPopulate = nameFieldToPopulate(activeTemplate?.fields);
-    if (fieldToPopulate) {
-      handleFieldChange(fieldToPopulate, contactName);
+    const fieldToPopulate = nameFieldToPopulate(templateFields);
+    if (fieldToPopulate && contactName) {
+      // Only update if the current value is different to prevent loops
+      const currentField = templateFields.find(f => f.label === fieldToPopulate);
+      if (currentField && currentField.value !== contactName) {
+        handleFieldChange(fieldToPopulate, contactName);
+      }
     }
-  }, [handleFieldChange, activeTemplate, contactName]);
+  }, [templateFields, contactName, handleFieldChange]);
 
   useEffect(() => {
-    if (!activeTemplate) return;
+    if (!templateFields || templateFields.length === 0) return;
 
-    const fieldToPopulate = emailFieldToPopulate(activeTemplate?.fields);
-    if (fieldToPopulate) {
-      handleFieldChange(fieldToPopulate, contactEmail);
+    const fieldToPopulate = emailFieldToPopulate(templateFields);
+    if (fieldToPopulate && contactEmail) {
+      // Only update if the current value is different to prevent loops
+      const currentField = templateFields.find(f => f.label === fieldToPopulate);
+      if (currentField && currentField.value !== contactEmail) {
+        handleFieldChange(fieldToPopulate, contactEmail);
+      }
     }
-  }, [handleFieldChange, activeTemplate, contactEmail]);
+  }, [templateFields, contactEmail, handleFieldChange]);
 
   useEffect(() => {
-    if (!activeTemplate) return;
+    if (!templateFields || templateFields.length === 0) return;
 
-    const fieldToPopulate = phoneFieldToPopulate(activeTemplate?.fields);
-    if (fieldToPopulate) {
-      handleFieldChange(fieldToPopulate, contactPhone);
+    const fieldToPopulate = phoneFieldToPopulate(templateFields);
+    if (fieldToPopulate && contactPhone) {
+      // Only update if the current value is different to prevent loops
+      const currentField = templateFields.find(f => f.label === fieldToPopulate);
+      if (currentField && currentField.value !== contactPhone) {
+        handleFieldChange(fieldToPopulate, contactPhone);
+      }
     }
-  }, [handleFieldChange, activeTemplate, contactPhone]);
+  }, [templateFields, contactPhone, handleFieldChange]);
 
   useEffect(() => {
-    if (activeTemplateName) {
+    if (activeTemplateName && activeComponent === "TemplateForm") {
       const fetchTemplate = async () => {
         const template = await getTemplate(activeTemplateName);
         if (template) {
-          setActiveTemplate(template);
           dispatch(setTemplateFields(template.fields));
         }
       };
       fetchTemplate();
-    }
-
-    if (activeComponent !== "TemplateForm") {
-      setActiveTemplate(null);
     }
   }, [activeTemplateName, getTemplate, activeComponent, dispatch]);
 
@@ -98,14 +97,14 @@ function TemplateForm()  {
       <div className="p-6">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-lg font-semibold text-card-foreground">Template Configuration</h2>
-          {activeTemplate && (
+          {activeTemplateName && (
             <div className="text-sm bg-primary/10 text-primary px-3 py-1 rounded-full">
-              {activeTemplate.name}
+              {activeTemplateName}
             </div>
           )}
         </div>
         
-        {!activeTemplate ? (
+        {!templateFields || templateFields.length === 0 ? (
           <div className="flex items-center justify-center h-32 text-muted-foreground">
             <div className="text-center">
               <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-muted flex items-center justify-center">
@@ -118,7 +117,7 @@ function TemplateForm()  {
           </div>
         ) : (
           <div className="space-y-4">
-            {activeTemplate?.fields.map((field) => {
+            {templateFields.map((field) => {
               switch (field.type){
                 case "selector":
                   return (
