@@ -8,13 +8,8 @@ import { selectActiveTemplateName } from '@redux/activeTemplateSlice'
 import { selectActiveComponent } from '@redux/activeComponentSlice'
 import { selectIssueRefreshTrigger } from '@redux/dataRefreshSlice'
 import useIssueStorage from '@hooks/useIssueStorage'
-import Template from '@dataTypes/Template'
 
-interface IssueSelectorProps {
-  onCopyTemplate?: (template: Template) => void;
-}
-
-function IssueSelector({ onCopyTemplate }: IssueSelectorProps) {
+function IssueSelector() {
     const { issues, loading, error, refreshIssues } = useIssueStorage();
 
     const activeComponent = useAppSelector(selectActiveComponent);

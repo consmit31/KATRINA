@@ -25,11 +25,6 @@ function HomeContent() {
   const [showToolsModal, setShowToolsModal] = useState(false);
   const [templateToCopy, setTemplateToCopy] = useState<Template | undefined>(undefined);
 
-  const handleCopyTemplate = (template: Template) => {
-    setTemplateToCopy(template);
-    setShowNewTemplateModal(true);
-  };
-
   const handleCloseNewTemplateModal = () => {
     setShowNewTemplateModal(false);
     setTemplateToCopy(undefined);
@@ -87,7 +82,7 @@ function HomeContent() {
       <div className="h-full flex flex-col p-4 gap-4 max-w-7xl mx-auto">
         <div className="animate-fadeIn">
           <ContactInfo/> 
-          <IssueSelector onCopyTemplate={handleCopyTemplate}/>
+          <IssueSelector/>
         </div>
         
         <div className="flex flex-row lg:flex-row gap-4 flex-1 animate-slideInFromRight">

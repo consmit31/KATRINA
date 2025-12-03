@@ -1,6 +1,6 @@
 "use client"
 
-import React, { use, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { selectActiveTemplateName, selectTemplateFields } from '../../redux/activeTemplateSlice';
 import { useAppSelector } from '@redux/hooks';
 import { useTemplateStorage } from '@hooks/useTemplateStorage';
@@ -23,15 +23,6 @@ function NoteField() {
 
             clearTextArea();
             fetchKba();
-            // .then(() => {
-            //    for (const field of templateFields || []) {
-            //         if (field.value) {
-            //             appendToTextArea(`${field.label}: ${field.value}`);
-            //         } else {
-            //             appendToTextArea(`${field.label}: `);
-            //         }
-            //     } 
-            // });
         }
 
         if (activeComponent === "IssueSelector") {
@@ -71,7 +62,7 @@ function NoteField() {
                 }
             } 
         }
-    }, [templateFields])
+    }, [activeTemplateName, templateFields])
 
     const appendToTextArea = (text: string) => {
         const textArea = document.getElementById("notes") as HTMLTextAreaElement;
