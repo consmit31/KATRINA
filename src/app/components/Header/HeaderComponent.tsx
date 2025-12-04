@@ -1,0 +1,47 @@
+"use client";
+
+import React from 'react'
+import Image from 'next/image'
+import { store } from "@redux/store";
+
+import { Provider } from "react-redux";
+import ToggleToolTipsButton from './ToggleToolTipsButton'
+import ShortcutsButton from './ShortcutsButton'
+import ToolsShortcut from './ToolsShortcut'
+import ThemeToggle from './ThemeToggle'
+
+const HeaderComponent = () => {
+    return (
+        <Provider store={store}>
+            <header className="sticky top-0 z-50 border-b bg-card/80 backdrop-blur-md supports-[backdrop-filter]:bg-card/60">
+                <div className="flex h-16 items-center justify-between px-6 lg:px-8">
+                    <div className="flex items-center space-x-4">
+                        <div className="flex items-center space-x-2">
+                            <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-green-700 to-blue-500 flex items-center justify-center">
+                                <Image src="/favicon.ico" alt="KATRINA Logo" width={32} height={32} />
+                            </div>
+                            <div>
+                                <h1 className="text-xl font-bold text-gradient">KATRINA</h1>
+                                <p className="text-xs text-muted-foreground hidden sm:block">
+                                    Knowledge-base Assistant for Ticket Resolution & Incident Navigation Automation
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <nav className="flex items-center space-x-3">
+                        <ThemeToggle />
+                        <div className="h-6 w-px bg-border"></div>
+                        <ToolsShortcut />
+                        <div className="h-6 w-px bg-border"></div>
+                        <ShortcutsButton />
+                        <div className="h-6 w-px bg-border"></div>
+                        <ToggleToolTipsButton />
+                    </nav>
+                </div>
+            </header>
+        </Provider>
+    )
+}
+
+export default HeaderComponent

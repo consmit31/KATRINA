@@ -10,17 +10,32 @@ function ShortcutsButton() {
     return (
         <>
             <div className="relative group">
-                <button 
-                    onClick={() => setShowModal(true)}
-                    className="flex items-center space-x-2 px-3 py-2 text-sm bg-muted cursor-pointer hover:bg-accent rounded-lg transition-colors focus-ring"
-                    title="Configure keyboard shortcuts"
-                >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span>Shortcuts</span>
-                </button>
+                <div className='flex flex-col'>
+                    <button
+                        onClick={() => setShowModal(true)}
+                        className="flex items-center space-x-2 px-3 py-2 text-sm bg-muted cursor-pointer hover:bg-accent rounded-lg transition-colors focus-ring h-10"
+                        title="Configure keyboard shortcuts"
+                    >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>Shortcuts</span>
+                    </button>
+                    {/* <button
+                        className='flex items-center text-muted-foreground'
+                        title='Toggle Shortcut tooltips'
+                    >
+                        <svg className="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                        <span className='text-xs text-muted-foreground'>
+                            Toggle Tooltips
+                        </span>
+                    </button> */}
+                </div>
                 
+
                 {/* Tooltip showing current shortcuts */}
                 <div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-3 py-2 bg-gray-800 text-white text-sm rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
                     <div className="text-left">
@@ -40,7 +55,7 @@ function ShortcutsButton() {
             {/* Shortcuts Modal */}
             {showModal && (
                 <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm animate-fadeIn">
-                    <ShortcutsModal 
+                    <ShortcutsModal
                         onClose={() => setShowModal(false)}
                     />
                 </div>

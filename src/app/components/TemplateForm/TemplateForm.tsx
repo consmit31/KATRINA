@@ -10,12 +10,14 @@ import { selectActiveTemplateName, selectTemplateFields, updateFieldValue, setTe
 import { selectContactName, selectContactUserId, selectContactEmail, selectContactPhone } from '@redux/contactInformationSlice';
 import { selectActiveComponent } from '@redux/activeComponentSlice'
 import { userIdFieldToPopulate, nameFieldToPopulate, emailFieldToPopulate, phoneFieldToPopulate } from '@utils/populateFromContactInfo';
+import { useKeyboardShortcuts } from '@hooks/useKeyboardShortcuts';
 
 function TemplateForm()  {
   const activeTemplateName = useAppSelector(selectActiveTemplateName);
   const templateFields = useAppSelector(selectTemplateFields);
   const dispatch = useAppDispatch();
   const { getTemplate } = useTemplateStorage();
+  const { formatShortcut } = useKeyboardShortcuts();
   
   const contactUserId = useAppSelector(selectContactUserId);
   const contactName = useAppSelector(selectContactName);
@@ -95,7 +97,7 @@ function TemplateForm()  {
   return (
     <div className='bg-card border rounded-xl shadow-lg flex-1 lg:flex-none lg:w-1/2 transition-all duration-300'>
       <div className="p-6">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-card-foreground">Template Configuration</h2>
           {activeTemplateName && (
             <div className="text-sm bg-primary/10 text-primary px-3 py-1 rounded-full">
@@ -103,6 +105,19 @@ function TemplateForm()  {
             </div>
           )}
         </div>
+        
+        {/* Reset Template Shortcut Indicator - only show when template is active */}
+        {activeTemplateName && (
+          <div className="mb-6 flex items-center text-xs text-muted-foreground">
+            <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            <span className="mr-2">Reset template:</span>
+            <kbd className="px-2 py-1 text-xs font-semibold text-muted-foreground bg-background border border-border rounded">
+              {formatShortcut('resetTemplate')}
+            </kbd>
+          </div>
+        )}
         
         {!templateFields || templateFields.length === 0 ? (
           <div className="flex items-center justify-center h-32 text-muted-foreground">

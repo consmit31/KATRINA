@@ -3,12 +3,14 @@ import activeComponentReducer from './activeComponentSlice';
 import activeTemplateReducer from './activeTemplateSlice';
 import dataRefreshReducer from './dataRefreshSlice';
 import contactInfoReducer from './contactInformationSlice';
+import modalReducer from './modalSlice';
 
 const rootReducer = combineReducers({
     activeComponent: activeComponentReducer,
     activeTemplate: activeTemplateReducer,
     dataRefresh: dataRefreshReducer,
     contactInfo: contactInfoReducer,
+    modal: modalReducer,
 })
 
 export const store = configureStore({

@@ -1,6 +1,6 @@
 "use client";
 import { Provider } from "react-redux";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef } from "react";
 
 import IssueSelector from "@components/IssueSelector/IssueSelector"
 import TemplateForm from "@components/TemplateForm/TemplateForm";
@@ -9,27 +9,39 @@ import NewTemplateModal from "@components/NewTemplateModal/NewTemplateModal";
 import ContactInfo, { ContactInfoRef } from "@components/ContactInfo/ContactInfo";
 
 import { store } from "@redux/store";
-import { useAppDispatch } from '@redux/hooks'
+import { useAppDispatch, useAppSelector } from '@redux/hooks'
 import { setActiveComponent } from '@redux/activeComponentSlice'
 import { resetActiveTemplate } from '@redux/activeTemplateSlice';
 import { clearContactInfo } from '@redux/contactInformationSlice';
+import { 
+  toggleNewTemplateModal, 
+  toggleToolsModal, 
+  closeNewTemplateModal, 
+  closeToolsModal,
+  selectIsNewTemplateModalOpen,
+  selectIsToolsModalOpen,
+  selectTemplateToCopy
+} from '@redux/modalSlice';
 
 import ToolsModal from "@components/ToolsModal/ToolsModal";
 import { useKeyboardShortcuts } from '@hooks/useKeyboardShortcuts';
-import Template from '@dataTypes/Template';
 
 function HomeContent() {
   const dispatch = useAppDispatch();
   const { matchesShortcut } = useKeyboardShortcuts();
-
-  const [showNewTemplateModal, setShowNewTemplateModal] = useState(false);
-  const [showToolsModal, setShowToolsModal] = useState(false);
-  const [templateToCopy, setTemplateToCopy] = useState<Template | undefined>(undefined);
   const contactInfoRef = useRef<ContactInfoRef>(null);
 
+  // Redux selectors
+  const showNewTemplateModal = useAppSelector(selectIsNewTemplateModalOpen);
+  const showToolsModal = useAppSelector(selectIsToolsModalOpen);
+  const templateToCopy = useAppSelector(selectTemplateToCopy);
+
   const handleCloseNewTemplateModal = () => {
-    setShowNewTemplateModal(false);
-    setTemplateToCopy(undefined);
+    dispatch(closeNewTemplateModal());
+  };
+
+  const handleCloseToolsModal = () => {
+    dispatch(closeToolsModal());
   };
 
   useEffect(() => {
@@ -37,13 +49,13 @@ function HomeContent() {
       // Show New Template Modal
       if (matchesShortcut(event, 'newTemplate')) {
         event.preventDefault();
-        setShowNewTemplateModal(prev => !prev);
+        dispatch(toggleNewTemplateModal());
       }
 
       // Show Tools Modal
       if (matchesShortcut(event, 'toolsModal')) {
         event.preventDefault();
-        setShowToolsModal(prev => !prev);
+        dispatch(toggleToolsModal());
       }
 
       // Reset selected template
@@ -78,7 +90,7 @@ function HomeContent() {
       {showToolsModal && (
         <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm animate-fadeIn">
           <ToolsModal
-            onClose={() => setShowToolsModal(false)}
+            onClose={handleCloseToolsModal}
           />
         </div>
       )}
