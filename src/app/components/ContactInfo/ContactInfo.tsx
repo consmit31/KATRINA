@@ -1,12 +1,20 @@
-import React, { useState } from 'react'
+import React, { useState, forwardRef, useImperativeHandle } from 'react'
 
-import { useAppDispatch } from '@redux/hooks';
+import { useAppDispatch, useAppSelector } from '@redux/hooks';
 import { setName, setUserId, setEmail, setPhone } from '@redux/contactInformationSlice';
 import AddFieldButton from './AddFieldButton';
 import ContactField from './ContactField';
 
-const ContactInfo = () => {
+export interface ContactInfoRef {
+  resetFields: () => void;
+}
+
+const ContactInfo = forwardRef<ContactInfoRef>((props, ref) => {
   const dispatch = useAppDispatch();
+  const userId = useAppSelector(state => state.contactInfo.userId);
+  const name = useAppSelector(state => state.contactInfo.name);
+  const phone = useAppSelector(state => state.contactInfo.phone);
+  const email = useAppSelector(state => state.contactInfo.email);
 
   const [additionalFields, setAdditionalFields] = useState<{
     userId: string[];
@@ -19,8 +27,26 @@ const ContactInfo = () => {
     name: [],
     phone: [],
     email: [],
-    misc: []
+    misc: [''],
   });
+
+  const resetFields = () => {
+    dispatch(setUserId(''));
+    // dispatch(setName(''));
+    // dispatch(setPhone(''));
+    // dispatch(setEmail(''));
+    setAdditionalFields({
+      userId: [],
+      name: [],
+      phone: [],
+      email: [],
+      misc: ['']
+    });
+  };
+
+  useImperativeHandle(ref, () => ({
+    resetFields
+  }));
 
   const addField = (fieldType: 'userId' | 'name' | 'phone' | 'email' | 'misc') => {
     setAdditionalFields(prev => ({
@@ -57,6 +83,7 @@ const ContactInfo = () => {
           type="text"
           allowDelete={false}
           placeholder="User ID"
+          value={userId}
           onFieldChange={(e: React.ChangeEvent<HTMLInputElement>) => dispatch(setUserId(e.target.value))}
         />
         {additionalFields.userId.map((value, index) => (
@@ -85,6 +112,7 @@ const ContactInfo = () => {
           type="text"
           allowDelete={false}
           placeholder="Name"
+          value={name}
           onFieldChange={(e: React.ChangeEvent<HTMLInputElement>) => dispatch(setName(e.target.value))}
         />
         {additionalFields.name.map((value, index) => (
@@ -113,6 +141,7 @@ const ContactInfo = () => {
           type="tel"
           allowDelete={false}
           placeholder="Phone"
+          value={phone}
           onFieldChange={(e: React.ChangeEvent<HTMLInputElement>) => dispatch(setPhone(e.target.value))}
         />
         {additionalFields.phone.map((value, index) => (
@@ -141,6 +170,7 @@ const ContactInfo = () => {
           type="email"
           allowDelete={false}
           placeholder="Email"
+          value={email}
           onFieldChange={(e: React.ChangeEvent<HTMLInputElement>) => dispatch(setEmail(e.target.value))}
         />
         {additionalFields.email.map((value, index) => (
@@ -165,25 +195,24 @@ const ContactInfo = () => {
             fieldType='Misc'
           />
         </div>
-        <ContactField
-          type="text"
-          allowDelete={false}
-          placeholder="Misc"
-        />
         {additionalFields.misc.map((value, index) => (
           <ContactField
             type="text"
             key={index}
             allowDelete={true}
             index={index}
+            offsetIndexLabel={false}
             value={value}
             placeholder="Misc"
+            onFieldChange={(e: React.ChangeEvent<HTMLInputElement>) => updateAdditionalField('misc', index, e.target.value)}
             onRemoveField={() => removeField('misc', index)}
           />
         ))}
       </div>
     </div>
   )
-}
+});
+
+ContactInfo.displayName = 'ContactInfo';
 
 export default ContactInfo

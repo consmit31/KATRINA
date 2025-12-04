@@ -1,17 +1,18 @@
 "use client";
 import { Provider } from "react-redux";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 import IssueSelector from "@components/IssueSelector/IssueSelector"
 import TemplateForm from "@components/TemplateForm/TemplateForm";
 import NoteField from "@components/NoteField/NoteField";
 import NewTemplateModal from "@components/NewTemplateModal/NewTemplateModal";
-import ContactInfo from "@components/ContactInfo/ContactInfo";
+import ContactInfo, { ContactInfoRef } from "@components/ContactInfo/ContactInfo";
 
 import { store } from "@redux/store";
 import { useAppDispatch } from '@redux/hooks'
 import { setActiveComponent } from '@redux/activeComponentSlice'
 import { resetActiveTemplate } from '@redux/activeTemplateSlice';
+import { clearContactInfo } from '@redux/contactInformationSlice';
 
 import ToolsModal from "@components/ToolsModal/ToolsModal";
 import { useKeyboardShortcuts } from '@hooks/useKeyboardShortcuts';
@@ -24,6 +25,7 @@ function HomeContent() {
   const [showNewTemplateModal, setShowNewTemplateModal] = useState(false);
   const [showToolsModal, setShowToolsModal] = useState(false);
   const [templateToCopy, setTemplateToCopy] = useState<Template | undefined>(undefined);
+  const contactInfoRef = useRef<ContactInfoRef>(null);
 
   const handleCloseNewTemplateModal = () => {
     setShowNewTemplateModal(false);
@@ -48,6 +50,8 @@ function HomeContent() {
       if (matchesShortcut(event, 'resetTemplate')) {
         event.preventDefault();
         dispatch(resetActiveTemplate());
+        dispatch(clearContactInfo());
+        contactInfoRef.current?.resetFields();
         dispatch(setActiveComponent("IssueSelector"));
       }
 
@@ -81,7 +85,7 @@ function HomeContent() {
       
       <div className="h-full flex flex-col p-4 gap-4 max-w-7xl mx-auto">
         <div className="animate-fadeIn">
-          <ContactInfo/> 
+          <ContactInfo ref={contactInfoRef}/> 
           <IssueSelector/>
         </div>
         
