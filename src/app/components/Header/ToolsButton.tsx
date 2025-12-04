@@ -1,11 +1,11 @@
 "use client"
 import React from 'react'
-// import { useKeyboardShortcuts } from '@hooks/useKeyboardShortcuts'
+import { useKeyboardShortcuts } from '@hooks/useKeyboardShortcuts'
 import { useAppDispatch } from '@redux/hooks'
 import { toggleToolsModal } from '@redux/modalSlice'
 
-function ToolsShortcut() {
-  // const { formatShortcut } = useKeyboardShortcuts()
+function ToolsButton() {
+  const { formatShortcut } = useKeyboardShortcuts()
   const dispatch = useAppDispatch()
 
   return (
@@ -13,7 +13,7 @@ function ToolsShortcut() {
       <div className='flex flex-col items-center'>
         <button
             className='flex items-center space-x-2 px-3 py-2 text-sm bg-muted cursor-pointer hover:bg-accent rounded-lg transition-colors focus-ring h-10'
-            title='Open Tools Modal'
+            title={`Open Tools (${formatShortcut('toolsModal')})`}
             onClick={() => dispatch(toggleToolsModal())} 
         >
             <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -28,4 +28,4 @@ function ToolsShortcut() {
   )
 }
 
-export default ToolsShortcut
+export default ToolsButton

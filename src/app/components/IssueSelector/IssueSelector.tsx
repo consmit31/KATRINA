@@ -60,14 +60,16 @@ function IssueSelector() {
                     <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">
                             <h2 className="text-lg font-semibold text-card-foreground">Available Templates</h2>
-                            <svg className="w-5 h-5 text-primary cursor-pointer hover:text-primary/80 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" onClick={() => {
-                                dispatch(openNewTemplateModal({}));
-                            }}>
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                            </svg>
-                            <kbd className="px-2 py-1 text-xs font-semibold text-muted-foreground bg-background border border-border rounded">
-                                {formatShortcut('newTemplate')}
-                            </kbd>
+                            <button 
+                                className='text-primary cursor-pointer hover:text-primary/80 transition-colors'
+                                onClick={() => dispatch(openNewTemplateModal({}))}
+                                title={`Add new template (${formatShortcut('newTemplate')})`}
+                            >
+                                <svg className="w-5 h-5 " fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                                </svg>
+                            </button>
+                            
                         </div>
 
                         <div className="text-sm text-muted-foreground bg-muted px-3 py-1 rounded-full">

@@ -5,9 +5,8 @@ import Image from 'next/image'
 import { store } from "@redux/store";
 
 import { Provider } from "react-redux";
-import ToggleToolTipsButton from './ToggleToolTipsButton'
 import ShortcutsButton from './ShortcutsButton'
-import ToolsShortcut from './ToolsShortcut'
+import ToolsShortcut from './ToolsButton'
 import ThemeToggle from './ThemeToggle'
 
 const HeaderComponent = () => {
@@ -35,9 +34,7 @@ const HeaderComponent = () => {
                         <ToolsShortcut />
                         <div className="h-6 w-px bg-border"></div>
                         <ShortcutsButton />
-                        <div className="h-6 w-px bg-border"></div>
-                        <ToggleToolTipsButton />
-                    </nav>
+                        </nav>
                 </div>
             </header>
         </Provider>
