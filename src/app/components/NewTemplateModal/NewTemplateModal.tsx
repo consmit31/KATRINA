@@ -29,9 +29,9 @@ const NewTemplateModal = ({ onClose, onTemplateCreated, copyFromTemplate }: NewT
   const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState<boolean>(false);
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState<number>(-1);
-  
+
   const { addNewTemplate, error, clearError, templates } = useTemplateStorage();
-  const { addNewIssue, getIssue, addTemplateToExistingIssue, getIssueNames} = useIssueStorage();
+  const { addNewIssue, getIssue, addTemplateToExistingIssue, getIssueNames } = useIssueStorage();
   const dispatch = useAppDispatch();
 
   // Load existing issue names on component mount
@@ -83,7 +83,7 @@ const NewTemplateModal = ({ onClose, onTemplateCreated, copyFromTemplate }: NewT
 
   const isValidKba = useCallback(() => {
     const kbaPattern = /^KBA\d{8}$/;
-    return kbaPattern.test(parsedTemplate.kba); 
+    return kbaPattern.test(parsedTemplate.kba);
   }, [parsedTemplate.kba]);
 
   const isValidName = useCallback(() => {
@@ -148,7 +148,7 @@ const NewTemplateModal = ({ onClose, onTemplateCreated, copyFromTemplate }: NewT
   // Handle issue input change with suggestions
   const handleIssueChange = (value: string) => {
     setParsedTemplate(prev => ({ ...prev, issue: value }));
-    
+
     if (value.trim().length > 0) {
       const filtered = existingIssueNames.filter(name =>
         name.toLowerCase().includes(value.toLowerCase())
@@ -177,13 +177,13 @@ const NewTemplateModal = ({ onClose, onTemplateCreated, copyFromTemplate }: NewT
     switch (e.key) {
       case 'ArrowDown':
         e.preventDefault();
-        setSelectedSuggestionIndex(prev => 
+        setSelectedSuggestionIndex(prev =>
           prev < filteredSuggestions.length - 1 ? prev + 1 : 0
         );
         break;
       case 'ArrowUp':
         e.preventDefault();
-        setSelectedSuggestionIndex(prev => 
+        setSelectedSuggestionIndex(prev =>
           prev > 0 ? prev - 1 : filteredSuggestions.length - 1
         );
         break;
@@ -213,14 +213,14 @@ const NewTemplateModal = ({ onClose, onTemplateCreated, copyFromTemplate }: NewT
 
   const handleCreateTemplate = async () => {
     if (!validTemplate) return;
-    
+
     setSaving(true);
     clearError();
-    
+
     try {
       // Add new template to storage
       await addNewTemplate(parsedTemplate);
-      
+
       // Check if issue exists and create or update accordingly
       const existingIssue = await getIssue(parsedTemplate.issue);
       if (!existingIssue) {
@@ -230,14 +230,14 @@ const NewTemplateModal = ({ onClose, onTemplateCreated, copyFromTemplate }: NewT
         // Issue exists, add template to existing issue
         await addTemplateToExistingIssue(parsedTemplate.issue, parsedTemplate.name);
       }
-      
+
       // Trigger refresh for components watching for data changes
       dispatch(triggerAllRefresh());
-      
+
       // Call callbacks if provided
       onTemplateCreated?.(parsedTemplate);
       onClose?.();
-      
+
       // Reset form
       setInputText('');
       setParsedTemplate({ issue: '', name: '', kba: '', fields: [] });
@@ -251,9 +251,8 @@ const NewTemplateModal = ({ onClose, onTemplateCreated, copyFromTemplate }: NewT
 
   // Validation indicator component
   const ValidationIndicator = ({ isValid }: { isValid: boolean }) => (
-    <span className={`ml-2 w-2 h-2 rounded-full inline-block ${
-      isValid ? 'bg-green-500' : 'bg-red-500'
-    }`} title={isValid ? 'Valid' : 'Invalid'} />
+    <span className={`ml-2 w-2 h-2 rounded-full inline-block ${isValid ? 'bg-green-500' : 'bg-red-500'
+      }`} title={isValid ? 'Valid' : 'Invalid'} />
   )
 
   return (
@@ -304,7 +303,7 @@ const NewTemplateModal = ({ onClose, onTemplateCreated, copyFromTemplate }: NewT
                   </div>
                 </div>
               </div>
-              
+
               {/* Template Selector */}
               {showTemplateSelector && (
                 <div className="mb-4 p-3 bg-accent/20 border border-accent rounded-lg">
@@ -338,18 +337,41 @@ const NewTemplateModal = ({ onClose, onTemplateCreated, copyFromTemplate }: NewT
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
                 className="flex-1 p-4 bg-input border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-colors resize-none font-mono text-sm"
-                placeholder="Enter your template text here...&#10;&#10;Example:&#10;Issue: Login Problem&#10;Name: Reset Password&#10;KBA: Steps to reset user password&#10;&#10;Field: Username [text]&#10;Field: Email [text]"
+                placeholder="Enter your template text here"
               />
             </div>
           </div>
 
           {/* Configuration Section */}
           <div className="flex-1 flex flex-col overflow-hidden">
-            <div className="p-6 border-b">
-              <h3 className="text-lg font-medium text-card-foreground mb-1">Template Configuration</h3>
-              <p className="text-sm text-muted-foreground">Review and modify parsed template details</p>
+            <div className="p-6 border-b flex justify-between">
+              <div>
+                <h3 className="text-lg font-medium text-card-foreground mb-1">Template Configuration</h3>
+                <p className="text-sm text-muted-foreground">Review and modify template details</p>
+              </div>
+              <div className='flex gap-2'>
+                <button
+                  className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
+                  onClick={onClose}
+                  disabled={saving}
+                >
+                  Cancel
+                </button>
+                <button
+                  className={`px-4 py-2 rounded transition-colors ${validTemplate && !saving
+                      ? 'bg-blue-600 text-white hover:bg-blue-700'
+                      : 'bg-gray-400 text-gray-200 cursor-not-allowed'
+                    }`}
+                  disabled={!validTemplate || saving}
+                  onClick={handleCreateTemplate}
+                  title={!validTemplate ? 'Complete all required fields to create template' : 'Create template'}
+                >
+                  {saving ? 'Creating...' : 'Create Template'}
+                </button>
+              </div>
+
             </div>
-            
+
             <div className="flex-1 overflow-y-auto p-6 space-y-6">
               {/* Issue */}
               <div className="space-y-2 relative">
@@ -381,7 +403,7 @@ const NewTemplateModal = ({ onClose, onTemplateCreated, copyFromTemplate }: NewT
                     placeholder="Enter issue category (type to see suggestions)"
                     autoComplete="off"
                   />
-                  
+
                   {/* Suggestions Dropdown */}
                   {showSuggestions && filteredSuggestions.length > 0 && (
                     <div className="absolute z-10 w-full mt-1 bg-popover border border-border rounded-lg shadow-lg max-h-48 overflow-y-auto">
@@ -390,11 +412,10 @@ const NewTemplateModal = ({ onClose, onTemplateCreated, copyFromTemplate }: NewT
                           key={index}
                           type="button"
                           onClick={() => handleSuggestionSelect(suggestion)}
-                          className={`w-full text-left px-3 py-2 text-sm transition-colors ${
-                            index === selectedSuggestionIndex
+                          className={`w-full text-left px-3 py-2 text-sm transition-colors ${index === selectedSuggestionIndex
                               ? 'bg-accent text-accent-foreground'
                               : 'hover:bg-accent/50 text-popover-foreground'
-                          }`}
+                            }`}
                           onMouseEnter={() => setSelectedSuggestionIndex(index)}
                         >
                           <div className="flex items-center justify-between">
@@ -407,8 +428,8 @@ const NewTemplateModal = ({ onClose, onTemplateCreated, copyFromTemplate }: NewT
                   )}
                 </div>
               </div>
-              
-              {/* Template Name */} 
+
+              {/* Template Name */}
               <div className="space-y-2">
                 <label className="flex items-center text-sm font-medium text-card-foreground">
                   Template Name
@@ -477,28 +498,6 @@ const NewTemplateModal = ({ onClose, onTemplateCreated, copyFromTemplate }: NewT
             Error: {error}
           </div>
         )}
-
-        <div className="flex justify-end space-x-2 mt-6 mr-6 mb-6">
-          <button 
-            className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
-            onClick={onClose}
-            disabled={saving}
-          >
-            Cancel
-          </button>
-          <button 
-            className={`px-4 py-2 rounded transition-colors ${
-              validTemplate && !saving
-                ? 'bg-blue-600 text-white hover:bg-blue-700' 
-                : 'bg-gray-400 text-gray-200 cursor-not-allowed'
-            }`}
-            disabled={!validTemplate || saving}
-            onClick={handleCreateTemplate}
-            title={!validTemplate ? 'Complete all required fields to create template' : 'Create template'}
-          >
-            {saving ? 'Creating...' : 'Create Template'}
-          </button>
-        </div>
       </div>
     </div>
   )
