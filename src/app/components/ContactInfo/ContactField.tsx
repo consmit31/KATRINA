@@ -6,8 +6,8 @@ interface ContactFieldProps {
     value?: string;
     type: string;
     placeholder: string;
-    onFieldChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    onRemoveField?: (field: string, index?: number) => void;
+    onFieldChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onRemoveField?: () => void;
 }
 
 const ContactField = ({ allowDelete, 
@@ -19,20 +19,20 @@ const ContactField = ({ allowDelete,
                         onRemoveField }: 
 ContactFieldProps) => {
     return (
-        <div className='flex space-x-1'>
+        <div className='flex space-x-1 min-w-0'>
             <input
                 type={type}
                 autoComplete='off'
                 placeholder={`${placeholder} ${index !== undefined ? index + 2 : ''}`}
                 value={value}
-                onChange={(e) => onFieldChange(e)}
-                className='border border-accent rounded-lg bg-foreground/10 px-2 py-1 flex-1'
+                onChange={(e) => onFieldChange && onFieldChange(e)} // If onFieldChange is not provided, do nothing
+                className='border border-accent rounded-lg bg-foreground/10 px-2 py-1 flex-1 min-w-0'
             />
             {/* only show remove button if allowDelete is true */}
             {allowDelete && (
                 <button
-                    onClick={() => onRemoveField && onRemoveField('userId', index)}
-                    className='w-6 h-6 rounded bg-red-500/20 hover:bg-red-500/30 flex items-center justify-center text-red-500 text-xs transition-colors'
+                    onClick={() => onRemoveField && onRemoveField()}
+                    className='w-6 h-6 rounded bg-red-500/20 hover:bg-red-500/30 flex items-center justify-center text-red-500 text-xs transition-colors flex-shrink-0'
                     title='Remove field'
                 >
                 ×
