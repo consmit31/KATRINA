@@ -1,34 +1,38 @@
 import React from 'react'
 
-interface ContactFieldProps {
+interface MiscContactFieldProps {
     allowDelete?: boolean;
     index?: number;
     offsetIndexLabel?: boolean;
     value?: string;
-    type: string;
     placeholder: string;
-    onFieldChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    onFieldChange?: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
     onRemoveField?: () => void;
 }
 
-const ContactField = ({ allowDelete, 
-                        index, 
-                        offsetIndexLabel = true,
-                        value, 
-                        type,
-                        placeholder,
-                        onFieldChange, 
-                        onRemoveField }: 
-ContactFieldProps) => {
-    return (
+const MiscContactField = ({
+    allowDelete, 
+    index, 
+    offsetIndexLabel = true,
+    value, 
+    placeholder,
+    onFieldChange, 
+    onRemoveField 
+}: MiscContactFieldProps) => {
+  return (
         <div className='flex space-x-1 min-w-0'>
-            <input
-                type={type}
+            <textarea
+                rows={1}
                 autoComplete='off'
                 placeholder={`${placeholder} ${index !== undefined ? (offsetIndexLabel ? index + 2 : '') : ''}`} // if offset index is provided, show index + 2 (to account for base field)
                 value={value}
                 onChange={(e) => onFieldChange && onFieldChange(e)} // If onFieldChange is not provided, do nothing
-                className='border border-accent rounded-lg bg-foreground/10 px-2 py-1 flex-1 min-w-0'
+                onInput={(e) => {
+                    const target = e.target as HTMLTextAreaElement;
+                    target.style.height = 'auto';
+                    target.style.height = `${target.scrollHeight}px`;
+                }}
+                className='border border-accent rounded-lg bg-foreground/10 px-2 py-1 flex-1 min-w-0 resize-none overflow-hidden scrollbar-none'
             />
             {allowDelete && (
                 <button
@@ -43,4 +47,4 @@ ContactFieldProps) => {
     )
 }
 
-export default ContactField
+export default MiscContactField

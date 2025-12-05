@@ -83,6 +83,10 @@ body {
   scrollbar-color: var(--accent) var(--card);
 }
 
+.scrollbar-none {
+  scrollbar-width: none;
+}
+
 /* Animations */
 @keyframes fadeIn {
   from {

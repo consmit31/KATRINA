@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from '@redux/hooks';
 import { setName, setUserId, setEmail, setPhone } from '@redux/contactInformationSlice';
 import AddFieldButton from './AddFieldButton';
 import ContactField from './ContactField';
+import MiscContactField from './MiscContactField';
 
 export interface ContactInfoRef {
   resetFields: () => void;
@@ -193,15 +194,14 @@ const ContactInfo = forwardRef<ContactInfoRef>((props, ref) => {
           />
         </div>
         {additionalFields.misc.map((value, index) => (
-          <ContactField
-            type="text"
+          <MiscContactField
             key={index}
             allowDelete={true}
             index={index}
             offsetIndexLabel={false}
             value={value}
             placeholder="Misc"
-            onFieldChange={(e: React.ChangeEvent<HTMLInputElement>) => updateAdditionalField('misc', index, e.target.value)}
+            onFieldChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => updateAdditionalField('misc', index, e.target.value)}
             onRemoveField={() => removeField('misc', index)}
           />
         ))}
