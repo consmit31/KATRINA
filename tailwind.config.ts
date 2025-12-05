@@ -46,8 +46,9 @@ const config: Config = {
         sm: 'calc(var(--radius) - 4px)',
       },
       animation: {
-        'fadeIn': 'fadeIn 0.3s ease-out',
+        'fadeIn': 'fadeIn 0.3s ease-out forwards',
         'slideInFromRight': 'slideInFromRight 0.3s ease-out',
+        'slideIn': 'slideIn 0.4s ease-out forwards',
         'pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
       keyframes: {
@@ -65,6 +66,16 @@ const config: Config = {
           from: {
             opacity: '0',
             transform: 'translateX(20px)',
+          },
+          to: {
+            opacity: '1',
+            transform: 'translateX(0)',
+          },
+        },
+        slideIn: {
+          from: {
+            opacity: '0',
+            transform: 'translateX(-20px)',
           },
           to: {
             opacity: '1',

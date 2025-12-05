@@ -22,6 +22,7 @@ interface FieldConfig {
 const AutomationModal = ({ onClose }: AutomationModalProps) => {
   const [config, setConfig] = useState<CustomFieldLabelsConfig | null>(null)
   const [loading, setLoading] = useState(true)
+  const [activeTab, setActiveTab] = useState<FieldType>('userIdLabels')
   const [newLabels, setNewLabels] = useState<Record<FieldType, string>>({
     userIdLabels: '',
     nameLabels: '',
@@ -52,25 +53,27 @@ const AutomationModal = ({ onClose }: AutomationModalProps) => {
   const fieldConfigs: FieldConfig[] = [
     {
       type: 'userIdLabels',
-      title: 'User ID Field Labels',
+      title: 'User ID',
       labels: config.userIdLabels
     },
     {
       type: 'nameLabels',
-      title: 'Name Field Labels',
+      title: 'Name',
       labels: config.nameLabels
     },
     {
       type: 'emailLabels',
-      title: 'Email Field Labels',
+      title: 'Email',
       labels: config.emailLabels
     },
     {
       type: 'phoneLabels',
-      title: 'Phone Field Labels',
+      title: 'Phone',
       labels: config.phoneLabels
     }
   ];
+
+  const activeFieldConfig = fieldConfigs.find(config => config.type === activeTab);
 
   const handleAddLabel = async (fieldType: FieldType) => {
     const label = newLabels[fieldType].trim();
@@ -130,71 +133,102 @@ const AutomationModal = ({ onClose }: AutomationModalProps) => {
           </span>
         </div>
         
-        <div className="flex-1 overflow-y-auto p-6">
+        <div className="flex-1 flex flex-col overflow-hidden">
           {loading ? (
             <div className="flex items-center justify-center h-full">
               <div className="text-accent-foreground">Loading configuration...</div>
             </div>
           ) : (
             <>
-              <div className="mb-6">
-                <p className="text-sm text-gray-600 mb-4">
-                  Configure which template field labels should automatically populate with contact information. 
-                  When a template field matches any of these labels, it will be auto-filled with the corresponding contact data.
-                </p>
-                <button
-                  onClick={handleResetToDefaults}
-                  className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors text-sm"
-                >
-                  Reset to Defaults
-                </button>
+              {/* Tab Navigation */}
+              <div className="p-4 border-b border-gray-200">
+                <div className="flex gap-2 bg-gray-100 p-2 rounded-full">
+                  {fieldConfigs.map((configItem) => (
+                    <button
+                      key={configItem.type}
+                      onClick={() => setActiveTab(configItem.type)}
+                      className={`px-6 py-2 text-sm font-medium rounded-full transition-all duration-300 ease-in-out transform ${
+                        activeTab === configItem.type
+                          ? 'bg-blue-500 text-white shadow-md scale-105'
+                          : 'text-gray-600 hover:text-gray-800 hover:bg-gray-200 hover:scale-102'
+                      }`}
+                    >
+                      {configItem.title}
+                    </button>
+                  ))}
+                </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {fieldConfigs.map((configItem) => (
-                  <div key={configItem.type} className="border rounded-lg p-4">
-                    <h3 className="text-lg font-semibold mb-3 text-accent-foreground">{configItem.title}</h3>
+              {/* Tab Content */}
+              <div className="flex-1 overflow-y-auto p-6">
+                <div className="mb-6 animate-fadeIn" key={activeTab}>
+                  <p className="text-sm text-gray-600 mb-4">
+                    Configure which template field labels should automatically populate with {activeFieldConfig?.title.toLowerCase()} information. 
+                    When a template field matches any of these labels, it will be auto-filled with the corresponding contact data.
+                  </p>
+                  <button
+                    onClick={handleResetToDefaults}
+                    className="px-4 py-2 bg-gray-500 text-white rounded-full hover:bg-gray-600 transition-all duration-200 text-sm hover:scale-105"
+                  >
+                    Reset All to Defaults
+                  </button>
+                </div>
+
+                {activeFieldConfig && (
+                  <div className="max-w-2xl animate-fadeIn" key={`${activeTab}-content`}>
+                    <h3 className="text-lg font-semibold mb-4 text-accent-foreground">
+                      {activeFieldConfig.title} Field Labels
+                    </h3>
                     
-                    <div className="mb-3">
+                    <div className="mb-6">
                       <div className="flex gap-2">
                         <input
                           type="text"
-                          value={newLabels[configItem.type]}
-                          onChange={(e) => setNewLabels(prev => ({ ...prev, [configItem.type]: e.target.value }))}
-                          onKeyPress={(e) => handleKeyPress(e, configItem.type)}
+                          value={newLabels[activeTab]}
+                          onChange={(e) => setNewLabels(prev => ({ ...prev, [activeTab]: e.target.value }))}
+                          onKeyPress={(e) => handleKeyPress(e, activeTab)}
                           placeholder="Add new label..."
-                          className="flex-1 px-3 py-2 border rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="flex-1 px-3 py-2 border rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200"
                         />
                         <button
-                          onClick={() => handleAddLabel(configItem.type)}
-                          className="px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors text-sm"
+                          onClick={() => handleAddLabel(activeTab)}
+                          className="px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-all duration-200 text-sm hover:scale-105"
                         >
-                          Add
+                          Add Label
                         </button>
                       </div>
                     </div>
 
-                    <div className="space-y-2 max-h-40 overflow-y-auto">
-                      {configItem.labels.map((label, index) => (
-                        <div key={index} className="flex justify-between items-center bg-gray-50 px-3 py-2 rounded">
-                          <span className="text-sm">{label}</span>
+                    <div className="space-y-2">
+                      {activeFieldConfig.labels.map((label, index) => (
+                        <div 
+                          key={index} 
+                          className="flex justify-between items-center bg-card border px-4 py-3 rounded-full animate-slideIn"
+                          style={{ animationDelay: `${index * 50}ms` }}
+                        >
+                          <span className="text-sm text-card-foreground font-medium">{label}</span>
                           <button
-                            onClick={() => handleRemoveLabel(configItem.type, label)}
-                            className="text-red-600 hover:text-red-800 text-sm font-bold ml-2"
+                            onClick={() => handleRemoveLabel(activeTab, label)}
+                            className="text-white bg-red-600 hover:bg-red-800 text-sm font-bold ml-2 px-3 py-1 rounded-full transition-all duration-200 hover:scale-105"
                             title="Remove label"
                           >
-                            ×
+                            Remove
                           </button>
                         </div>
                       ))}
-                      {configItem.labels.length === 0 && (
-                        <div className="text-gray-400 text-sm italic py-2">
-                          No labels configured
+                      {activeFieldConfig.labels.length === 0 && (
+                        <div className="text-center py-8 animate-fadeIn">
+                          <div className="text-gray-400 text-sm italic">
+                            No {activeFieldConfig.title.toLowerCase()} labels configured
+                          </div>
+                          <div className="text-gray-500 text-xs mt-2">
+                            Add labels above to enable auto-population for {activeFieldConfig.title.toLowerCase()} fields
+                          </div>
                         </div>
                       )}
                     </div>
                   </div>
-                ))}
+                )}
               </div>
             </>
           )}
