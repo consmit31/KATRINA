@@ -8,6 +8,7 @@ import { Provider } from "react-redux";
 import ShortcutsButton from './ShortcutsButton'
 import ToolsShortcut from './ToolsButton'
 import ThemeToggle from './ThemeToggle'
+import AutomationButton from './AutomationButton';
 
 const HeaderComponent = () => {
     return (
@@ -34,6 +35,8 @@ const HeaderComponent = () => {
                         <ToolsShortcut />
                         <div className="h-6 w-px bg-border"></div>
                         <ShortcutsButton />
+                        <div className="h-6 w-px bg-border"></div>
+                        <AutomationButton />
                         </nav>
                 </div>
             </header>

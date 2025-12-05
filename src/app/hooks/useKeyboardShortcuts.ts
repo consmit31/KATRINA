@@ -13,7 +13,7 @@ export interface ShortcutConfig {
 
 const defaultShortcuts: ShortcutConfig[] = [
   {
-    id: 'newTemplate',
+    id: 'newTemplateModal',
     name: 'New Template Modal',
     description: 'Open the new template creation modal',
     defaultKey: 'y',
@@ -28,6 +28,16 @@ const defaultShortcuts: ShortcutConfig[] = [
     description: 'Open the tools and utilities modal',
     defaultKey: 't',
     currentKey: 't',
+    ctrl: true,
+    alt: false,
+    shift: false,
+  },
+  {
+    id: 'automationModal',
+    name: 'Automation Modal',
+    description: 'Open the automation settings modal',
+    defaultKey: 'a',
+    currentKey: 'a',
     ctrl: true,
     alt: false,
     shift: false,
@@ -94,7 +104,7 @@ export const useKeyboardShortcuts = () => {
 
   const formatShortcut = useCallback((id: string): string => {
     const shortcut = getShortcut(id);
-    if (!shortcut) return '';
+    if (!shortcut) return 'N/A';
 
     const parts = [];
     if (shortcut.ctrl) parts.push('Ctrl');

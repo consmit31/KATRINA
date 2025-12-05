@@ -10,6 +10,9 @@ export interface ModalState {
   toolsModal: {
     isOpen: boolean;
   };
+  automationModal: {
+    isOpen: boolean;
+  };
 }
 
 const initialState: ModalState = {
@@ -18,6 +21,9 @@ const initialState: ModalState = {
     templateToCopy: undefined,
   },
   toolsModal: {
+    isOpen: false,
+  },
+  automationModal: {
     isOpen: false,
   },
 };
@@ -49,6 +55,15 @@ export const modalSlice = createSlice({
     toggleToolsModal: (state) => {
       state.toolsModal.isOpen = !state.toolsModal.isOpen;
     },
+    openAutomationModal: (state) => {
+      state.automationModal.isOpen = true;
+    },
+    closeAutomationModal: (state) => {
+      state.automationModal.isOpen = false;
+    },
+    toggleAutomationModal: (state) => {
+      state.automationModal.isOpen = !state.automationModal.isOpen;
+    },
     closeAllModals: (state) => {
       state.newTemplateModal.isOpen = false;
       state.newTemplateModal.templateToCopy = undefined;
@@ -64,14 +79,19 @@ export const {
   openToolsModal,
   closeToolsModal,
   toggleToolsModal,
+  openAutomationModal,
+  closeAutomationModal,
+  toggleAutomationModal,
   closeAllModals,
 } = modalSlice.actions;
 
 // Selectors
 export const selectNewTemplateModal = (state: RootState) => state.modal.newTemplateModal;
 export const selectToolsModal = (state: RootState) => state.modal.toolsModal;
+export const selectAutomationModal = (state: RootState) => state.modal.automationModal;
 export const selectIsNewTemplateModalOpen = (state: RootState) => state.modal.newTemplateModal.isOpen;
 export const selectIsToolsModalOpen = (state: RootState) => state.modal.toolsModal.isOpen;
+export const selectIsAutomationModalOpen = (state: RootState) => state.modal.automationModal.isOpen;
 export const selectTemplateToCopy = (state: RootState) => state.modal.newTemplateModal.templateToCopy;
 
 export default modalSlice.reducer;

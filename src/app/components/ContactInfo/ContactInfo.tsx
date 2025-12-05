@@ -32,9 +32,6 @@ const ContactInfo = forwardRef<ContactInfoRef>((props, ref) => {
 
   const resetFields = () => {
     dispatch(setUserId(''));
-    // dispatch(setName(''));
-    // dispatch(setPhone(''));
-    // dispatch(setEmail(''));
     setAdditionalFields({
       userId: [],
       name: [],

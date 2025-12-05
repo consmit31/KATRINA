@@ -24,6 +24,8 @@ function TemplateForm()  {
   const contactEmail = useAppSelector(selectContactEmail);
   const contactPhone = useAppSelector(selectContactPhone);
 
+
+
   const activeComponent = useAppSelector(selectActiveComponent);
 
   const handleFieldChange = useCallback((label: string, value: string) => {
@@ -31,55 +33,87 @@ function TemplateForm()  {
   }, [dispatch]);
    
   useEffect(() => {
-    if (!templateFields || templateFields.length === 0) return;
+    if (!templateFields || templateFields.length === 0 || !contactUserId) return;
 
-    const fieldToPopulate = userIdFieldToPopulate(templateFields);
-    if (fieldToPopulate && contactUserId) {
-      // Only update if the current value is different to prevent loops
-      const currentField = templateFields.find(f => f.label === fieldToPopulate);
-      if (currentField && currentField.value !== contactUserId) {
-        handleFieldChange(fieldToPopulate, contactUserId);
+    const populateField = async () => {
+      try {
+        const fieldToPopulate = await userIdFieldToPopulate(templateFields);
+        if (fieldToPopulate) {
+          // Only update if the current value is different to prevent loops
+          const currentField = templateFields.find(f => f.label === fieldToPopulate);
+          if (currentField && currentField.value !== contactUserId) {
+            handleFieldChange(fieldToPopulate, contactUserId);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to populate user ID field:', error);
       }
-    }
+    };
+
+    populateField();
   }, [templateFields, contactUserId, handleFieldChange]);
 
   useEffect(() => {
-    if (!templateFields || templateFields.length === 0) return;
+    if (!templateFields || templateFields.length === 0 || !contactName) return;
 
-    const fieldToPopulate = nameFieldToPopulate(templateFields);
-    if (fieldToPopulate && contactName) {
-      // Only update if the current value is different to prevent loops
-      const currentField = templateFields.find(f => f.label === fieldToPopulate);
-      if (currentField && currentField.value !== contactName) {
-        handleFieldChange(fieldToPopulate, contactName);
+    const populateField = async () => {
+      try {
+        const fieldToPopulate = await nameFieldToPopulate(templateFields);
+        if (fieldToPopulate) {
+          // Only update if the current value is different to prevent loops
+          const currentField = templateFields.find(f => f.label === fieldToPopulate);
+          if (currentField && currentField.value !== contactName) {
+            handleFieldChange(fieldToPopulate, contactName);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to populate name field:', error);
       }
-    }
+    };
+
+    populateField();
   }, [templateFields, contactName, handleFieldChange]);
 
   useEffect(() => {
-    if (!templateFields || templateFields.length === 0) return;
+    if (!templateFields || templateFields.length === 0 || !contactEmail) return;
 
-    const fieldToPopulate = emailFieldToPopulate(templateFields);
-    if (fieldToPopulate && contactEmail) {
-      // Only update if the current value is different to prevent loops
-      const currentField = templateFields.find(f => f.label === fieldToPopulate);
-      if (currentField && currentField.value !== contactEmail) {
-        handleFieldChange(fieldToPopulate, contactEmail);
+    const populateField = async () => {
+      try {
+        const fieldToPopulate = await emailFieldToPopulate(templateFields);
+        if (fieldToPopulate) {
+          // Only update if the current value is different to prevent loops
+          const currentField = templateFields.find(f => f.label === fieldToPopulate);
+          if (currentField && currentField.value !== contactEmail) {
+            handleFieldChange(fieldToPopulate, contactEmail);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to populate email field:', error);
       }
-    }
+    };
+
+    populateField();
   }, [templateFields, contactEmail, handleFieldChange]);
 
   useEffect(() => {
-    if (!templateFields || templateFields.length === 0) return;
+    if (!templateFields || templateFields.length === 0 || !contactPhone) return;
 
-    const fieldToPopulate = phoneFieldToPopulate(templateFields);
-    if (fieldToPopulate && contactPhone) {
-      // Only update if the current value is different to prevent loops
-      const currentField = templateFields.find(f => f.label === fieldToPopulate);
-      if (currentField && currentField.value !== contactPhone) {
-        handleFieldChange(fieldToPopulate, contactPhone);
+    const populateField = async () => {
+      try {
+        const fieldToPopulate = await phoneFieldToPopulate(templateFields);
+        if (fieldToPopulate) {
+          // Only update if the current value is different to prevent loops
+          const currentField = templateFields.find(f => f.label === fieldToPopulate);
+          if (currentField && currentField.value !== contactPhone) {
+            handleFieldChange(fieldToPopulate, contactPhone);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to populate phone field:', error);
       }
-    }
+    };
+
+    populateField();
   }, [templateFields, contactPhone, handleFieldChange]);
 
   useEffect(() => {

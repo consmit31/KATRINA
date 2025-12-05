@@ -7,6 +7,7 @@ import TemplateForm from "@components/TemplateForm/TemplateForm";
 import NoteField from "@components/NoteField/NoteField";
 import NewTemplateModal from "@components/NewTemplateModal/NewTemplateModal";
 import ContactInfo, { ContactInfoRef } from "@components/ContactInfo/ContactInfo";
+import AutomationModal from "@components/AutomationModal/AutomationModal";
 
 import { store } from "@redux/store";
 import { useAppDispatch, useAppSelector } from '@redux/hooks'
@@ -16,10 +17,13 @@ import { clearContactInfo } from '@redux/contactInformationSlice';
 import { 
   toggleNewTemplateModal, 
   toggleToolsModal, 
+  toggleAutomationModal,
   closeNewTemplateModal, 
   closeToolsModal,
+  closeAutomationModal,
   selectIsNewTemplateModalOpen,
   selectIsToolsModalOpen,
+  selectIsAutomationModalOpen,
   selectTemplateToCopy
 } from '@redux/modalSlice';
 
@@ -34,6 +38,7 @@ function HomeContent() {
   // Redux selectors
   const showNewTemplateModal = useAppSelector(selectIsNewTemplateModalOpen);
   const showToolsModal = useAppSelector(selectIsToolsModalOpen);
+  const showAutomationModal = useAppSelector(selectIsAutomationModalOpen);
   const templateToCopy = useAppSelector(selectTemplateToCopy);
 
   const handleCloseNewTemplateModal = () => {
@@ -42,6 +47,10 @@ function HomeContent() {
 
   const handleCloseToolsModal = () => {
     dispatch(closeToolsModal());
+  };
+
+  const handleCloseAutomationModal = () => {
+    dispatch(closeAutomationModal());
   };
 
   useEffect(() => {
@@ -56,6 +65,12 @@ function HomeContent() {
       if (matchesShortcut(event, 'toolsModal')) {
         event.preventDefault();
         dispatch(toggleToolsModal());
+      }
+
+      // Show Automation Modal
+      if (matchesShortcut(event, 'automationModal')) {
+        event.preventDefault();
+        dispatch(toggleAutomationModal());
       }
 
       // Reset selected template
@@ -94,7 +109,15 @@ function HomeContent() {
           />
         </div>
       )}
-      
+
+      {showAutomationModal && (
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm animate-fadeIn">
+          <AutomationModal
+            onClose={handleCloseAutomationModal}
+          />
+        </div>
+      )}
+
       <div className="h-full flex flex-col p-4 gap-4 max-w-7xl mx-auto">
         <div className="animate-fadeIn">
           <ContactInfo ref={contactInfoRef}/> 
