@@ -1,6 +1,8 @@
 "use client"
 
 import React, { useEffect } from 'react'
+import {FaCopy} from 'react-icons/fa6'
+
 import IssueDropdown from './IssueDropdown'
 
 import { useAppSelector, useAppDispatch } from '@redux/hooks'
@@ -90,11 +92,23 @@ function IssueSelector() {
     } else {
         return (
             <div className="bg-card border rounded-xl p-4 shadow-md" tabIndex={0}>
-                <div className="flex items-center space-x-3">
-                    <div className="w-3 h-3 rounded-full bg-primary"></div>
-                    <span className="font-medium text-card-foreground">
-                        Selected: {activeTemplateName}
+                <div className="flex items-center justify-between space-x-3">
+                    <span className='flex items-center space-x-2'>
+                        <div className="w-3 h-3 rounded-full bg-primary"></div>
+                        <span className="font-medium text-card-foreground">
+                            {activeTemplateName}
+                        </span>
                     </span>
+                    
+                    <button
+                        className='text-primary cursor-pointer hover:text-primary/80 transition-colors'
+                        onClick={() => {
+                            navigator.clipboard.writeText(activeTemplateName || '');
+                        }}
+                        title="Copy template name to clipboard"
+                    >
+                            <FaCopy />
+                    </button>
                 </div>
             </div>
         );

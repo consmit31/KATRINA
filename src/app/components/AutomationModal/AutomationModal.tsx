@@ -141,13 +141,13 @@ const AutomationModal = ({ onClose }: AutomationModalProps) => {
           ) : (
             <>
               {/* Tab Navigation */}
-              <div className="p-4 border-b border-gray-200">
-                <div className="flex gap-2 bg-gray-100 p-2 rounded-full">
+              <div className="">
+                <div className="flex">
                   {fieldConfigs.map((configItem) => (
                     <button
                       key={configItem.type}
                       onClick={() => setActiveTab(configItem.type)}
-                      className={`px-6 py-2 text-sm font-medium rounded-full transition-all duration-300 ease-in-out transform ${
+                      className={`px-6 py-2 text-sm bg-accent rounded-lg rounded-b-none border-accent-foreground font-medium transition-all duration-300 ease-in-out transform ${
                         activeTab === configItem.type
                           ? 'bg-blue-500 text-white shadow-md scale-105'
                           : 'text-gray-600 hover:text-gray-800 hover:bg-gray-200 hover:scale-102'
