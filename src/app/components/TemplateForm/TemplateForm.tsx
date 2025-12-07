@@ -10,14 +10,12 @@ import { selectActiveTemplateName, selectTemplateFields, updateFieldValue, setTe
 import { selectContactName, selectContactUserId, selectContactEmail, selectContactPhone } from '@redux/contactInformationSlice';
 import { selectActiveComponent } from '@redux/activeComponentSlice'
 import { userIdFieldToPopulate, nameFieldToPopulate, emailFieldToPopulate, phoneFieldToPopulate } from '@utils/populateFromContactInfo';
-import { useKeyboardShortcuts } from '@hooks/useKeyboardShortcuts';
 
 function TemplateForm()  {
   const activeTemplateName = useAppSelector(selectActiveTemplateName);
   const templateFields = useAppSelector(selectTemplateFields);
   const dispatch = useAppDispatch();
   const { getTemplate } = useTemplateStorage();
-  const { formatShortcut } = useKeyboardShortcuts();
   
   const contactUserId = useAppSelector(selectContactUserId);
   const contactName = useAppSelector(selectContactName);

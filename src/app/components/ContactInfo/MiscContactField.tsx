@@ -19,6 +19,13 @@ const MiscContactField = ({
     onFieldChange, 
     onRemoveField 
 }: MiscContactFieldProps) => {
+    const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+        e.preventDefault();
+        const text = e.clipboardData.getData('text');
+
+        
+    } 
+
   return (
         <div className='flex space-x-1 min-w-0'>
             <textarea
@@ -26,6 +33,7 @@ const MiscContactField = ({
                 autoComplete='off'
                 placeholder={`${placeholder} ${index !== undefined ? (offsetIndexLabel ? index + 2 : '') : ''}`} // if offset index is provided, show index + 2 (to account for base field)
                 value={value}
+                onPaste={(e) => handlePaste(e)}
                 onChange={(e) => onFieldChange && onFieldChange(e)} // If onFieldChange is not provided, do nothing
                 onInput={(e) => {
                     const target = e.target as HTMLTextAreaElement;

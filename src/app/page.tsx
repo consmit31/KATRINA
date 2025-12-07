@@ -7,7 +7,7 @@ import TemplateForm from "@components/TemplateForm/TemplateForm";
 import NoteField from "@components/NoteField/NoteField";
 import NewTemplateModal from "@components/NewTemplateModal/NewTemplateModal";
 import ContactInfo, { ContactInfoRef } from "@components/ContactInfo/ContactInfo";
-import AutomationModal from "@components/AutomationModal/AutomationModal";
+import AutomationModal from "@/app/components/AutomationModal/AutomationModal";
 
 import { store } from "@redux/store";
 import { useAppDispatch, useAppSelector } from '@redux/hooks'

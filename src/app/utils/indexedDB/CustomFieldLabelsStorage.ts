@@ -5,7 +5,6 @@ export interface CustomFieldLabelsConfig {
     phoneLabels: string[];
 }
 
-// Default labels (same as the original hardcoded ones)
 const defaultConfig: CustomFieldLabelsConfig = {
     userIdLabels: [
         "User ID",
@@ -104,7 +103,7 @@ export async function getCustomFieldLabelsConfig(): Promise<CustomFieldLabelsCon
 
         request.onsuccess = () => {
             if (request.result) {
-                const { id, ...config } = request.result;
+                const {...config } = request.result;
                 resolve(config as CustomFieldLabelsConfig);
             } else {
                 // If no config exists, return default and save it
@@ -160,8 +159,10 @@ export async function removeFieldLabel(fieldType: keyof CustomFieldLabelsConfig,
 }
 
 // Reset to default configuration
-export async function resetToDefaultConfig(): Promise<void> {
-    await saveCustomFieldLabelsConfig(defaultConfig);
+export async function resetToDefaultConfig(fieldType: keyof CustomFieldLabelsConfig): Promise<void> {
+    const config = await getCustomFieldLabelsConfig();
+    config[fieldType] = defaultConfig[fieldType];
+    await saveCustomFieldLabelsConfig(config);
 }
 
 // Get labels for a specific field type

@@ -1,5 +1,10 @@
 # KATRINA
 
+[![Next.js](https://img.shields.io/badge/Next.js-15.4.5-black?logo=next.js)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19-blue?logo=react)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)](https://www.typescriptlang.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 **A powerful template management tool for streamlining repetitive documentation and form-filling tasks.**
 
 > 🔒 **Privacy First**: All data is stored locally in your browser using IndexedDB. No external databases or servers are used.
@@ -37,8 +42,6 @@ KATRINA is a Next.js-based web application designed to help users create, manage
 - **Dark/Light Theme**: Customizable appearance
 - **Intuitive Navigation**: Clean, user-friendly interface
 - **Real-time Feedback**: Visual indicators for validation and status
-
-
 
 ## How to Use
 
