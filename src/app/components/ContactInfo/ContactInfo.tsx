@@ -67,6 +67,23 @@ const ContactInfo = forwardRef<ContactInfoRef>((props, ref) => {
     }));
   };
 
+  const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>, fieldType: 'misc', index: number) => {
+    const pasteData = e.clipboardData.getData('Text');
+    const lines = pasteData.split('\n').map(line => line.trim()).filter(line => line !== '');
+
+    if (lines.length > 1) {
+      e.preventDefault();
+      setAdditionalFields(prev => {
+        const newFields = [...prev[fieldType]];
+        newFields.splice(index, 1, ...lines);
+        return {
+          ...prev,
+          [fieldType]: newFields
+        };
+      });
+    }
+  };
+
   return (
     <div className="grid grid-cols-5 gap-4 mb-4 p-4 bg-accent/50 rounded-lg border border-accent/70 text-sm text-muted-foreground">
       <div className='flex flex-col space-y-2 min-w-0'>
@@ -202,6 +219,7 @@ const ContactInfo = forwardRef<ContactInfoRef>((props, ref) => {
             value={value}
             placeholder="Misc"
             onFieldChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => updateAdditionalField('misc', index, e.target.value)}
+            onPaste={(e: React.ClipboardEvent<HTMLTextAreaElement>) => handlePaste(e, 'misc', index)}
             onRemoveField={() => removeField('misc', index)}
           />
         ))}

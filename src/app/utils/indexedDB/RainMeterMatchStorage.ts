@@ -7,13 +7,15 @@ export interface RainMeterMatchConfig {
     macAddress: RainMeterParameter;
 }
 
-interface RainMeterParameter {
+export interface RainMeterParameter {
+    name: string;
     pattern: RegExp; 
     fields: string[];
 }
 
 const defaultRainMeterConfig: RainMeterMatchConfig = {
     workstation: {
+        name: "Workstation",
         pattern: /^[TW][A-Z0-9]{10,12}$/,
         fields: [
             "Workstation",
@@ -23,6 +25,7 @@ const defaultRainMeterConfig: RainMeterMatchConfig = {
         ]
     },
     operatingSystem: {
+        name: "Operating System",
         pattern: /Windows.*11/,
         fields: [
             "Operating System",
@@ -32,6 +35,7 @@ const defaultRainMeterConfig: RainMeterMatchConfig = {
         ],
     },
     osVersion: {
+        name: "OS Version",
         pattern: /^Version\s+[0-9A-Z]{4}$/,
         fields: [
             "OS Version",
@@ -41,6 +45,7 @@ const defaultRainMeterConfig: RainMeterMatchConfig = {
         ]
     },
     osBuild: {
+        name: "OS Build",
         pattern: /^Build\s+[0-9.]{10}$/,
         fields: [
             "OS Build",
@@ -49,6 +54,7 @@ const defaultRainMeterConfig: RainMeterMatchConfig = {
         ]
     },
     ipAddress: {
+        name: "IP Address",
         pattern: /^(10\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.(1[6-9]|2[0-9]|3[0-1])\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}|127\.\d{1,3}\.\d{1,3}\.\d{1,3})$/,
         fields: [
             "IP Address",
@@ -58,6 +64,7 @@ const defaultRainMeterConfig: RainMeterMatchConfig = {
         ],
     },
     macAddress: {
+        name: "MAC Address",
         pattern: /^([0-9a-fA-F]{2}[:-]){5}([0-9a-fA-F]{2})$|^([0-9a-fA-F]{4}\.){2}([0-9a-fA-F]{4})$/,
         fields: [
             "MAC Address",

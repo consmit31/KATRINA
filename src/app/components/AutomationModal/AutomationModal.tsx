@@ -4,6 +4,7 @@ import { CustomFieldLabelsConfig, getCustomFieldLabelsConfig } from '@utils/inde
 import { getRainMeterMatchConfig, RainMeterMatchConfig } from '@/app/utils/indexedDB/RainMeterMatchStorage';
 import { FaX } from 'react-icons/fa6'
 import ContactFieldTabContent from './ContactFieldTabContent';
+import PCInfoFieldTabContent from './PCInfoFieldTabContent';
 
 interface AutomationModalProps {
     onClose: () => void;
@@ -100,9 +101,9 @@ const AutomationModal = ({ onClose }: AutomationModalProps) => {
                                         onConfigChange={loadConfig}
                                     /> 
                                 ) : activeTab.type === 'pcInfo' ? (
-                                    <div>
-                                        This is a PC Info Tab
-                                    </div>
+                                    <PCInfoFieldTabContent
+                                        rainmeterConfig={rainMeterConfig}
+                                    /> 
                                 ) : null}
                             
                         </>
