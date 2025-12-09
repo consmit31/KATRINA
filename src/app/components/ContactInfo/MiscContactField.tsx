@@ -12,24 +12,32 @@ interface MiscContactFieldProps {
 }
 
 const MiscContactField = ({
-    allowDelete, 
-    index, 
+    allowDelete,
+    index,
     offsetIndexLabel = true,
-    value, 
+    value,
     placeholder,
     onFieldChange,
-    onPaste, 
-    onRemoveField 
+    onPaste,
+    onRemoveField
 }: MiscContactFieldProps) => {
 
-  return (
+    const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+        const pastedContent = e.clipboardData.getData('Text');
+        onPaste(e);
+        console.log('Paste event in MiscContactField - processing RainMeter patterns for:', pastedContent.split('\n').length, 'lines');
+  };
+
+    return (
+
+
         <div className='flex space-x-1 min-w-0'>
             <textarea
                 rows={1}
                 autoComplete='off'
                 placeholder={`${placeholder} ${index !== undefined ? (offsetIndexLabel ? index + 2 : '') : ''}`} // if offset index is provided, show index + 2 (to account for base field)
                 value={value}
-                onPaste={(e) => onPaste && onPaste(e)} // If onPaste is not provided, do nothing
+                onPaste={handlePaste} // If onPaste is not provided, do nothing
                 onChange={(e) => onFieldChange && onFieldChange(e)} // If onFieldChange is not provided, do nothing
                 onInput={(e) => {
                     const target = e.target as HTMLTextAreaElement;
@@ -44,7 +52,7 @@ const MiscContactField = ({
                     className='w-6 h-6 rounded bg-red-500/20 hover:bg-red-500/30 flex items-center justify-center text-red-500 text-xs transition-colors flex-shrink-0'
                     title='Remove field'
                 >
-                ×
+                    ×
                 </button>
             )}
         </div>

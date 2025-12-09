@@ -5,6 +5,7 @@ import { setName, setUserId, setEmail, setPhone } from '@redux/contactInformatio
 import AddFieldButton from './AddFieldButton';
 import ContactField from './ContactField';
 import MiscContactField from './MiscContactField';
+import { useRainMeterPaste } from '@hooks/useRainMeterPaste';
 
 export interface ContactInfoRef {
   resetFields: () => void;
@@ -16,6 +17,7 @@ const ContactInfo = forwardRef<ContactInfoRef>((props, ref) => {
   const name = useAppSelector(state => state.contactInfo.name);
   const phone = useAppSelector(state => state.contactInfo.phone);
   const email = useAppSelector(state => state.contactInfo.email);
+  const { processRainMeterPaste, hasTemplateFields } = useRainMeterPaste();
 
   const [additionalFields, setAdditionalFields] = useState<{
     userId: string[];
@@ -67,10 +69,20 @@ const ContactInfo = forwardRef<ContactInfoRef>((props, ref) => {
     }));
   };
 
-  const handlePaste = (e: React.ClipboardEvent<HTMLTextAreaElement>, fieldType: 'misc', index: number) => {
+  const handlePaste = async (e: React.ClipboardEvent<HTMLTextAreaElement>, fieldType: 'misc', index: number) => {
     const pasteData = e.clipboardData.getData('Text');
     const lines = pasteData.split('\n').map(line => line.trim()).filter(line => line !== '');
 
+    // Always process RainMeter patterns if template fields are available
+    if (hasTemplateFields) {
+      try {
+        await processRainMeterPaste(pasteData);
+      } catch (error) {
+        console.error('Error processing RainMeter patterns:', error);
+      }
+    }
+
+    // Handle multi-line paste for misc fields
     if (lines.length > 1) {
       e.preventDefault();
       setAdditionalFields(prev => {

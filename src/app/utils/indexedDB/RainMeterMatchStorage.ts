@@ -132,6 +132,26 @@ function getROTransaction() {
     return db.transaction("RainMeterMatchConfigStore", "readonly");
 }
 
+function reconstructRegExp(storedPattern: any): RegExp {
+    if (storedPattern instanceof RegExp) {
+        return storedPattern;
+    }
+    
+    // Handle cases where pattern is stored as an object with source and flags
+    if (typeof storedPattern === 'object' && storedPattern.source) {
+        return new RegExp(storedPattern.source, storedPattern.flags || '');
+    }
+    
+    // Handle cases where pattern is stored as a string
+    if (typeof storedPattern === 'string') {
+        return new RegExp(storedPattern);
+    }
+    
+    // Fallback - return a pattern that matches nothing
+    console.warn('Could not reconstruct RegExp from:', storedPattern);
+    return new RegExp('(?:)'); // matches empty string
+}
+
 export async function getRainMeterMatchConfig(): Promise<RainMeterMatchConfig> {
     if (!dbReady) {
         await initializeDB();
@@ -148,8 +168,35 @@ export async function getRainMeterMatchConfig(): Promise<RainMeterMatchConfig> {
 
         request.onsuccess = () => {
             if (request.result) {
-                const {...config} = request.result;
-                resolve(config as RainMeterMatchConfig);
+                const rawConfig = request.result;
+                // Reconstruct RegExp objects from stored data
+                const config: RainMeterMatchConfig = {
+                    workstation: {
+                        ...rawConfig.workstation,
+                        pattern: reconstructRegExp(rawConfig.workstation.pattern)
+                    },
+                    operatingSystem: {
+                        ...rawConfig.operatingSystem,
+                        pattern: reconstructRegExp(rawConfig.operatingSystem.pattern)
+                    },
+                    osVersion: {
+                        ...rawConfig.osVersion,
+                        pattern: reconstructRegExp(rawConfig.osVersion.pattern)
+                    },
+                    osBuild: {
+                        ...rawConfig.osBuild,
+                        pattern: reconstructRegExp(rawConfig.osBuild.pattern)
+                    },
+                    ipAddress: {
+                        ...rawConfig.ipAddress,
+                        pattern: reconstructRegExp(rawConfig.ipAddress.pattern)
+                    },
+                    macAddress: {
+                        ...rawConfig.macAddress,
+                        pattern: reconstructRegExp(rawConfig.macAddress.pattern)
+                    }
+                };
+                resolve(config);
             } else {
                 saveRainMeterMatchConfig(defaultRainMeterConfig);
                 resolve(defaultRainMeterConfig);
