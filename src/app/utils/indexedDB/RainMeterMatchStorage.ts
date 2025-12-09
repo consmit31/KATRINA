@@ -132,7 +132,9 @@ function getROTransaction() {
     return db.transaction("RainMeterMatchConfigStore", "readonly");
 }
 
-function reconstructRegExp(storedPattern: any): RegExp {
+type StoredRegExpPattern = RegExp | string | { source: string; flags?: string };
+
+function reconstructRegExp(storedPattern: StoredRegExpPattern): RegExp {
     if (storedPattern instanceof RegExp) {
         return storedPattern;
     }
