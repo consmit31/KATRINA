@@ -9,6 +9,7 @@ export interface RainMeterMatchConfig {
 
 export interface RainMeterParameter {
     name: string;
+    configKey: keyof RainMeterMatchConfig;
     pattern: RegExp; 
     fields: string[];
 }
@@ -16,6 +17,7 @@ export interface RainMeterParameter {
 const defaultRainMeterConfig: RainMeterMatchConfig = {
     workstation: {
         name: "Workstation",
+        configKey: "workstation",
         pattern: /^[TW][A-Z0-9]{10,12}$/,
         fields: [
             "Workstation",
@@ -26,6 +28,7 @@ const defaultRainMeterConfig: RainMeterMatchConfig = {
     },
     operatingSystem: {
         name: "Operating System",
+        configKey: "operatingSystem",
         pattern: /Windows.*11/,
         fields: [
             "Operating System",
@@ -36,6 +39,7 @@ const defaultRainMeterConfig: RainMeterMatchConfig = {
     },
     osVersion: {
         name: "OS Version",
+        configKey: "osVersion",
         pattern: /^Version\s+[0-9A-Z]{4}$/,
         fields: [
             "OS Version",
@@ -46,6 +50,7 @@ const defaultRainMeterConfig: RainMeterMatchConfig = {
     },
     osBuild: {
         name: "OS Build",
+        configKey: "osBuild",
         pattern: /^Build\s+[0-9.]{10}$/,
         fields: [
             "OS Build",
@@ -55,6 +60,7 @@ const defaultRainMeterConfig: RainMeterMatchConfig = {
     },
     ipAddress: {
         name: "IP Address",
+        configKey: "ipAddress",
         pattern: /^(10\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.(1[6-9]|2[0-9]|3[0-1])\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}|127\.\d{1,3}\.\d{1,3}\.\d{1,3})$/,
         fields: [
             "IP Address",
@@ -65,6 +71,7 @@ const defaultRainMeterConfig: RainMeterMatchConfig = {
     },
     macAddress: {
         name: "MAC Address",
+        configKey: "macAddress",
         pattern: /^([0-9a-fA-F]{2}[:-]){5}([0-9a-fA-F]{2})$|^([0-9a-fA-F]{4}\.){2}([0-9a-fA-F]{4})$/,
         fields: [
             "MAC Address",
@@ -170,4 +177,55 @@ export async function saveRainMeterMatchConfig(config: RainMeterMatchConfig): Pr
         };
 
     });
+}
+
+export async function setRegexForParameter(paramName: keyof RainMeterMatchConfig, regex: RegExp): Promise<void> {
+    if (!dbReady) {
+        await initializeDB();
+    }
+
+    // Get current config
+    const currentConfig = await getRainMeterMatchConfig();
+    
+    // Update the specific parameter's pattern
+    currentConfig[paramName] = {
+        ...currentConfig[paramName],
+        pattern: regex
+    };
+
+    // Save the updated config
+    await saveRainMeterMatchConfig(currentConfig);
+}
+
+export async function setFieldsForParameter(paramName: keyof RainMeterMatchConfig, fields: string[]): Promise<void> {
+    if (!dbReady) {
+        await initializeDB();
+    }
+
+    // Get current config
+    const currentConfig = await getRainMeterMatchConfig();
+    
+    // Update the specific parameter's fields
+    currentConfig[paramName] = {
+        ...currentConfig[paramName],
+        fields: fields
+    };
+
+    // Save the updated config
+    await saveRainMeterMatchConfig(currentConfig);
+}
+
+export async function resetParameterToDefault(paramName: keyof RainMeterMatchConfig): Promise<void> {
+    if (!dbReady) {
+        await initializeDB();
+    }
+
+    // Get current config
+    const currentConfig = await getRainMeterMatchConfig();
+    
+    // Reset the specific parameter to its default value
+    currentConfig[paramName] = { ...defaultRainMeterConfig[paramName] };
+
+    // Save the updated config
+    await saveRainMeterMatchConfig(currentConfig);
 }
