@@ -1,6 +1,6 @@
 import React from 'react'
 import { TabConfig } from './AutomationModal'
-import { addFieldLabel, CustomFieldLabelsConfig, removeFieldLabel, resetToDefaultConfig } from '@/app/utils/indexedDB/CustomFieldLabelsStorage';
+import { addFieldLabel, removeFieldLabel, resetToDefaultConfig } from '@/app/utils/indexedDB/CustomFieldLabelsStorage';
 import { FaRegTrashAlt } from 'react-icons/fa';
 
 interface ContactFieldTabContentProps {

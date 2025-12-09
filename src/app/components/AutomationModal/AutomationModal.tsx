@@ -1,5 +1,4 @@
-import loadConfig from 'next/dist/server/config';
-import React, { act, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { CustomFieldLabelsConfig, getCustomFieldLabelsConfig } from '@utils/indexedDB/CustomFieldLabelsStorage'
 import { getRainMeterMatchConfig, RainMeterMatchConfig } from '@/app/utils/indexedDB/RainMeterMatchStorage';
 import { FaX } from 'react-icons/fa6'

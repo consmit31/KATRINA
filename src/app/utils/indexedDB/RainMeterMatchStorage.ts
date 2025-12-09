@@ -143,10 +143,10 @@ export async function getRainMeterMatchConfig(): Promise<RainMeterMatchConfig> {
         const request = objectStore.get("config");
 
         request.onerror = (event) => {
-            reject(new Error("Failed to retrieve RainMeter match config"));
+            reject(new Error(`Failed to retrieve RainMeter match config ${event}`));
         };
 
-        request.onsuccess = (event) => {
+        request.onsuccess = () => {
             if (request.result) {
                 const {...config} = request.result;
                 resolve(config as RainMeterMatchConfig);

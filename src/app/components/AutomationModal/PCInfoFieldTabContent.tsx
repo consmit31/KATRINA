@@ -1,5 +1,5 @@
 import React from 'react'
-import { RainMeterMatchConfig, RainMeterParameter} from '@/app/utils/indexedDB/RainMeterMatchStorage';
+import { RainMeterMatchConfig} from '@/app/utils/indexedDB/RainMeterMatchStorage';
 import RainMeterSettings from './RainMeterSettings';
 
 interface PCInfoFieldTabContentProps {
