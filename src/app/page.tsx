@@ -1,6 +1,6 @@
 "use client";
 import { Provider } from "react-redux";
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import IssueSelector from "@components/IssueSelector/IssueSelector"
 import TemplateForm from "@components/TemplateForm/TemplateForm";
