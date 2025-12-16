@@ -33,6 +33,7 @@ function ShortcutsButton() {
                         <div>{formatShortcut('toolsModal')}: Open Tools Modal</div>
                         <div>{formatShortcut('automationModal')}: Open Automation Modal</div>
                         <div>{formatShortcut('resetTemplate')}: Reset Selected Template</div>
+                        <div>{formatShortcut('clearContactInfo')}: Clear Contact Info</div>
                         <div className="text-xs text-gray-300 mt-2 pt-2 border-t border-gray-600">
                             Click to customize
                         </div>

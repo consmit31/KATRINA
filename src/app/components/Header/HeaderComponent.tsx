@@ -21,7 +21,16 @@ const HeaderComponent = () => {
                                 <Image src="/favicon.ico" alt="KATRINA Logo" width={32} height={32} />
                             </div>
                             <div>
-                                <h1 className="text-xl font-bold text-gradient">KATRINA</h1>
+                                <span className='flex items-center gap-1'>
+                                    <h1 className="text-xl font-bold">KATRINA</h1>
+                                    <h1 
+                                        className="text-lg font-semibold bg-gradient-to-br from-green-500 to-blue-500 bg-clip-text text-transparent" 
+                                        title="12/16/25 2:55 PM EST"
+                                    >
+                                        1.0.1
+                                    </h1>
+                                </span>
+                                
                                 <p className="text-xs text-muted-foreground hidden sm:block">
                                     Knowledge-base Assistant for Ticket Resolution & Incident Navigation Automation
                                 </p>

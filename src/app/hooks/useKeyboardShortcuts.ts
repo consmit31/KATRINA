@@ -45,7 +45,17 @@ const defaultShortcuts: ShortcutConfig[] = [
   {
     id: 'resetTemplate',
     name: 'Reset Template',
-    description: 'Reset the currently selected template',
+    description: 'Reset the currently selected template (without clearing contact info)',
+    defaultKey: 'r',
+    currentKey: 'r',
+    ctrl: true,
+    alt: false,
+    shift: false,
+  },
+  {
+    id: 'clearContactInfo',
+    name: 'Clear Contact Info',
+    description: 'Clear all contact information fields (requires double press: Ctrl+R+R)',
     defaultKey: 'r',
     currentKey: 'r',
     ctrl: true,

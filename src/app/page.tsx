@@ -1,6 +1,6 @@
 "use client";
 import { Provider } from "react-redux";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 
 import IssueSelector from "@components/IssueSelector/IssueSelector"
 import TemplateForm from "@components/TemplateForm/TemplateForm";
@@ -34,6 +34,10 @@ function HomeContent() {
   const dispatch = useAppDispatch();
   const { matchesShortcut } = useKeyboardShortcuts();
   const contactInfoRef = useRef<ContactInfoRef>(null);
+  
+  // State for tracking double ctrl+r press
+  const [lastResetPress, setLastResetPress] = useState<number>(0);
+  const DOUBLE_PRESS_THRESHOLD = 1000; // 1 second window for double press
 
   // Redux selectors
   const showNewTemplateModal = useAppSelector(selectIsNewTemplateModalOpen);
@@ -73,13 +77,23 @@ function HomeContent() {
         dispatch(toggleAutomationModal());
       }
 
-      // Reset selected template
+      // Handle ctrl+r for reset template and double press for clear contact info
       if (matchesShortcut(event, 'resetTemplate')) {
         event.preventDefault();
-        dispatch(resetActiveTemplate());
-        dispatch(clearContactInfo());
-        contactInfoRef.current?.resetFields();
-        dispatch(setActiveComponent("IssueSelector"));
+        const currentTime = Date.now();
+        
+        // Check if this is a double press (within threshold of last press)
+        if (currentTime - lastResetPress < DOUBLE_PRESS_THRESHOLD) {
+          // Double press: Clear all contact information
+          dispatch(clearContactInfo());
+          contactInfoRef.current?.resetFields();
+          setLastResetPress(0); // Reset the timer
+        } else {
+          // Single press: Only reset the template (without clearing contact info)
+          dispatch(resetActiveTemplate());
+          dispatch(setActiveComponent("IssueSelector"));
+          setLastResetPress(currentTime);
+        }
       }
 
     };
@@ -89,7 +103,7 @@ function HomeContent() {
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [dispatch, matchesShortcut]);
+  }, [dispatch, matchesShortcut, lastResetPress]);
 
   return (
     <div className="h-full bg-background">
