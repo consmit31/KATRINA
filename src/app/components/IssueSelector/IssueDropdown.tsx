@@ -3,12 +3,10 @@
 import React from 'react'
 import Issue from '@dataTypes/Issue'
 
-import { useAppDispatch } from '@redux/hooks'
 import { useTemplateStorage } from '@hooks/useTemplateStorage'
 
 import { FaList, FaChartColumn} from 'react-icons/fa6'
 import TemplateTile from './TemplateTile'
-import { template } from '@babel/core'
 
 interface IssueDropdownProps {
   issue: Issue;

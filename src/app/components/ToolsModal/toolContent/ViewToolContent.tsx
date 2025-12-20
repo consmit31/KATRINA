@@ -6,7 +6,6 @@ import TemplateField from '@/app/dataTypes/TemplateField'
 import Issue from '@dataTypes/Issue'
 import { useAppDispatch } from '@/app/redux/hooks'
 import { triggerIssueRefresh, triggerTemplateRefresh, triggerAllRefresh } from '@/app/redux/dataRefreshSlice'
-import { original } from '@reduxjs/toolkit'
 import TemplateMetric from '@/app/dataTypes/TemplateMetric'
 
 interface EditingIssue {
@@ -32,37 +31,20 @@ function ViewToolContent() {
         issues,
         loading: issuesLoading,
         error: issuesError,
-        addNewIssue,
         removeExistingIssue,
-        getAllIssues,
-        getAllIssueNames,
-        getIssueByName,
         updateIssueName,
         updateTemplateNames,
-        addTemplateToExistingIssue,
         removeTemplateFromExistingIssue,
-        incrementIssueUsage,
-        decrementIssueUsage,
-        getIssueMetrics,
-        refreshIssues,
-        clearError: clearIssuesError
+        clearError: clearIssuesError,
+        refreshIssues
     } = useIssueStorage()
 
     const {
         templates,
         loading: templatesLoading,
         error: templatesError,
-        addNewTemplate, 
         deleteExistingTemplate,
-        getAllTemplates,
-        getExistingTemplate,
-        updateExistingTemplate,
         updateTemplateByOriginalName,
-        incrementTemplateUsage,
-        decrementTemplateUsage,
-        getTemplateMetrics,
-        appendToCommonWorkLog,
-        removeFromCommonWorkLog,
         clearError: clearTemplatesError,
         refreshTemplates
     } = useTemplateStorage()

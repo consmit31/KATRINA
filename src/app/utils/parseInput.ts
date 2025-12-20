@@ -4,7 +4,7 @@ import IssueMetric from "@dataTypes/IssueMetric";
 import TemplateMetric from "@dataTypes/TemplateMetric";
 
 // Helper functions to ensure default metrics
-function ensureIssueMetrics(issue: any): Issue {
+function ensureIssueMetrics(issue: Issue): Issue {
   const defaultMetrics: IssueMetric = {
     usageCount: 0,
     usagePerDay: 0
@@ -16,7 +16,7 @@ function ensureIssueMetrics(issue: any): Issue {
   };
 }
 
-function ensureTemplateMetrics(template: any): Template {
+function ensureTemplateMetrics(template: Template): Template {
   const defaultMetrics: TemplateMetric = {
     usageCount: 0,
     usagePerDay: 0,

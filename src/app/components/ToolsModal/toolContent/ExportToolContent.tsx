@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useIssueStorage } from '@hooks/useIssueStorage';
 import { useTemplateStorage } from '@hooks/useTemplateStorage';
+import Issue from '@/app/dataTypes/Issue';
+import Template from '@/app/dataTypes/Template';
 
 function ExportToolContent() {
   const { issues, loading: issuesLoading } = useIssueStorage();
@@ -8,12 +10,12 @@ function ExportToolContent() {
   const [exportStatus, setExportStatus] = useState<string>('');
 
   // Ensure data has metrics
-  const ensureIssueMetrics = (issue: any) => ({
+  const ensureIssueMetrics = (issue: Issue) => ({
     ...issue,
     metrics: issue.metrics || { usageCount: 0, usagePerDay: 0 }
   });
 
-  const ensureTemplateMetrics = (template: any) => ({
+  const ensureTemplateMetrics = (template: Template) => ({
     ...template,
     metrics: template.metrics || { usageCount: 0, usagePerDay: 0, commonWorkLog: [] }
   });
