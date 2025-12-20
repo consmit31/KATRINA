@@ -4,6 +4,7 @@ import React from 'react'
 import Issue from '@dataTypes/Issue'
 
 import { useAppDispatch } from '@redux/hooks'
+import { useTemplateStorage } from '@hooks/useTemplateStorage'
 
 import { FaList, FaChartColumn} from 'react-icons/fa6'
 import TemplateTile from './TemplateTile'
@@ -15,6 +16,12 @@ interface IssueDropdownProps {
 
 function IssueDropdown({ issue }: IssueDropdownProps) {
     const [isOpen, setIsOpen] = React.useState(false);
+    const { templates } = useTemplateStorage();
+
+    // Filter templates for this issue and sort by usage count (descending)
+    const issueTemplates = templates
+        .filter(template => issue.templateNames.includes(template.name))
+        .sort((a, b) => b.metrics.usageCount - a.metrics.usageCount);
 
     const handleButtonClick = () => {
         setIsOpen(!isOpen);
@@ -70,8 +77,8 @@ function IssueDropdown({ issue }: IssueDropdownProps) {
                     id={`templates-${issue.name}`}
                     className="ml-6 mt-2 space-y-1 animate-fadeIn"
                 >
-                    {issue.templateNames.map((templateName) => (
-                        <TemplateTile key={templateName} templateName={templateName} issueName={issue.name}/>
+                    {issueTemplates.map((template) => (
+                        <TemplateTile key={template.name} template={template} issueName={issue.name}/>
                     ))}
                 </div>
             )}

@@ -80,7 +80,7 @@ function IssueSelector() {
                     </div>
 
                     <div tabIndex={-1} className="space-y-2 max-h-80 overflow-y-auto scrollbar">
-                        {issues.map((issue) => (
+                        {issues.sort((a, b) => b.metrics.usageCount - a.metrics.usageCount).map((issue) => (
                             <div key={issue.name} className="border border-border/50 rounded-lg hover:border-border transition-colors">
                                 <IssueDropdown issue={issue} />
                             </div>
