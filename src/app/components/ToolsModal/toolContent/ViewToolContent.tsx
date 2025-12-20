@@ -3,14 +3,17 @@ import { useIssueStorage } from '@/app/hooks/useIssueStorage'
 import { useTemplateStorage } from '@/app/hooks/useTemplateStorage'
 import Template from '@/app/dataTypes/Template'
 import TemplateField from '@/app/dataTypes/TemplateField'
-import { StoredIssue } from '@/app/utils/indexedDB/IssueStorage'
+import Issue from '@dataTypes/Issue'
 import { useAppDispatch } from '@/app/redux/hooks'
 import { triggerIssueRefresh, triggerTemplateRefresh, triggerAllRefresh } from '@/app/redux/dataRefreshSlice'
+import { original } from '@reduxjs/toolkit'
+import TemplateMetric from '@/app/dataTypes/TemplateMetric'
 
 interface EditingIssue {
     name: string
     templateNames: string[]
     originalName: string
+    originalTemplateNames: string[]
 }
 
 interface EditingTemplate {
@@ -18,7 +21,8 @@ interface EditingTemplate {
     name: string
     kba: string
     fields: TemplateField[]
-    originalName: string
+    originalName: string,
+    metrics: TemplateMetric
 }
 
 function ViewToolContent() {
@@ -28,9 +32,18 @@ function ViewToolContent() {
         issues,
         loading: issuesLoading,
         error: issuesError,
-        // updateExistingIssue,
-        updateExistingIssueByName,
-        removeIssue,
+        addNewIssue,
+        removeExistingIssue,
+        getAllIssues,
+        getAllIssueNames,
+        getIssueByName,
+        updateIssueName,
+        updateTemplateNames,
+        addTemplateToExistingIssue,
+        removeTemplateFromExistingIssue,
+        incrementIssueUsage,
+        decrementIssueUsage,
+        getIssueMetrics,
         refreshIssues,
         clearError: clearIssuesError
     } = useIssueStorage()
@@ -39,10 +52,19 @@ function ViewToolContent() {
         templates,
         loading: templatesLoading,
         error: templatesError,
+        addNewTemplate, 
+        deleteExistingTemplate,
+        getAllTemplates,
+        getExistingTemplate,
+        updateExistingTemplate,
         updateTemplateByOriginalName,
-        removeTemplateByName,
-        refreshTemplates,
-        clearError: clearTemplatesError
+        incrementTemplateUsage,
+        decrementTemplateUsage,
+        getTemplateMetrics,
+        appendToCommonWorkLog,
+        removeFromCommonWorkLog,
+        clearError: clearTemplatesError,
+        refreshTemplates
     } = useTemplateStorage()
 
     const [activeTab, setActiveTab] = useState<'issues' | 'templates'>('issues')
@@ -64,11 +86,12 @@ function ViewToolContent() {
         template.kba.toLowerCase().includes(searchTerm.toLowerCase())
     )
 
-    const handleEditIssue = (issue: StoredIssue) => {
+    const handleEditIssue = (issue:Issue) => {
         setEditingIssue({
             name: issue.name,
             templateNames: [...issue.templateNames],
-            originalName: issue.name
+            originalName: issue.name,
+            originalTemplateNames: [...issue.templateNames]
         })
     }
 
@@ -84,7 +107,15 @@ function ViewToolContent() {
         if (!editingIssue) return
 
         try {
-            await updateExistingIssueByName(editingIssue.originalName, editingIssue.name, editingIssue.templateNames)
+            // await updateExistingIssueByName(editingIssue.originalName, editingIssue.name, editingIssue.templateNames)
+            if (editingIssue.originalName !== editingIssue.name) {
+                await updateIssueName(editingIssue.originalName, editingIssue.name)
+            }
+
+            if (editingIssue.originalTemplateNames !== editingIssue.templateNames) {
+                await updateTemplateNames(editingIssue.name, editingIssue.templateNames)
+            }
+
             setEditingIssue(null)
             await refreshIssues()
             // Trigger global refresh to update other components
@@ -111,7 +142,7 @@ function ViewToolContent() {
     const handleDeleteIssue = async (issueName: string) => {
         if (window.confirm(`Are you sure you want to delete the issue "${issueName}"?`)) {
             try {
-                await removeIssue(issueName)
+                await removeExistingIssue(issueName)
                 await refreshIssues()
                 // Trigger global refresh to update other components
                 dispatch(triggerIssueRefresh())
@@ -121,10 +152,11 @@ function ViewToolContent() {
         }
     }
 
-    const handleDeleteTemplate = async (templateName: string) => {
+    const handleDeleteTemplate = async ( issueName: string, templateName: string) => {
         if (window.confirm(`Are you sure you want to delete the template "${templateName}"?`)) {
             try {
-                await removeTemplateByName(templateName)
+                await removeTemplateFromExistingIssue(issueName, templateName)
+                await deleteExistingTemplate(templateName)
                 await refreshTemplates()
                 // Trigger global refresh to update other components
                 dispatch(triggerTemplateRefresh())
@@ -138,11 +170,11 @@ function ViewToolContent() {
         if (window.confirm('Are you sure you want to delete ALL issues and templates? This action cannot be undone.')) {
             try {
                 // Delete all issues
-                const deleteIssuePromises = issues.map(issue => removeIssue(issue.name))
+                const deleteIssuePromises = issues.map(issue => removeExistingIssue(issue.name))
                 await Promise.all(deleteIssuePromises)
                 
                 // Delete all templates
-                const deleteTemplatePromises = templates.map(template => removeTemplateByName(template.name))
+                const deleteTemplatePromises = templates.map(template => deleteExistingTemplate(template.name))
                 await Promise.all(deleteTemplatePromises)
                 
                 // Refresh both data sets
@@ -582,7 +614,7 @@ function ViewToolContent() {
                                                 Edit
                                             </button>
                                             <button
-                                                onClick={() => handleDeleteTemplate(template.name)}
+                                                onClick={() => handleDeleteTemplate(template.issue, template.name)}
                                                 className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
                                             >
                                                 Delete

@@ -10,12 +10,13 @@ function NoteField() {
     const activeTemplateName = useAppSelector(selectActiveTemplateName);
     const activeComponent = useAppSelector(selectActiveComponent);
     const templateFields = useAppSelector(selectTemplateFields);
-    const { getKbaByName } = useTemplateStorage();
+    const { getExistingTemplate } = useTemplateStorage();
 
     useEffect(() => {
         if (activeTemplateName) {
             const fetchKba = async () => {
-                const kba = await getKbaByName(activeTemplateName);
+                const template = await getExistingTemplate(activeTemplateName);
+                const kba = template?.kba;
                 if (kba) {
                     appendToTextArea(kba);
                 }
@@ -29,7 +30,7 @@ function NoteField() {
             clearTextArea();
         }
 
-    }, [activeTemplateName, getKbaByName, activeComponent]);
+    }, [activeTemplateName, getExistingTemplate, activeComponent]);
 
     useEffect(() => {
         if (activeTemplateName) {

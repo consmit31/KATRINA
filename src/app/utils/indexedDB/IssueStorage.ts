@@ -1,12 +1,9 @@
+import IssueMetric from "@dataTypes/IssueMetric";
+import Issue from "@dataTypes/Issue";
+
 let db: IDBDatabase;
 let dbReady = false;
 let dbInitPromise: Promise<void> | null = null;
-
-// Interface for storing issues with template names instead of full template objects
-interface StoredIssue {
-  name: string;
-  templateNames: string[];
-}
 
 // Initialize IndexedDB only in browser environment
 function initializeDB(): Promise<void> {
@@ -31,34 +28,6 @@ function initializeDB(): Promise<void> {
       const objectStore = db.createObjectStore("issues", { keyPath: "name" });
 
       objectStore.createIndex("name", "name", { unique: true });
-      
-      // // Pre-populate with some default issues
-      // objectStore.transaction.oncomplete = () => {
-      //   const issueObjectStore = db.transaction("issues", "readwrite").objectStore("issues");
-        
-      //   const defaultIssues: StoredIssue[] = [
-      //     {
-      //       name: "Mi.gov",
-      //       templateNames: ["MiLogin: PW", "MiLogin: Dupe. Acct", "MiLogin: Inac. Acct"]
-      //     },
-      //     {
-      //       name: "Windows",
-      //       templateNames: ["Locked account", "Password reset"]
-      //     },
-      //     {
-      //       name: "Office 365",
-      //       templateNames: ["Account locked", "Password expired", "MFA issues"]
-      //     },
-      //     {
-      //       name: "VPN",
-      //       templateNames: ["Connection failed", "Authentication error", "Network timeout"]
-      //     }
-      //   ];
-        
-      //   defaultIssues.forEach(issue => {
-      //     issueObjectStore.add(issue);
-      //   });
-      // };
     };
 
     request.onsuccess = (event) => {
@@ -91,16 +60,21 @@ async function waitForDB(): Promise<void> {
 }
 
 // CRUD Operations
-export async function addIssue(issueName: string, templateNames: string[]): Promise<void> {
+export async function addIssue(issueName: string, templateNames: string[], metrics?: IssueMetric): Promise<void> {
   await waitForDB();
   
   return new Promise((resolve, reject) => {
     const transaction = getRWTransaction();
     const objectStore = transaction.objectStore("issues");
+
+    if (!metrics) {
+      metrics = { usageCount: 0, usagePerDay: 0 };
+    }
     
-    const storedIssue: StoredIssue = {
+    const storedIssue: Issue = {
       name: issueName,
-      templateNames: templateNames
+      templateNames: templateNames,
+      metrics: metrics
     };
     
     const request = objectStore.add(storedIssue);
@@ -116,102 +90,6 @@ export async function addIssue(issueName: string, templateNames: string[]): Prom
     transaction.onerror = () => {
       reject(new Error("Transaction failed"));
     };
-  });
-}
-
-export async function getAllIssues(): Promise<StoredIssue[]> {
-  await waitForDB();
-  
-  return new Promise((resolve, reject) => {
-    const transaction = getROTransaction();
-    const objectStore = transaction.objectStore("issues");
-    
-    const request = objectStore.getAll();
-    
-    request.onsuccess = () => {
-      resolve(request.result as StoredIssue[]);
-    };
-    
-    request.onerror = () => {
-      reject(new Error("Failed to get issues"));
-    };
-  });
-}
-
-export async function getIssueByName(issueName: string): Promise<StoredIssue | undefined> {
-  await waitForDB();
-  
-  return new Promise((resolve, reject) => {
-    const transaction = getROTransaction();
-    const objectStore = transaction.objectStore("issues");
-    
-    const request = objectStore.get(issueName);
-    
-    request.onsuccess = () => {
-      resolve(request.result as StoredIssue | undefined);
-    };
-    
-    request.onerror = () => {
-      reject(new Error("Failed to get issue"));
-    };
-  });
-}
-
-export async function updateIssue(issueName: string, templateNames: string[]): Promise<void> {
-  await waitForDB();
-  
-  return new Promise((resolve, reject) => {
-    const transaction = getRWTransaction();
-    const objectStore = transaction.objectStore("issues");
-    
-    const storedIssue: StoredIssue = {
-      name: issueName,
-      templateNames: templateNames
-    };
-    
-    const request = objectStore.put(storedIssue);
-    
-    request.onsuccess = () => {
-      resolve();
-    };
-    
-    request.onerror = () => {
-      reject(new Error("Failed to update issue"));
-    };
-  });
-}
-
-// New function to update issue, handling potential name changes
-export async function updateIssueByName(originalName: string, newName: string, templateNames: string[]): Promise<void> {
-  await waitForDB();
-  
-  return new Promise((resolve, reject) => {
-    const transaction = getRWTransaction();
-    const objectStore = transaction.objectStore("issues");
-    
-    // If name changed, we need to delete the old entry first
-    if (originalName !== newName) {
-      const deleteRequest = objectStore.delete(originalName);
-      deleteRequest.onsuccess = () => {
-        const storedIssue: StoredIssue = {
-          name: newName,
-          templateNames: templateNames
-        };
-        const addRequest = objectStore.put(storedIssue);
-        addRequest.onsuccess = () => resolve();
-        addRequest.onerror = () => reject(new Error("Failed to update issue with new name"));
-      };
-      deleteRequest.onerror = () => reject(new Error("Failed to delete old issue entry"));
-    } else {
-      // Same name, just update
-      const storedIssue: StoredIssue = {
-        name: newName,
-        templateNames: templateNames
-      };
-      const request = objectStore.put(storedIssue);
-      request.onsuccess = () => resolve();
-      request.onerror = () => reject(new Error("Failed to update issue"));
-    }
   });
 }
 
@@ -234,6 +112,116 @@ export async function deleteIssue(issueName: string): Promise<void> {
   });
 }
 
+export async function getAllIssues(): Promise<Issue[]> {
+  await waitForDB();
+  
+  return new Promise((resolve, reject) => {
+    const transaction = getROTransaction();
+    const objectStore = transaction.objectStore("issues");
+    
+    const request = objectStore.getAll();
+    
+    request.onsuccess = () => {
+      const issues = request.result as Issue[];
+      // Ensure all issues have metrics
+      const issuesWithMetrics = issues.map(issue => ({
+        ...issue,
+        metrics: issue.metrics || { usageCount: 0, usagePerDay: 0 }
+      }));
+      resolve(issuesWithMetrics);
+    };
+    
+    request.onerror = () => {
+      reject(new Error("Failed to get issues"));
+    };
+  });
+}
+
+export async function getAllIssueNames(): Promise<string[]> {
+  await waitForDB();
+  
+  return new Promise((resolve, reject) => {
+    const transaction = getROTransaction();
+    const objectStore = transaction.objectStore("issues");
+    
+    const request = objectStore.getAllKeys();
+    
+    request.onsuccess = () => {
+      resolve(request.result as string[]);
+    };
+    
+    request.onerror = () => {
+      reject(new Error("Failed to get issue names"));
+    };
+  });
+}
+
+export async function getIssueByName(issueName: string): Promise<Issue | undefined> {
+  await waitForDB();
+  
+  return new Promise((resolve, reject) => {
+    const transaction = getROTransaction();
+    const objectStore = transaction.objectStore("issues");
+    
+    const request = objectStore.get(issueName);
+    
+    request.onsuccess = () => {
+      const issue = request.result as Issue | undefined;
+      if (issue) {
+        // Ensure issue has metrics
+        const issueWithMetrics = {
+          ...issue,
+          metrics: issue.metrics || { usageCount: 0, usagePerDay: 0 }
+        };
+        resolve(issueWithMetrics);
+      } else {
+        resolve(undefined);
+      }
+    };
+    
+    request.onerror = () => {
+      reject(new Error("Failed to get issue"));
+    };
+  });
+}
+
+export async function updateIssueName(oldName: string, newName: string): Promise<void> {
+  await waitForDB();
+
+  return new Promise((resolve, reject) => {
+    const transaction = getRWTransaction();
+    const objectStore = transaction.objectStore("issues");
+
+    const getRequest = objectStore.get(oldName);
+
+    getRequest.onsuccess = () => {
+      const issue = getRequest.result as Issue | undefined;
+
+      if (!issue) {
+        reject(new Error(`Issue "${oldName}" not found`));
+        return;
+      }
+
+      const updatedIssue: Issue = {
+        ...issue,
+        name: newName
+      };
+
+      const deleteRequest = objectStore.delete(oldName);
+      deleteRequest.onsuccess = () => {
+        const addRequest = objectStore.add(updatedIssue);
+        addRequest.onsuccess = () => resolve();
+        addRequest.onerror = () => reject(new Error("Failed to update issue name"));
+      };
+      deleteRequest.onerror = () => reject(new Error("Failed to delete old issue entry"));
+    };
+
+    getRequest.onerror = () => {
+      reject(new Error("Failed to retrieve existing issue"));
+    };
+  });
+}
+
 export async function addTemplateToIssue(issueName: string, templateName: string): Promise<void> {
   await waitForDB();
   
@@ -243,8 +231,8 @@ export async function addTemplateToIssue(issueName: string, templateName: string
   }
   
   if (!issue.templateNames.includes(templateName)) {
-    issue.templateNames.push(templateName);
-    await updateIssue(issueName, issue.templateNames);
+    const updatedTemplateNames = [...issue.templateNames, templateName];
+    await updateIssueTemplates(issueName, updatedTemplateNames);
   }
 }
 
@@ -257,22 +245,118 @@ export async function removeTemplateFromIssue(issueName: string, templateName: s
   }
   
   const updatedTemplateNames = issue.templateNames.filter(name => name !== templateName);
-  await updateIssue(issueName, updatedTemplateNames);
+  await updateIssueTemplates(issueName, updatedTemplateNames);
 }
 
-export async function getTemplateNamesForIssue(issueName: string): Promise<string[]> {
+async function updateIssueTemplates(issueName: string, templateNames: string[]): Promise<void> {
   await waitForDB();
   
   const issue = await getIssueByName(issueName);
-  return issue ? issue.templateNames : [];
+  if (!issue) {
+    throw new Error(`Issue "${issueName}" not found`);
+  }
+  
+  return new Promise((resolve, reject) => {
+    const transaction = getRWTransaction();
+    const objectStore = transaction.objectStore("issues");
+    
+    const updatedIssue: Issue = {
+      ...issue,
+      templateNames: templateNames
+    };
+    
+    const request = objectStore.put(updatedIssue);
+    
+    request.onsuccess = () => {
+      resolve();
+    };
+    
+    request.onerror = () => {
+      reject(new Error("Failed to update issue templates"));
+    };
+  });
 }
 
-export async function getAllIssueNames(): Promise<string[]> {
+export async function incrementIssueUsage(issueName: string): Promise<void> {
   await waitForDB();
   
-  const issues = await getAllIssues();
-  return issues.map(issue => issue.name);
+  const issue = await getIssueByName(issueName);
+  if (!issue) {
+    throw new Error(`Issue "${issueName}" not found`);
+  }
+  
+  // Ensure metrics exist
+  const currentMetrics = issue.metrics || { usageCount: 0, usagePerDay: 0 };
+  const updatedMetrics: IssueMetric = {
+    ...currentMetrics,
+    usageCount: currentMetrics.usageCount + 1
+  };
+  
+  return new Promise((resolve, reject) => {
+    const transaction = getRWTransaction();
+    const objectStore = transaction.objectStore("issues");
+    
+    const updatedIssue: Issue = {
+      ...issue,
+      metrics: updatedMetrics
+    };
+    
+    const request = objectStore.put(updatedIssue);
+    
+    request.onsuccess = () => {
+      resolve();
+    };
+    
+    request.onerror = () => {
+      reject(new Error("Failed to increment issue usage"));
+    };
+  });
 }
 
-// Export the StoredIssue interface for use in other files
-export type { StoredIssue };
+export async function decrementIssueUsage(issueName: string): Promise<void> {
+  await waitForDB();
+  
+  const issue = await getIssueByName(issueName);
+  if (!issue) {
+    throw new Error(`Issue "${issueName}" not found`);
+  }
+  
+  // Ensure metrics exist
+  const currentMetrics = issue.metrics || { usageCount: 0, usagePerDay: 0 };
+  const updatedMetrics: IssueMetric = {
+    ...currentMetrics,
+    usageCount: Math.max(0, currentMetrics.usageCount - 1)
+  };
+  
+  return new Promise((resolve, reject) => {
+    const transaction = getRWTransaction();
+    const objectStore = transaction.objectStore("issues");
+    
+    const updatedIssue: Issue = {
+      ...issue,
+      metrics: updatedMetrics
+    };
+    
+    const request = objectStore.put(updatedIssue);
+    
+    request.onsuccess = () => {
+      resolve();
+    };
+    
+    request.onerror = () => {
+      reject(new Error("Failed to decrement issue usage"));
+    };
+  });
+}
+
+export async function getIssueMetrics(issueName: string): Promise<IssueMetric> {
+  await waitForDB();
+  
+  const issue = await getIssueByName(issueName);
+  if (!issue) {
+    throw new Error(`Issue "${issueName}" not found`);
+  }
+  
+  // Ensure metrics exist
+  return issue.metrics || { usageCount: 0, usagePerDay: 0 };
+}

@@ -1,5 +1,33 @@
 import Template from "@dataTypes/Template";
 import Issue from "@dataTypes/Issue";
+import IssueMetric from "@dataTypes/IssueMetric";
+import TemplateMetric from "@dataTypes/TemplateMetric";
+
+// Helper functions to ensure default metrics
+function ensureIssueMetrics(issue: any): Issue {
+  const defaultMetrics: IssueMetric = {
+    usageCount: 0,
+    usagePerDay: 0
+  };
+  
+  return {
+    ...issue,
+    metrics: issue.metrics || defaultMetrics
+  };
+}
+
+function ensureTemplateMetrics(template: any): Template {
+  const defaultMetrics: TemplateMetric = {
+    usageCount: 0,
+    usagePerDay: 0,
+    commonWorkLog: []
+  };
+  
+  return {
+    ...template,
+    metrics: template.metrics || defaultMetrics
+  };
+}
 
 // Interface for exported data with metadata (removed unused ExportedData)
 
@@ -34,13 +62,13 @@ export function extractDataFromFiles(issueText: string, templateText: string) {
         if (!validateIssueArray(issueData)) {
             throw new Error("Invalid issue array format");
         }
-        issues = issueData;
+        issues = issueData.map(ensureIssueMetrics);
     } else if (issueData.issues) {
         // New metadata format
         if (!validateExportedIssueData(issueData)) {
             throw new Error("Invalid exported issue data format");
         }
-        issues = issueData.issues;
+        issues = issueData.issues.map(ensureIssueMetrics);
     } else {
         throw new Error("Unrecognized issue file format");
     }
@@ -52,13 +80,13 @@ export function extractDataFromFiles(issueText: string, templateText: string) {
         if (!validateTemplateArray(templateData)) {
             throw new Error("Invalid template array format");
         }
-        templates = templateData;
+        templates = templateData.map(ensureTemplateMetrics);
     } else if (templateData.templates) {
         // New metadata format
         if (!validateExportedTemplateData(templateData)) {
             throw new Error("Invalid exported template data format");
         }
-        templates = templateData.templates;
+        templates = templateData.templates.map(ensureTemplateMetrics);
     } else {
         throw new Error("Unrecognized template file format");
     }
@@ -74,11 +102,14 @@ export function parseCombinedImport(combinedText: string) {
         throw new Error("Invalid combined export data format");
     }
 
-    if (!confirmMatchingTemplates(data.issues, data.templates)) {
+    const issuesWithMetrics = data.issues.map(ensureIssueMetrics);
+    const templatesWithMetrics = data.templates.map(ensureTemplateMetrics);
+
+    if (!confirmMatchingTemplates(issuesWithMetrics, templatesWithMetrics)) {
         throw new Error("Mismatch between issues and templates");
     }
 
-    return { issues: data.issues, templates: data.templates };
+    return { issues: issuesWithMetrics, templates: templatesWithMetrics };
 }
 
 // Validate issue array (legacy format)

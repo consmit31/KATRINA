@@ -25,9 +25,9 @@ const HeaderComponent = () => {
                                     <h1 className="text-xl font-bold">KATRINA</h1>
                                     <h1 
                                         className="text-lg font-semibold bg-gradient-to-br from-green-500 to-blue-500 bg-clip-text text-transparent" 
-                                        title="12/16/25 2:55 PM EST"
+                                        title="12/19/25 9:51 PM EST"
                                     >
-                                        1.0.1
+                                        1.1.0
                                     </h1>
                                 </span>
                                 

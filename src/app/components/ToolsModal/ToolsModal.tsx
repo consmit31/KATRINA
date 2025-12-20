@@ -1,4 +1,5 @@
 import React from 'react'
+import { FaX } from 'react-icons/fa6'
 import ImportToolContent from './toolContent/ImportToolContent';
 import ViewToolContent from './toolContent/ViewToolContent';
 import ReportingToolContent from './toolContent/ReportingToolContent';
@@ -29,75 +30,80 @@ const ToolsModal = ({ onClose }: ToolsModalProps) => {
     }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-card rounded-lg shadow-xl w-full max-w-4xl h-[90vh] flex flex-col">
-        <div className="p-6 pb-4 border-b border-gray-200">
-          <span className="flex justify-between items-center">
-              <h2 className="text-xl text-accent-foreground font-semibold">Tools</h2>
-              <button className="text-white bg-red-600 rounded px-2 py-1 hover:bg-red-700 transition-colors" onClick={onClose}>X</button>
+    <div className='fixed inset-0 z-1 flex items-center justify-center bg-black/50'>
+      <div className='bg-card rounded-lg w-full max-w-4xl h-[90vh] flex flex-col'>
+        <div className='p-6 pb-4 border-b border-gray-200 '>
+          <span className='flex justify-between items-center'>
+              <span className='text-xl text-accent-foreground font-semibold'>Tools</span>
+              <button
+                  className='bg-red-600 rounded px-2 py-2 hover:bg-red-700 transition-colors'
+                  onClick={onClose}
+              >
+                  <FaX />
+              </button>
           </span>
         </div>
         
-        <div className="flex flex-row flex-1 overflow-hidden">
-          {/* Tools Section */}
-        <div className="flex flex-col justify-evenly p-6 pr-4 border-r border-gray-200 flex-shrink-0">
-            <button
-                onClick={() => handleToolClick('Import')}
-                className={`px-4 py-2 rounded transition-colors ${
-                    selectedTool === 'Import' 
-                        ? 'bg-blue-600 text-white hover:bg-blue-700' 
-                        : 'bg-white text-blue-600 border-2 border-blue-600' 
-                }`}
-            >
-                Import Template Data
-            </button>
-            <button
-                onClick={() => handleToolClick('Export')}
-                className={`px-4 py-2 rounded transition-colors ${
-                    selectedTool === 'Export' 
-                        ? 'bg-blue-600 text-white hover:bg-blue-700' 
-                        : 'bg-white text-blue-600 border-2 border-blue-600' 
-                }`}
-            >
-                Export Template Data
-            </button>
-            <button
-                onClick={() => handleToolClick('View All')}
-                className={`px-4 py-2 rounded transition-colors ${
-                    selectedTool === 'View All' 
-                        ? 'bg-blue-600 text-white hover:bg-blue-700' 
-                        : 'bg-white text-blue-600 border-2 border-blue-600'
-                }`}
-            >
-                View All Template Data
-            </button>
-            <button
-                onClick={() => handleToolClick('BR/FR')}
-                className={`px-4 py-2 rounded transition-colors ${
-                    selectedTool === 'BR/FR' 
-                        ? 'bg-blue-600 text-white hover:bg-blue-700' 
-                        : 'bg-white text-blue-600 border-2 border-blue-600'
-                }`}
-            >
-                Bug Report & Feature Request
-            </button>
-        </div>
+        <div className="flex-1 flex flex-col overflow-hidden">
+            <div className="">
+                <div className="flex">
+                    <button
+                        onClick={() => handleToolClick('Import')}
+                        className={`px-6 py-2 text-sm bg-accent rounded-lg rounded-b-none border-accent-foreground font-medium transition-all duration-300 ease-in-out transform ${
+                            selectedTool === 'Import' 
+                                ? 'bg-blue-500 text-white shadow-md scale-105'
+                                : 'text-gray-600 hover:text-gray-800 hover:bg-gray-200 hover:scale-102'
+                        }`}
+                    >
+                        Import
+                    </button>
+                    <button
+                        onClick={() => handleToolClick('Export')}
+                        className={`px-6 py-2 text-sm bg-accent rounded-lg rounded-b-none border-accent-foreground font-medium transition-all duration-300 ease-in-out transform ${
+                            selectedTool === 'Export' 
+                                ? 'bg-blue-500 text-white shadow-md scale-105'
+                                : 'text-gray-600 hover:text-gray-800 hover:bg-gray-200 hover:scale-102'
+                        }`}
+                    >
+                        Export
+                    </button>
+                    <button
+                        onClick={() => handleToolClick('View All')}
+                        className={`px-6 py-2 text-sm bg-accent rounded-lg rounded-b-none border-accent-foreground font-medium transition-all duration-300 ease-in-out transform ${
+                            selectedTool === 'View All' 
+                                ? 'bg-blue-500 text-white shadow-md scale-105'
+                                : 'text-gray-600 hover:text-gray-800 hover:bg-gray-200 hover:scale-102'
+                        }`}
+                    >
+                        View All
+                    </button>
+                    <button
+                        onClick={() => handleToolClick('BR/FR')}
+                        className={`px-6 py-2 text-sm bg-accent rounded-lg rounded-b-none border-accent-foreground font-medium transition-all duration-300 ease-in-out transform ${
+                            selectedTool === 'BR/FR' 
+                                ? 'bg-blue-500 text-white shadow-md scale-105'
+                                : 'text-gray-600 hover:text-gray-800 hover:bg-gray-200 hover:scale-102'
+                        }`}
+                    >
+                        Bug Report
+                    </button>
+                </div>
+            </div>
 
-          {/* Content Area - scrollable tool-specific content */}
-          <div className="flex-1 overflow-y-auto bg-card p-4">
-            {(() => {
-                switch (selectedTool) {
-                    case "Import":
-                        return <ImportToolContent/>; 
-                    case "Export":
-                        return <ExportToolContent/>; 
-                    case "View All":
-                        return <ViewToolContent/>;
-                    case "BR/FR":
-                        return <ReportingToolContent/>; 
-                }
-            })()}
-          </div>
+            <div className="flex-1 overflow-y-auto bg-card p-4">
+                {(() => {
+                    switch (selectedTool) {
+                        case "Import":
+                            return <ImportToolContent/>; 
+                        case "Export":
+                            return <ExportToolContent/>; 
+                        case "View All":
+                            return <ViewToolContent/>;
+                        case "BR/FR":
+                            return <ReportingToolContent/>; 
+                    }
+                })()}
+            </div>
         </div>
       </div>
     </div>

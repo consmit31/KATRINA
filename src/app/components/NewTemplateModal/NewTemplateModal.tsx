@@ -4,7 +4,7 @@ import Template from '@dataTypes/Template'
 import TemplateField from '@dataTypes/TemplateField'
 import EditableField from './EditableField'
 import useTemplateStorage from '@hooks/useTemplateStorage'
-import { useIssueStorage } from '@hooks/useIssueStorage'
+import useIssueStorage from '@hooks/useIssueStorage'
 import { useAppDispatch } from '@redux/hooks'
 import { triggerAllRefresh } from '@redux/dataRefreshSlice'
 
@@ -20,7 +20,8 @@ const NewTemplateModal = ({ onClose, onTemplateCreated, copyFromTemplate }: NewT
     issue: '',
     name: '',
     kba: '',
-    fields: []
+    fields: [],
+    metrics: { usageCount: 0, usagePerDay: 0, commonWorkLog: []}
   })
   const [validTemplate, setValidTemplate] = useState<boolean>(false);
   const [saving, setSaving] = useState<boolean>(false);
@@ -31,21 +32,21 @@ const NewTemplateModal = ({ onClose, onTemplateCreated, copyFromTemplate }: NewT
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState<number>(-1);
 
   const { addNewTemplate, error, clearError, templates } = useTemplateStorage();
-  const { addNewIssue, getIssue, addTemplateToExistingIssue, getIssueNames } = useIssueStorage();
+  const { addNewIssue, getIssueByName, addTemplateToExistingIssue, getAllIssueNames } = useIssueStorage();
   const dispatch = useAppDispatch();
 
   // Load existing issue names on component mount
   useEffect(() => {
     const loadIssueNames = async () => {
       try {
-        const names = await getIssueNames();
+        const names = await getAllIssueNames();
         setExistingIssueNames(names);
       } catch (error) {
         console.error('Failed to load issue names:', error);
       }
     };
     loadIssueNames();
-  }, [getIssueNames]);
+  }, [getAllIssueNames]);
 
   // Initialize with copied template if provided
   useEffect(() => {
@@ -54,7 +55,8 @@ const NewTemplateModal = ({ onClose, onTemplateCreated, copyFromTemplate }: NewT
         issue: copyFromTemplate.issue,
         name: `${copyFromTemplate.name} (Copy)`,
         kba: copyFromTemplate.kba,
-        fields: [...copyFromTemplate.fields] // Deep copy the fields array
+        fields: [...copyFromTemplate.fields], 
+        metrics: { ...copyFromTemplate.metrics } 
       });
     }
   }, [copyFromTemplate]);
@@ -205,7 +207,8 @@ const NewTemplateModal = ({ onClose, onTemplateCreated, copyFromTemplate }: NewT
       issue: templateToCopy.issue,
       name: `${templateToCopy.name} (Copy)`,
       kba: templateToCopy.kba,
-      fields: [...templateToCopy.fields] // Deep copy the fields array
+      fields: [...templateToCopy.fields], // Deep copy the fields array
+      metrics: { ...templateToCopy.metrics } // Deep copy the metrics object
     });
     setInputText(''); // Clear input text when copying
     setShowTemplateSelector(false);
@@ -222,7 +225,7 @@ const NewTemplateModal = ({ onClose, onTemplateCreated, copyFromTemplate }: NewT
       await addNewTemplate(parsedTemplate);
 
       // Check if issue exists and create or update accordingly
-      const existingIssue = await getIssue(parsedTemplate.issue);
+      const existingIssue = await getIssueByName(parsedTemplate.issue);
       if (!existingIssue) {
         // Issue doesn't exist, create it with the new template
         await addNewIssue(parsedTemplate.issue, [parsedTemplate.name]);
@@ -240,7 +243,13 @@ const NewTemplateModal = ({ onClose, onTemplateCreated, copyFromTemplate }: NewT
 
       // Reset form
       setInputText('');
-      setParsedTemplate({ issue: '', name: '', kba: '', fields: [] });
+      setParsedTemplate({
+        issue: '',
+        name: '', 
+        kba: '', 
+        fields: [],
+        metrics: { usageCount: 0, usagePerDay: 0, commonWorkLog: []}
+      });
     } catch (err) {
       // Error is handled by the hook
       console.error('Failed to create template:', err);

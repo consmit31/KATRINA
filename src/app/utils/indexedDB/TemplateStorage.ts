@@ -1,4 +1,5 @@
-import Template from "../../dataTypes/Template";
+import Template from "@dataTypes/Template";
+import TemplateMetric from "@dataTypes/TemplateMetric";
 
 let db: IDBDatabase;
 let dbReady = false;
@@ -83,6 +84,44 @@ export async function addTemplate(template: Template): Promise<number> {
   });
 }
 
+export async function deleteTemplateById(id: number): Promise<void> {
+  await waitForDB();
+  
+  return new Promise((resolve, reject) => {
+    const transaction = getRWTransaction();
+    const objectStore = transaction.objectStore("templates");
+    
+    const request = objectStore.delete(id);
+    
+    request.onsuccess = () => {
+      resolve();
+    };
+    
+    request.onerror = () => {
+      reject(new Error("Failed to delete template"));
+    };
+  });
+}
+
+export async function deleteTemplateByName(name: string): Promise<void> {
+  await waitForDB();
+  
+  return new Promise((resolve, reject) => {
+    const transaction = getRWTransaction();
+    const objectStore = transaction.objectStore("templates");
+    
+    const request = objectStore.delete(name);
+    
+    request.onsuccess = () => {
+      resolve();
+    };
+    
+    request.onerror = () => {
+      reject(new Error("Failed to delete template"));
+    };
+  });
+}
+
 export async function getAllTemplates(): Promise<Template[]> {
   await waitForDB();
   
@@ -93,7 +132,13 @@ export async function getAllTemplates(): Promise<Template[]> {
     const request = objectStore.getAll();
     
     request.onsuccess = () => {
-      resolve(request.result as Template[]);
+      const templates = request.result as Template[];
+      // Ensure all templates have metrics
+      const templatesWithMetrics = templates.map(template => ({
+        ...template,
+        metrics: template.metrics || { usageCount: 0, usagePerDay: 0, commonWorkLog: [] }
+      }));
+      resolve(templatesWithMetrics);
     };
     
     request.onerror = () => {
@@ -112,7 +157,17 @@ export async function getTemplateByName(name: string): Promise<Template | undefi
     const request = objectStore.get(name);
     
     request.onsuccess = () => {
-      resolve(request.result as Template | undefined);
+      const template = request.result as Template | undefined;
+      if (template) {
+        // Ensure template has metrics
+        const templateWithMetrics = {
+          ...template,
+          metrics: template.metrics || { usageCount: 0, usagePerDay: 0, commonWorkLog: [] }
+        };
+        resolve(templateWithMetrics);
+      } else {
+        resolve(undefined);
+      }
     };
     
     request.onerror = () => {
@@ -140,46 +195,6 @@ export async function updateTemplate(id: number, template: Template): Promise<vo
     };
   });
 }
-
-export async function deleteTemplate(id: number): Promise<void> {
-  await waitForDB();
-  
-  return new Promise((resolve, reject) => {
-    const transaction = getRWTransaction();
-    const objectStore = transaction.objectStore("templates");
-    
-    const request = objectStore.delete(id);
-    
-    request.onsuccess = () => {
-      resolve();
-    };
-    
-    request.onerror = () => {
-      reject(new Error("Failed to delete template"));
-    };
-  });
-}
-
-// New function to delete template by name (more appropriate for this keyPath setup)
-export async function deleteTemplateByName(name: string): Promise<void> {
-  await waitForDB();
-  
-  return new Promise((resolve, reject) => {
-    const transaction = getRWTransaction();
-    const objectStore = transaction.objectStore("templates");
-    
-    const request = objectStore.delete(name);
-    
-    request.onsuccess = () => {
-      resolve();
-    };
-    
-    request.onerror = () => {
-      reject(new Error("Failed to delete template"));
-    };
-  });
-}
-
 // New function to update template, handling potential name changes
 export async function updateTemplateByName(originalName: string, template: Template): Promise<void> {
   await waitForDB();
@@ -206,23 +221,204 @@ export async function updateTemplateByName(originalName: string, template: Templ
   });
 }
 
-export async function getTemplatesByKba(kba: string): Promise<Template[]> {
+export async function incrementTemplateUsage(name: string): Promise<void> {
+  await waitForDB();
+  
+  return new Promise((resolve, reject) => {
+    const transaction = getRWTransaction();
+    const objectStore = transaction.objectStore("templates");
+    
+    const getRequest = objectStore.get(name);
+    
+    getRequest.onsuccess = () => {
+      const template = getRequest.result as Template | undefined;
+      
+      if (!template) {
+        reject(new Error(`Template "${name}" not found`));
+        return;
+      }
+      
+      // Ensure metrics exist and increment usage count
+      const currentMetrics = template.metrics || { usageCount: 0, usagePerDay: 0, commonWorkLog: [] };
+      const updatedTemplate: Template = {
+        ...template,
+        metrics: {
+          ...currentMetrics,
+          usageCount: currentMetrics.usageCount + 1
+        }
+      };
+      
+      const updateRequest = objectStore.put(updatedTemplate);
+      
+      updateRequest.onsuccess = () => {
+        resolve();
+      };
+      
+      updateRequest.onerror = () => {
+        reject(new Error("Failed to update template usage"));
+      };
+    };
+    
+    getRequest.onerror = () => {
+      reject(new Error("Failed to get template for usage increment"));
+    };
+  });
+}
+
+export async function decrementTemplateUsage(name: string): Promise<void> {
+  await waitForDB();
+  
+  return new Promise((resolve, reject) => {
+    const transaction = getRWTransaction();
+    const objectStore = transaction.objectStore("templates");
+    
+    const getRequest = objectStore.get(name);
+    
+    getRequest.onsuccess = () => {
+      const template = getRequest.result as Template | undefined;
+      
+      if (!template) {
+        reject(new Error(`Template "${name}" not found`));
+        return;
+      }
+      
+      // Ensure metrics exist and decrement usage count, ensuring it doesn't go below zero
+      const currentMetrics = template.metrics || { usageCount: 0, usagePerDay: 0, commonWorkLog: [] };
+      const updatedTemplate: Template = {
+        ...template,
+        metrics: {
+          ...currentMetrics,
+          usageCount: Math.max(0, currentMetrics.usageCount - 1)
+        }
+      };
+      
+      const updateRequest = objectStore.put(updatedTemplate);
+      
+      updateRequest.onsuccess = () => {
+        resolve();
+      };
+      
+      updateRequest.onerror = () => {
+        reject(new Error("Failed to update template usage"));
+      };
+    };
+    
+    getRequest.onerror = () => {
+      reject(new Error("Failed to get template for usage decrement"));
+    };
+  });
+}
+
+export async function getTemplateMetrics(name: string): Promise<TemplateMetric | undefined> {
   await waitForDB();
   
   return new Promise((resolve, reject) => {
     const transaction = getROTransaction();
     const objectStore = transaction.objectStore("templates");
-    const index = objectStore.index("kba");
     
-    const request = index.getAll(kba);
+    const request = objectStore.get(name);
     
     request.onsuccess = () => {
-      resolve(request.result as Template[]);
+      const template = request.result as Template | undefined;
+      if (template) {
+        // Ensure metrics exist
+        const metrics = template.metrics || { usageCount: 0, usagePerDay: 0, commonWorkLog: [] };
+        resolve(metrics);
+      } else {
+        resolve(undefined);
+      }
     };
     
     request.onerror = () => {
-      reject(new Error("Failed to get templates by KBA"));
+      reject(new Error("Failed to get template metrics"));
     };
   });
 }
 
+export async function appendToCommonWorkLog(name: string, workLogEntry: string): Promise<void> {
+  await waitForDB();
+  
+  return new Promise((resolve, reject) => {
+    const transaction = getRWTransaction();
+    const objectStore = transaction.objectStore("templates");
+    
+    const getRequest = objectStore.get(name);
+    
+    getRequest.onsuccess = () => {
+      const template = getRequest.result as Template | undefined;
+      
+      if (!template) {
+        reject(new Error(`Template "${name}" not found`));
+        return;
+      }
+      
+      // Append to common work log
+      const updatedWorkLog = [...template.metrics.commonWorkLog, workLogEntry];
+      const updatedTemplate: Template = {
+        ...template,
+        metrics: {
+          ...template.metrics,
+          commonWorkLog: updatedWorkLog
+        }
+      };
+      
+      const updateRequest = objectStore.put(updatedTemplate);
+      
+      updateRequest.onsuccess = () => {
+        resolve();
+      };
+      
+      updateRequest.onerror = () => {
+        reject(new Error("Failed to update common work log"));
+      };
+    };
+    
+    getRequest.onerror = () => {
+      reject(new Error("Failed to get template for updating work log"));
+    };
+  });
+}
+
+export async function removeFromCommonWorkLog(name: string, workLogEntry: string): Promise<void> {
+  await waitForDB();
+  
+  return new Promise((resolve, reject) => {
+    const transaction = getRWTransaction();
+    const objectStore = transaction.objectStore("templates");
+    
+    const getRequest = objectStore.get(name);
+    
+    getRequest.onsuccess = () => {
+      const template = getRequest.result as Template | undefined;
+      
+      if (!template) {
+        reject(new Error(`Template "${name}" not found`));
+        return;
+      }
+      
+      // Remove from common work log
+      const updatedWorkLog = template.metrics.commonWorkLog.filter(entry => entry !== workLogEntry);
+      const updatedTemplate: Template = {
+        ...template,
+        metrics: {
+          ...template.metrics,
+          commonWorkLog: updatedWorkLog
+        }
+      };
+      
+      const updateRequest = objectStore.put(updatedTemplate);
+      
+      updateRequest.onsuccess = () => {
+        resolve();
+      };
+      
+      updateRequest.onerror = () => {
+        reject(new Error("Failed to update common work log"));
+      };
+    };
+    
+    getRequest.onerror = () => {
+      reject(new Error("Failed to get template for updating work log"));
+    };
+  });
+}

@@ -1,41 +1,46 @@
 import { useState, useEffect, useCallback } from 'react';
 import { 
-  addIssue,
-  getAllIssues,
-  getIssueByName,
-  updateIssue,
-  updateIssueByName,
-  deleteIssue,
+  addIssue, 
+  deleteIssue, 
+  getAllIssues as getAllIssuesFromDB, 
+  getAllIssueNames as getAllIssueNamesFromDB,
+  getIssueByName as getIssueByNameFromDB, 
+  updateIssueName as updateIssueNameInDB, 
   addTemplateToIssue,
   removeTemplateFromIssue,
-  getTemplateNamesForIssue,
-  getAllIssueNames,
-  StoredIssue
+  incrementIssueUsage as incrementIssueUsageInDB,
+  decrementIssueUsage as decrementIssueUsageInDB,
+  getIssueMetrics as getIssueMetricsFromDB, 
 } from '@/app/utils/indexedDB/IssueStorage';
+import Issue from '@dataTypes/Issue';
+import IssueMetric from '@dataTypes/IssueMetric';
 
 interface UseIssueStorageReturn {
-  issues: StoredIssue[];
+  issues: Issue[];
   loading: boolean;
   error: string | null;
   
   // Operations
   addNewIssue: (issueName: string, templateNames: string[]) => Promise<void>;
-  updateExistingIssue: (issueName: string, templateNames: string[]) => Promise<void>;
-  updateExistingIssueByName: (originalName: string, newName: string, templateNames: string[]) => Promise<void>;
-  removeIssue: (issueName: string) => Promise<void>;
-  getIssue: (issueName: string) => Promise<StoredIssue | undefined>;
+  removeExistingIssue: (issueName: string) => Promise<void>;
+  getAllIssues: () => Promise<Issue[]>;
+  getAllIssueNames: () => Promise<string[]>;
+  getIssueByName: (issueName: string) => Promise<Issue | undefined>;
+  updateIssueName: (oldName: string, newName: string) => Promise<void>;
+  updateTemplateNames: (issueName: string, templateNames: string[]) => Promise<void>;
   addTemplateToExistingIssue: (issueName: string, templateName: string) => Promise<void>;
   removeTemplateFromExistingIssue: (issueName: string, templateName: string) => Promise<void>;
-  getTemplateNames: (issueName: string) => Promise<string[]>;
-  getIssueNames: () => Promise<string[]>;
-  refreshIssues: () => Promise<void>;
+  incrementIssueUsage: (issueName: string) => Promise<void>;
+  decrementIssueUsage: (issueName: string) => Promise<void>;
+  getIssueMetrics: (issueName: string) => Promise<IssueMetric | undefined>;
   
   // State management
   clearError: () => void;
+  refreshIssues: () => Promise<void>;
 }
 
 export const useIssueStorage = (): UseIssueStorageReturn => {
-  const [issues, setIssues] = useState<StoredIssue[]>([]);
+  const [issues, setIssues] = useState<Issue[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -44,7 +49,7 @@ export const useIssueStorage = (): UseIssueStorageReturn => {
     try {
       setLoading(true);
       setError(null);
-      const allIssues = await getAllIssues();
+      const allIssues = await getAllIssuesFromDB();
       setIssues(allIssues);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load issues');
@@ -57,7 +62,8 @@ export const useIssueStorage = (): UseIssueStorageReturn => {
   const addNewIssue = useCallback(async (issueName: string, templateNames: string[]): Promise<void> => {
     try {
       setError(null);
-      await addIssue(issueName, templateNames);
+      const metrics: IssueMetric = { usageCount: 0, usagePerDay: 0 };
+      await addIssue(issueName, templateNames, metrics);
       await refreshIssues(); // Refresh to get updated list
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to add issue';
@@ -66,34 +72,7 @@ export const useIssueStorage = (): UseIssueStorageReturn => {
     }
   }, [refreshIssues]);
 
-  // Update existing issue
-  const updateExistingIssue = useCallback(async (issueName: string, templateNames: string[]): Promise<void> => {
-    try {
-      setError(null);
-      await updateIssue(issueName, templateNames);
-      await refreshIssues(); // Refresh to get updated list
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to update issue';
-      setError(errorMessage);
-      throw new Error(errorMessage);
-    }
-  }, [refreshIssues]);
-
-  // Update existing issue by name (handles name changes)
-  const updateExistingIssueByName = useCallback(async (originalName: string, newName: string, templateNames: string[]): Promise<void> => {
-    try {
-      setError(null);
-      await updateIssueByName(originalName, newName, templateNames);
-      await refreshIssues(); // Refresh to get updated list
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to update issue';
-      setError(errorMessage);
-      throw new Error(errorMessage);
-    }
-  }, [refreshIssues]);
-
-  // Remove issue
-  const removeIssue = useCallback(async (issueName: string): Promise<void> => {
+  const removeExistingIssue = useCallback(async (issueName: string): Promise<void> => {
     try {
       setError(null);
       await deleteIssue(issueName);
@@ -105,11 +84,35 @@ export const useIssueStorage = (): UseIssueStorageReturn => {
     }
   }, [refreshIssues]);
 
-  // Get single issue
-  const getIssue = useCallback(async (issueName: string): Promise<StoredIssue | undefined> => {
+  const getAllIssues = useCallback(async (): Promise<Issue[]> => {
     try {
       setError(null);
-      return await getIssueByName(issueName);
+      const allIssues = await getAllIssuesFromDB();
+      return allIssues;
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to get issues';
+      setError(errorMessage);
+      throw new Error(errorMessage);
+    }
+  }, []);
+
+  const getAllIssueNames = useCallback(async (): Promise<string[]> => {
+    try {
+      setError(null);
+      const issueNames = await getAllIssueNamesFromDB();
+      return issueNames;
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to get issue names';
+      setError(errorMessage);
+      throw new Error(errorMessage);
+    }
+  }, []);
+
+  const getIssueByName = useCallback(async (issueName: string): Promise<Issue | undefined> => {
+    try {
+      setError(null);
+      const issue = await getIssueByNameFromDB(issueName);
+      return issue;
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to get issue';
       setError(errorMessage);
@@ -117,7 +120,36 @@ export const useIssueStorage = (): UseIssueStorageReturn => {
     }
   }, []);
 
-  // Add template to existing issue
+  const updateIssueName = useCallback(async (oldName: string, newName: string): Promise<void> => {
+    try {
+      setError(null);
+      await updateIssueNameInDB(oldName, newName);
+      await refreshIssues(); // Refresh to get updated list
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to update issue name';
+      setError(errorMessage);
+      throw new Error(errorMessage);
+    }
+  }, [refreshIssues]);
+
+  const updateTemplateNames = useCallback(async (issueName: string, templateNames: string[]): Promise<void> => {
+    try {
+      setError(null);
+      const issue = await getIssueByNameFromDB(issueName);
+      if (!issue) {
+        throw new Error('Issue not found');
+      }
+      // First delete the existing issue, then add it back with updated template names
+      await deleteIssue(issueName);
+      await addIssue(issueName, templateNames, issue.metrics);
+      await refreshIssues(); // Refresh to get updated list
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to update template names';
+      setError(errorMessage);
+      throw new Error(errorMessage);
+    }
+  }, [refreshIssues]);
+
   const addTemplateToExistingIssue = useCallback(async (issueName: string, templateName: string): Promise<void> => {
     try {
       setError(null);
@@ -130,7 +162,6 @@ export const useIssueStorage = (): UseIssueStorageReturn => {
     }
   }, [refreshIssues]);
 
-  // Remove template from existing issue
   const removeTemplateFromExistingIssue = useCallback(async (issueName: string, templateName: string): Promise<void> => {
     try {
       setError(null);
@@ -143,25 +174,37 @@ export const useIssueStorage = (): UseIssueStorageReturn => {
     }
   }, [refreshIssues]);
 
-  // Get template names for issue
-  const getTemplateNames = useCallback(async (issueName: string): Promise<string[]> => {
+  const incrementIssueUsage = useCallback(async (issueName: string): Promise<void> => {
     try {
       setError(null);
-      return await getTemplateNamesForIssue(issueName);
+      await incrementIssueUsageInDB(issueName);
+      await refreshIssues(); // Refresh to get updated list
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to get template names for issue';
+      const errorMessage = err instanceof Error ? err.message : 'Failed to increment issue usage';
       setError(errorMessage);
       throw new Error(errorMessage);
     }
-  }, []);
+  }, [refreshIssues]);
 
-  // Get all issue names
-  const getIssueNames = useCallback(async (): Promise<string[]> => {
+  const decrementIssueUsage = useCallback(async (issueName: string): Promise<void> => {
     try {
       setError(null);
-      return await getAllIssueNames();
+      await decrementIssueUsageInDB(issueName);
+      await refreshIssues(); // Refresh to get updated list
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to get issue names';
+      const errorMessage = err instanceof Error ? err.message : 'Failed to decrement issue usage';
+      setError(errorMessage);
+      throw new Error(errorMessage);
+    }
+  }, [refreshIssues]);
+
+  const getIssueMetrics = useCallback(async (issueName: string): Promise<IssueMetric | undefined> => {
+    try {
+      setError(null);
+      const metrics = await getIssueMetricsFromDB(issueName);
+      return metrics;
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to get issue metrics';
       setError(errorMessage);
       throw new Error(errorMessage);
     }
@@ -182,16 +225,19 @@ export const useIssueStorage = (): UseIssueStorageReturn => {
     loading,
     error,
     addNewIssue,
-    updateExistingIssue,
-    updateExistingIssueByName,
-    removeIssue,
-    getIssue,
+    removeExistingIssue,
+    getAllIssues,
+    getAllIssueNames,
+    getIssueByName,
+    updateIssueName,
+    updateTemplateNames,
     addTemplateToExistingIssue,
     removeTemplateFromExistingIssue,
-    getTemplateNames,
-    getIssueNames,
-    refreshIssues,
+    incrementIssueUsage,
+    decrementIssueUsage,
+    getIssueMetrics,
     clearError,
+    refreshIssues,
   };
 };
 

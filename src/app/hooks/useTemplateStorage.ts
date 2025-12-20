@@ -1,14 +1,19 @@
 import { useState, useEffect, useCallback } from 'react';
 import Template from '@dataTypes/Template';
+import TemplateMetric from '@dataTypes/TemplateMetric';
 import { 
   addTemplate, 
-  getAllTemplates, 
+  deleteTemplateById, 
+  deleteTemplateByName,
+  getAllTemplates as getAllTemplatesFromDB, 
   getTemplateByName, 
   updateTemplate, 
-  deleteTemplate, 
-  deleteTemplateByName,
   updateTemplateByName,
-  getTemplatesByKba 
+  incrementTemplateUsage as incrementTemplateUsageInDB, 
+  decrementTemplateUsage as decrementTemplateUsageInDB,
+  getTemplateMetrics as getTemplateMetricsFromDB,
+  appendToCommonWorkLog as appendToCommonWorkLogInDB,
+  removeFromCommonWorkLog as removeFromCommonWorkLogInDB,
 } from '@/app/utils/indexedDB/TemplateStorage';
 
 interface UseTemplateStorageReturn {
@@ -18,17 +23,20 @@ interface UseTemplateStorageReturn {
   
   // Operations
   addNewTemplate: (template: Template) => Promise<void>;
+  deleteExistingTemplate: (id: number | string) => Promise<void>;
+  getAllTemplates: () => Promise<Template[]>; 
+  getExistingTemplate: (name: string) => Promise<Template | undefined>;
   updateExistingTemplate: (id: number, template: Template) => Promise<void>;
   updateTemplateByOriginalName: (originalName: string, template: Template) => Promise<void>;
-  removeTemplate: (id: number) => Promise<void>;
-  removeTemplateByName: (name: string) => Promise<void>;
-  getTemplate: (name: string) => Promise<Template | undefined>;
-  getByKba: (kba: string) => Promise<Template[]>;
-  getKbaByName: (name: string) => Promise<string | undefined>;
-  refreshTemplates: () => Promise<void>;
+  incrementTemplateUsage: (name: string) => Promise<void>;
+  decrementTemplateUsage: (name: string) => Promise<void>;
+  getTemplateMetrics: (name: string) => Promise<TemplateMetric | undefined>;
+  appendToCommonWorkLog: (name: string, workLog: string) => Promise<void>;
+  removeFromCommonWorkLog: (name: string, workLog: string) => Promise<void>;
   
   // State management
   clearError: () => void;
+  refreshTemplates: () => Promise<void>;
 }
 
 export const useTemplateStorage = (): UseTemplateStorageReturn => {
@@ -41,7 +49,7 @@ export const useTemplateStorage = (): UseTemplateStorageReturn => {
     try {
       setLoading(true);
       setError(null);
-      const allTemplates = await getAllTemplates();
+      const allTemplates = await getAllTemplatesFromDB();
       setTemplates(allTemplates);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load templates');
@@ -63,6 +71,48 @@ export const useTemplateStorage = (): UseTemplateStorageReturn => {
     }
   }, [refreshTemplates]);
 
+  // Delete existing template
+  const deleteExistingTemplate = useCallback(async (id: number | string): Promise<void> => {
+    try {
+      setError(null);
+      if (typeof id === 'number') {
+        await deleteTemplateById(id);
+      } else {
+        await deleteTemplateByName(id);
+      }
+      await refreshTemplates(); // Refresh to get updated list
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to delete template';
+      setError(errorMessage);
+      throw new Error(errorMessage);
+    }
+  }, [refreshTemplates]);
+
+  const getAllTemplates = useCallback(async (): Promise<Template[]> => {
+    try {
+      setError(null);
+      const allTemplates = await getAllTemplatesFromDB();
+      return allTemplates;
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to get templates';
+      setError(errorMessage);
+      throw new Error(errorMessage);
+    }
+  }, []);   
+  
+  // Get existing template
+  const getExistingTemplate = useCallback(async (name: string): Promise<Template | undefined> => {
+    try {
+      setError(null);
+      const template = await getTemplateByName(name);
+      return template;
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to get template';
+      setError(errorMessage);
+      throw new Error(errorMessage);
+    }
+  }, []);
+
   // Update existing template
   const updateExistingTemplate = useCallback(async (id: number, template: Template): Promise<void> => {
     try {
@@ -71,32 +121,6 @@ export const useTemplateStorage = (): UseTemplateStorageReturn => {
       await refreshTemplates(); // Refresh to get updated list
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to update template';
-      setError(errorMessage);
-      throw new Error(errorMessage);
-    }
-  }, [refreshTemplates]);
-
-  // Remove template
-  const removeTemplate = useCallback(async (id: number): Promise<void> => {
-    try {
-      setError(null);
-      await deleteTemplate(id);
-      await refreshTemplates(); // Refresh to get updated list
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to delete template';
-      setError(errorMessage);
-      throw new Error(errorMessage);
-    }
-  }, [refreshTemplates]);
-
-  // Remove template by name
-  const removeTemplateByName = useCallback(async (name: string): Promise<void> => {
-    try {
-      setError(null);
-      await deleteTemplateByName(name);
-      await refreshTemplates(); // Refresh to get updated list
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to delete template';
       setError(errorMessage);
       throw new Error(errorMessage);
     }
@@ -115,42 +139,70 @@ export const useTemplateStorage = (): UseTemplateStorageReturn => {
     }
   }, [refreshTemplates]);
 
-  // Get single template
-  const getTemplate = useCallback(async (name: string): Promise<Template | undefined> => {
+  // Increment template usage
+  const incrementTemplateUsage = useCallback(async (name: string): Promise<void> => {
     try {
       setError(null);
-      return await getTemplateByName(name);
+      await incrementTemplateUsageInDB(name);
+      await refreshTemplates(); // Refresh to get updated list
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to get template';
+      const errorMessage = err instanceof Error ? err.message : 'Failed to increment template usage';
+      setError(errorMessage);
+      throw new Error(errorMessage);
+    }
+  }, [refreshTemplates]);
+
+  // Decrement template usage
+  const decrementTemplateUsage = useCallback(async (name: string): Promise<void> => {
+    try {
+      setError(null);
+      await decrementTemplateUsageInDB(name);
+      await refreshTemplates(); // Refresh to get updated list
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to decrement template usage';
+      setError(errorMessage);
+      throw new Error(errorMessage);
+    }
+  }, [refreshTemplates]);
+
+  // Get template metrics
+  const getTemplateMetrics = useCallback(async (name: string): Promise<TemplateMetric | undefined> => {
+    try {
+      setError(null);
+      const metrics = await getTemplateMetricsFromDB(name);
+      return metrics;
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to get template metrics';
       setError(errorMessage);
       throw new Error(errorMessage);
     }
   }, []);
 
-  // Get templates by KBA
-  const getByKba = useCallback(async (kba: string): Promise<Template[]> => {
+  // Append to common work log
+  const appendToCommonWorkLog = useCallback(async (name: string, workLog: string): Promise<void> => {
     try {
       setError(null);
-      return await getTemplatesByKba(kba);
+      await appendToCommonWorkLogInDB(name, workLog);
+      await refreshTemplates(); // Refresh to get updated list
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to get templates by KBA';
+      const errorMessage = err instanceof Error ? err.message : 'Failed to append to work log';
       setError(errorMessage);
       throw new Error(errorMessage);
     }
-  }, []);
+  }, [refreshTemplates]);
 
-  // Get KBA by template name
-  const getKbaByName = useCallback(async (name: string): Promise<string | undefined> => {
+  // Remove from common work log
+  const removeFromCommonWorkLog = useCallback(async (name: string, workLog: string): Promise<void> => {
     try {
       setError(null);
-      const template = await getTemplateByName(name);
-      return template?.kba;
+      await removeFromCommonWorkLogInDB(name, workLog);
+      await refreshTemplates(); // Refresh to get updated list
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to get KBA by template name';
+      const errorMessage = err instanceof Error ? err.message : 'Failed to remove from work log';
       setError(errorMessage);
       throw new Error(errorMessage);
     }
-  }, []);
+  }, [refreshTemplates]);
 
   // Clear error
   const clearError = useCallback(() => {
@@ -167,15 +219,18 @@ export const useTemplateStorage = (): UseTemplateStorageReturn => {
     loading,
     error,
     addNewTemplate,
+    deleteExistingTemplate,
+    getAllTemplates,
+    getExistingTemplate,
     updateExistingTemplate,
     updateTemplateByOriginalName,
-    removeTemplate,
-    removeTemplateByName,
-    getTemplate,
-    getByKba,
-    getKbaByName,
-    refreshTemplates,
+    incrementTemplateUsage,
+    decrementTemplateUsage,
+    getTemplateMetrics,
+    appendToCommonWorkLog,
+    removeFromCommonWorkLog,
     clearError,
+    refreshTemplates,
   };
 };
 

@@ -15,7 +15,7 @@ function TemplateForm()  {
   const activeTemplateName = useAppSelector(selectActiveTemplateName);
   const templateFields = useAppSelector(selectTemplateFields);
   const dispatch = useAppDispatch();
-  const { getTemplate } = useTemplateStorage();
+  const { getExistingTemplate } = useTemplateStorage();
   
   const contactUserId = useAppSelector(selectContactUserId);
   const contactName = useAppSelector(selectContactName);
@@ -117,14 +117,14 @@ function TemplateForm()  {
   useEffect(() => {
     if (activeTemplateName && activeComponent === "TemplateForm") {
       const fetchTemplate = async () => {
-        const template = await getTemplate(activeTemplateName);
+        const template = await getExistingTemplate(activeTemplateName);
         if (template) {
           dispatch(setTemplateFields(template.fields));
         }
       };
       fetchTemplate();
     }
-  }, [activeTemplateName, getTemplate, activeComponent, dispatch]);
+  }, [activeTemplateName, getExistingTemplate, activeComponent, dispatch]);
 
   return (
     <div className='bg-card border rounded-xl shadow-lg flex-1 lg:flex-none lg:w-1/2 transition-all duration-300'>

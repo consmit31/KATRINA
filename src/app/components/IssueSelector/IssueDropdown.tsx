@@ -4,8 +4,10 @@ import React from 'react'
 import Issue from '@dataTypes/Issue'
 
 import { useAppDispatch } from '@redux/hooks'
-import { setActiveComponent } from '@redux/activeComponentSlice'
-import { setActiveTemplate } from '@redux/activeTemplateSlice';
+
+import { FaList, FaChartColumn} from 'react-icons/fa6'
+import TemplateTile from './TemplateTile'
+import { template } from '@babel/core'
 
 interface IssueDropdownProps {
   issue: Issue;
@@ -13,7 +15,6 @@ interface IssueDropdownProps {
 
 function IssueDropdown({ issue }: IssueDropdownProps) {
     const [isOpen, setIsOpen] = React.useState(false);
-    const dispatch = useAppDispatch();
 
     const handleButtonClick = () => {
         setIsOpen(!isOpen);
@@ -26,20 +27,6 @@ function IssueDropdown({ issue }: IssueDropdownProps) {
         }   
     }
     
-    const handleKeyDown = (event: React.KeyboardEvent) => {
-        if (event.key === 'Enter' || event.key === ' ') {
-            event.preventDefault();
-            dispatch(setActiveTemplate(event.currentTarget.textContent || ""));
-            dispatch(setActiveComponent("TemplateForm"));
-        }
-    }
-    
-    const handleTemplateClick = (templateName: string) => {
-        dispatch(setActiveTemplate(templateName));
-        dispatch(setActiveComponent("TemplateForm"));
-        setIsOpen(false);
-    }
-
     return (
         <div className='w-full'>
             <button 
@@ -54,9 +41,18 @@ function IssueDropdown({ issue }: IssueDropdownProps) {
                         <h3 className='font-medium text-card-foreground group-hover:text-primary transition-colors'>
                             {issue.name}
                         </h3>
-                        <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
-                            {issue.templateNames.length}
-                        </span>
+                        <div className='flex items-center space-x-1 bg-accent/50 px-2 py-1 rounded-full' title='Templates'>
+                            <div className='text-xs'> <FaList /> </div>
+                            <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
+                                {issue.templateNames.length}
+                            </span> 
+                        </div>
+                        <div className='flex items-center space-x-1 bg-accent/50 px-2 py-1 rounded-full' title='Uses'>
+                            <div className='text-xs'> <FaChartColumn /> </div>
+                            <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full"> 
+                               {issue.metrics.usageCount} 
+                            </span> 
+                        </div>
                     </div>
                     <svg 
                         className={`w-5 h-5 text-muted-foreground transition-transform duration-200 ${isOpen ? 'transform rotate-90' : ''}`}
@@ -75,19 +71,7 @@ function IssueDropdown({ issue }: IssueDropdownProps) {
                     className="ml-6 mt-2 space-y-1 animate-fadeIn"
                 >
                     {issue.templateNames.map((templateName) => (
-                        <div key={templateName} className="flex items-center group">
-                            <button
-                                className="flex-1 p-2 text-left text-sm text-muted-foreground hover:text-card-foreground hover:bg-accent/50 rounded-l-md transition-all duration-150 focus-ring cursor-pointer"
-                                tabIndex={0}
-                                onKeyDown={(e) => handleKeyDown(e)}
-                                onClick={() => handleTemplateClick(templateName)}
-                            >
-                                <div className="flex items-center space-x-2">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground"></div>
-                                    <span>{templateName}</span>
-                                </div>
-                            </button>
-                        </div>
+                        <TemplateTile key={templateName} templateName={templateName} issueName={issue.name}/>
                     ))}
                 </div>
             )}

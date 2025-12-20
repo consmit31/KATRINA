@@ -7,6 +7,17 @@ function ExportToolContent() {
   const { templates, loading: templatesLoading } = useTemplateStorage();
   const [exportStatus, setExportStatus] = useState<string>('');
 
+  // Ensure data has metrics
+  const ensureIssueMetrics = (issue: any) => ({
+    ...issue,
+    metrics: issue.metrics || { usageCount: 0, usagePerDay: 0 }
+  });
+
+  const ensureTemplateMetrics = (template: any) => ({
+    ...template,
+    metrics: template.metrics || { usageCount: 0, usagePerDay: 0, commonWorkLog: [] }
+  });
+
   const downloadJSON = (data: object, filename: string) => {
     const jsonString = JSON.stringify(data, null, 2);
     const blob = new Blob([jsonString], { type: 'application/json' });
@@ -30,7 +41,7 @@ function ExportToolContent() {
     const exportData = {
       exportDate: new Date().toISOString(),
       totalIssues: issues.length,
-      issues: issues
+      issues: issues.map(ensureIssueMetrics)
     };
 
     downloadJSON(exportData, `issues-export-${new Date().toISOString().split('T')[0]}.json`);
@@ -47,7 +58,7 @@ function ExportToolContent() {
     const exportData = {
       exportDate: new Date().toISOString(),
       totalTemplates: templates.length,
-      templates: templates
+      templates: templates.map(ensureTemplateMetrics)
     };
 
     downloadJSON(exportData, `templates-export-${new Date().toISOString().split('T')[0]}.json`);
@@ -60,8 +71,8 @@ function ExportToolContent() {
       exportDate: new Date().toISOString(),
       totalIssues: issues.length,
       totalTemplates: templates.length,
-      issues: issues,
-      templates: templates
+      issues: issues.map(ensureIssueMetrics),
+      templates: templates.map(ensureTemplateMetrics)
     };
 
     downloadJSON(exportData, `complete-export-${new Date().toISOString().split('T')[0]}.json`);

@@ -112,7 +112,7 @@ function ImportToolContent() {
       let issueCount = 0;
       for (const issue of issues) {
         try {
-          await addIssue(issue.name, issue.templateNames);
+          await addIssue(issue.name, issue.templateNames, issue.metrics);
           issueCount++;
         } catch (error) {
           // Issue might already exist, log but continue
