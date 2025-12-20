@@ -63,7 +63,8 @@ export default function parseTemplate(text: string): Template {
         issue: '',
         name: '',
         kba: '',
-        fields
+        fields,
+        metrics: { usageCount: 0, usagePerDay: 0, commonWorkLog: []}
     }
 };
     
