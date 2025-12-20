@@ -115,6 +115,33 @@ function MinesweeperToolContent() {
     return true;
   }, [noGuessingMode, rows, cols]);
 
+  // Calculate neighbor mines
+  const calculateNeighborMines = useCallback((board: Cell[][]) => {
+    const newBoard = board.map(row => row.map(cell => ({ ...cell })));
+    
+    for (let row = 0; row < rows; row++) {
+      for (let col = 0; col < cols; col++) {
+        if (!newBoard[row][col].isMine) {
+          let count = 0;
+          for (let i = -1; i <= 1; i++) {
+            for (let j = -1; j <= 1; j++) {
+              const newRow = row + i;
+              const newCol = col + j;
+              if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols) {
+                if (newBoard[newRow][newCol].isMine) {
+                  count++;
+                }
+              }
+            }
+          }
+          newBoard[row][col].neighborMines = count;
+        }
+      }
+    }
+
+    return newBoard;
+  }, [rows, cols]);
+
   // Place mines with optional no-guessing validation
   const placeMines = useCallback((board: Cell[][], firstClickRow: number, firstClickCol: number) => {
     let attempts = 0;
@@ -163,34 +190,7 @@ function MinesweeperToolContent() {
     }
 
     return calculateNeighborMines(newBoard);
-  }, [mines, rows, cols, noGuessingMode, canSolvePuzzle]);
-
-  // Calculate neighbor mines
-  const calculateNeighborMines = useCallback((board: Cell[][]) => {
-    const newBoard = board.map(row => row.map(cell => ({ ...cell })));
-    
-    for (let row = 0; row < rows; row++) {
-      for (let col = 0; col < cols; col++) {
-        if (!newBoard[row][col].isMine) {
-          let count = 0;
-          for (let i = -1; i <= 1; i++) {
-            for (let j = -1; j <= 1; j++) {
-              const newRow = row + i;
-              const newCol = col + j;
-              if (newRow >= 0 && newRow < rows && newCol >= 0 && newCol < cols) {
-                if (newBoard[newRow][newCol].isMine) {
-                  count++;
-                }
-              }
-            }
-          }
-          newBoard[row][col].neighborMines = count;
-        }
-      }
-    }
-
-    return newBoard;
-  }, [rows, cols]);
+  }, [mines, rows, cols, noGuessingMode, canSolvePuzzle, calculateNeighborMines]);
 
   // Initialize game
   const initializeGame = useCallback(() => {
@@ -352,7 +352,7 @@ function MinesweeperToolContent() {
       // Hide confetti after 3 seconds
       setTimeout(() => setShowConfetti(false), 3000);
     }
-  }, [board, gameState, gameStarted, placeMines, calculateNeighborMines, revealCell]);
+  }, [board, gameState, gameStarted, placeMines, revealCell, rows, cols]);
 
   // Handle right click (flag)
   const handleRightClick = useCallback((e: React.MouseEvent, row: number, col: number) => {
@@ -596,7 +596,7 @@ function MinesweeperToolContent() {
             You cleared the minefield in {Math.floor(timer / 60)}:{(timer % 60).toString().padStart(2, '0')}!
           </div>
           <div className="text-sm text-gray-600 mt-2">
-            Press Enter or click "New Game" to play again
+            Press Enter or click &quot;New Game&quot; to play again
           </div>
         </div>
       )}
@@ -607,7 +607,7 @@ function MinesweeperToolContent() {
             💥 Game Over 💥
           </div>
           <div className="text-sm text-gray-600">
-            Press Enter or click "New Game" to try again
+            Press Enter or click &quot;New Game&quot; to try again
           </div>
         </div>
       )}
@@ -663,7 +663,7 @@ function MinesweeperToolContent() {
       <div className="mt-4 text-sm text-gray-600 max-w-md text-center">
         <p><strong>Instructions:</strong></p>
         <p>Left click to reveal cells. Right click to flag/unflag potential mines.</p>
-        <p>Click on a revealed number to auto-reveal adjacent cells if you've flagged the correct number of mines around it.</p>
+        <p>Click on a revealed number to auto-reveal adjacent cells if you&apos;ve flagged the correct number of mines around it.</p>
         <p>Numbers show how many mines are adjacent to that cell.</p>
         <p>Find all cells without mines to win!</p>
       </div>
