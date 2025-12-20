@@ -4,13 +4,14 @@ import ImportToolContent from './toolContent/ImportToolContent';
 import ViewToolContent from './toolContent/ViewToolContent';
 import ReportingToolContent from './toolContent/ReportingToolContent';
 import ExportToolContent from './toolContent/ExportToolContent';
+import MinesweeperToolContent from './toolContent/MinesweeperToolContent';
 
 interface ToolsModalProps {
   onClose?: () => void;
 }
 
 const ToolsModal = ({ onClose }: ToolsModalProps) => {
-    const [selectedTool, setSelectedTool] = React.useState<"Import" | "Export" | "View All" | "BR/FR">("Import");
+    const [selectedTool, setSelectedTool] = React.useState<"Import" | "Export" | "View All" | "BR/FR" | "Minesweeper">("Import");
   
     const handleToolClick = (toolName: string) => {
         switch (toolName) {
@@ -25,6 +26,9 @@ const ToolsModal = ({ onClose }: ToolsModalProps) => {
                 break;
             case 'BR/FR':
                 setSelectedTool("BR/FR");
+                break;
+            case 'Minesweeper':
+                setSelectedTool("Minesweeper");
                 break;
         }
     }
@@ -87,6 +91,16 @@ const ToolsModal = ({ onClose }: ToolsModalProps) => {
                     >
                         Bug Report
                     </button>
+                    <button
+                        onClick={() => handleToolClick('Minesweeper')}
+                        className={`px-6 py-2 text-sm bg-accent rounded-lg rounded-b-none border-accent-foreground font-medium transition-all duration-300 ease-in-out transform ${
+                            selectedTool === 'Minesweeper' 
+                                ? 'bg-blue-500 text-white shadow-md scale-105'
+                                : 'text-gray-600 hover:text-gray-800 hover:bg-gray-200 hover:scale-102'
+                        }`}
+                    >
+                        Minesweeper
+                    </button>
                 </div>
             </div>
 
@@ -101,6 +115,8 @@ const ToolsModal = ({ onClose }: ToolsModalProps) => {
                             return <ViewToolContent/>;
                         case "BR/FR":
                             return <ReportingToolContent/>; 
+                        case "Minesweeper":
+                            return <MinesweeperToolContent/>;
                     }
                 })()}
             </div>
