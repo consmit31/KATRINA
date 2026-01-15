@@ -1,0 +1,2114 @@
+{
+    "exportDate": "2026-01-15T14:09:42.046Z",
+    "totalIssues": 9,
+    "totalTemplates": 31,
+    "issues": [
+        {
+            "name": "Mi.gov",
+            "templateNames": [
+                "Mi.gov - SOS inquiry "
+            ],
+            "metrics": {
+                "usageCount": 20,
+                "usagePerDay": 0
+            }
+        },
+        {
+            "name": "MiLogin",
+            "templateNames": [
+                " MiLogin PW Reset – Citizen",
+                " MiLogin PW Reset – Citizen Duplicate/Inactive Account",
+                " MiLogin PW Reset – Business",
+                " MiLogin PW Reset – Business Duplicate/Inactive Account",
+                "MiLogin Citizen/Business Profile Update",
+                " MiLogin Application Issues: ISSUE",
+                "MiLogin Login Issue"
+            ],
+            "metrics": {
+                "usageCount": 147,
+                "usagePerDay": 0
+            }
+        },
+        {
+            "name": "Network",
+            "templateNames": [
+                "Wireless Issues - [Specify SOMFIREFLY, SOMGUEST, or Off-Site]"
+            ],
+            "metrics": {
+                "usageCount": 1,
+                "usagePerDay": 0
+            }
+        },
+        {
+            "name": "OS/Software/Hardware Issues",
+            "templateNames": [
+                "OS Issue",
+                " Software break/fix: Document issue client is reporting",
+                " Software Request",
+                "  Hardware Issue: ISSUE",
+                " Peripheral Install",
+                " OOC Email - Windows Out of Compliance",
+                "CXone ContactCenter - ISSUE",
+                "Adobe Creative Cloud - [App Name] - [Issue]",
+                "OOC Email - Windows Out of Compliance Remediation"
+            ],
+            "metrics": {
+                "usageCount": 43,
+                "usagePerDay": 0
+            }
+        },
+        {
+            "name": "Outlook",
+            "templateNames": [
+                "Outlook - ISSUE"
+            ],
+            "metrics": {
+                "usageCount": 6,
+                "usagePerDay": 0
+            }
+        },
+        {
+            "name": "Password (Other)",
+            "templateNames": [
+                " OMNI Password Reset",
+                "MI HR / Lawson Password Reset"
+            ],
+            "metrics": {
+                "usageCount": 7,
+                "usagePerDay": 0
+            }
+        },
+        {
+            "name": "Smart Device",
+            "templateNames": [
+                "Smart Device - Passcode Lockout",
+                "Smart Device - Email access",
+                "Smart Device Setup (Deployment)"
+            ],
+            "metrics": {
+                "usageCount": 22,
+                "usagePerDay": 0
+            }
+        },
+        {
+            "name": "VPN",
+            "templateNames": [
+                "EAT - Unable to sign in to PC",
+                "Cisco Secure Client - Unable to connect to VPN",
+                "Cisco Secure Client - Importing new token",
+                " Wireless Issues - [Specify SOMFIREFLY, SOMGUEST, or Off-Site]"
+            ],
+            "metrics": {
+                "usageCount": 25,
+                "usagePerDay": 0
+            }
+        },
+        {
+            "name": "Windows Account",
+            "templateNames": [
+                "Windows Account - Password reset",
+                "Windows Account - Locked account",
+                "BitLocker - BitLocker recovery"
+            ],
+            "metrics": {
+                "usageCount": 67,
+                "usagePerDay": 0
+            }
+        }
+    ],
+    "templates": [
+        {
+            "issue": "OS/Software/Hardware Issues",
+            "name": "  Hardware Issue: ISSUE",
+            "kba": "KBA00003255",
+            "fields": [
+                {
+                    "label": "Point of Contact/Best Phone #",
+                    "type": "text"
+                },
+                {
+                    "label": "Work Days/Hours",
+                    "type": "text"
+                },
+                {
+                    "label": "Location (Floor/Suite#/Pillar, Building Name, Direction)",
+                    "type": "selector",
+                    "options": [
+                        "Floor",
+                        "Suite#",
+                        "Pillar, Building Name, Direction"
+                    ]
+                },
+                {
+                    "label": "Workstation ID",
+                    "type": "text"
+                },
+                {
+                    "label": "Operating System",
+                    "type": "text"
+                },
+                {
+                    "label": "OS Build",
+                    "type": "text"
+                },
+                {
+                    "label": "IP Address",
+                    "type": "text"
+                },
+                {
+                    "label": "MAC Address",
+                    "type": "text"
+                },
+                {
+                    "label": "Error message, if anything",
+                    "type": "text",
+                    "value": "N/A"
+                },
+                {
+                    "label": "Type of damage, if any (accidental, etc.)",
+                    "type": "text",
+                    "value": "N/A"
+                },
+                {
+                    "label": "Warranty In Service Date",
+                    "type": "text"
+                },
+                {
+                    "label": "Warranty Service End Date",
+                    "type": "text"
+                },
+                {
+                    "label": "Issue",
+                    "type": "text"
+                }
+            ],
+            "metrics": {
+                "usageCount": 6,
+                "usagePerDay": 0,
+                "commonWorkLog": []
+            }
+        },
+        {
+            "issue": "MiLogin",
+            "name": " MiLogin Application Issues: ISSUE",
+            "kba": "KBA00013115",
+            "fields": [
+                {
+                    "label": "User type (Worker/For Business/Citizen)",
+                    "type": "selector",
+                    "options": [
+                        "Worker",
+                        "For Business",
+                        "Citizen"
+                    ],
+                    "value": "Citizen"
+                },
+                {
+                    "label": "Browser client is using",
+                    "type": "selector",
+                    "options": [
+                        "Chrome",
+                        "Safari",
+                        "Edge",
+                        "Firefox",
+                        "Duck Duck Go"
+                    ],
+                    "value": "Chrome"
+                },
+                {
+                    "label": "URL client is using",
+                    "type": "selector",
+                    "value": "milogin.michigan.gov",
+                    "options": [
+                        "milogin.michigan.gov",
+                        "milogintp.michigan.gov",
+                        "miloginworker.michigan.gov"
+                    ]
+                },
+                {
+                    "label": "Agency",
+                    "type": "text",
+                    "value": "MDOS"
+                },
+                {
+                    "label": "Application client is trying to access",
+                    "type": "text",
+                    "value": "CARS"
+                },
+                {
+                    "label": "PIN verified or Questions Answered",
+                    "type": "selector",
+                    "options": [
+                        "N/A",
+                        "PIN",
+                        "Experian"
+                    ],
+                    "value": "N/A"
+                },
+                {
+                    "label": "Name",
+                    "type": "text"
+                },
+                {
+                    "label": "UserID",
+                    "type": "text"
+                },
+                {
+                    "label": "Phone",
+                    "type": "text"
+                },
+                {
+                    "label": "Email",
+                    "type": "text"
+                },
+                {
+                    "label": "Issue",
+                    "type": "text"
+                }
+            ],
+            "originalName": " MiLogin Application Issues: ISSUE",
+            "metrics": {
+                "usageCount": 23,
+                "usagePerDay": 0,
+                "commonWorkLog": []
+            }
+        },
+        {
+            "issue": "MiLogin",
+            "name": " MiLogin PW Reset – Business",
+            "kba": "KBA00013115",
+            "fields": [
+                {
+                    "label": "User type (Worker/For Business/Citizen)",
+                    "type": "selector",
+                    "options": [
+                        "Worker",
+                        "For Business",
+                        "Citizen"
+                    ],
+                    "value": "For Business"
+                },
+                {
+                    "label": "Browser client is using",
+                    "type": "selector",
+                    "options": [
+                        "Chrome",
+                        "Safari",
+                        "Edge",
+                        "FireFox",
+                        "Duck Duck Go"
+                    ],
+                    "value": "Chrome"
+                },
+                {
+                    "label": "URL client is using",
+                    "type": "selector",
+                    "options": [
+                        "milogin.michigan.gov",
+                        "milogintp.michigan.gov"
+                    ],
+                    "value": "milogintp.michigan.gov"
+                },
+                {
+                    "label": "Agency",
+                    "type": "selector",
+                    "value": "MDOS",
+                    "options": [
+                        "MDOS",
+                        "LEO ",
+                        "LARA",
+                        "MDHHS",
+                        "MDARD",
+                        "MDOT",
+                        "MDE",
+                        "Mi Child Support"
+                    ]
+                },
+                {
+                    "label": "Application client is trying to access",
+                    "type": "text",
+                    "value": "CARS"
+                },
+                {
+                    "label": "PIN verified or Questions Answered",
+                    "type": "selector",
+                    "value": "N/A",
+                    "options": [
+                        "N/A",
+                        "PIN",
+                        "Experian"
+                    ]
+                },
+                {
+                    "label": "Name",
+                    "type": "text"
+                },
+                {
+                    "label": "UserID",
+                    "type": "text"
+                },
+                {
+                    "label": "Phone",
+                    "type": "text"
+                },
+                {
+                    "label": "Email",
+                    "type": "text"
+                },
+                {
+                    "type": "text",
+                    "label": "Issue",
+                    "value": "Password reset "
+                }
+            ],
+            "metrics": {
+                "usageCount": 5,
+                "usagePerDay": 0,
+                "commonWorkLog": []
+            }
+        },
+        {
+            "issue": "MiLogin",
+            "name": " MiLogin PW Reset – Business Duplicate/Inactive Account",
+            "kba": "KBA00013115",
+            "fields": [
+                {
+                    "label": "User type (Worker/For Business/Citizen)",
+                    "type": "selector",
+                    "options": [
+                        "Worker",
+                        "For Business",
+                        "Citizen"
+                    ],
+                    "value": "For Business"
+                },
+                {
+                    "label": "Browser client is using",
+                    "type": "selector",
+                    "options": [
+                        "Chrome",
+                        "Safari",
+                        "Edge",
+                        "FireFox",
+                        "Duck Duck Go"
+                    ],
+                    "value": "Chrome"
+                },
+                {
+                    "label": "URL client is using",
+                    "type": "selector",
+                    "options": [
+                        "milogin.michigan.gov",
+                        "milogintp.michigan.gov"
+                    ],
+                    "value": "milogintp.michigan.gov"
+                },
+                {
+                    "label": "Agency",
+                    "type": "selector",
+                    "value": "MDOS",
+                    "options": [
+                        "MDOS",
+                        "LEO ",
+                        "LARA",
+                        "MDHHS",
+                        "MDARD",
+                        "MDOT",
+                        "MDE",
+                        "Mi Child Support"
+                    ]
+                },
+                {
+                    "label": "Application client is trying to access",
+                    "type": "text",
+                    "value": "CARS"
+                },
+                {
+                    "label": "PIN verified or Questions Answered",
+                    "type": "selector",
+                    "value": "N/A",
+                    "options": [
+                        "N/A",
+                        "PIN",
+                        "Experian"
+                    ]
+                },
+                {
+                    "label": "Name",
+                    "type": "text"
+                },
+                {
+                    "label": "UserID",
+                    "type": "text"
+                },
+                {
+                    "label": "Phone",
+                    "type": "text"
+                },
+                {
+                    "label": "Email",
+                    "type": "text"
+                },
+                {
+                    "type": "selector",
+                    "label": "Issue",
+                    "value": "Duplicate account",
+                    "options": [
+                        "Duplicate account",
+                        "Inactive account"
+                    ]
+                }
+            ],
+            "metrics": {
+                "usageCount": 4,
+                "usagePerDay": 0,
+                "commonWorkLog": []
+            }
+        },
+        {
+            "issue": "MiLogin",
+            "name": " MiLogin PW Reset – Citizen",
+            "kba": "KBA00013115",
+            "fields": [
+                {
+                    "label": "User type (Worker/For Business/Citizen)",
+                    "type": "selector",
+                    "options": [
+                        "Worker",
+                        "For Business",
+                        "Citizen"
+                    ],
+                    "value": "Citizen"
+                },
+                {
+                    "label": "Browser client is using",
+                    "type": "selector",
+                    "options": [
+                        "Chrome",
+                        "Safari",
+                        "Edge",
+                        "FireFox",
+                        "Duck Duck Go"
+                    ],
+                    "value": "Chrome"
+                },
+                {
+                    "label": "URL client is using",
+                    "type": "selector",
+                    "options": [
+                        "milogin.michigan.gov",
+                        "milogintp.michigan.gov"
+                    ],
+                    "value": "milogin.michigan.gov"
+                },
+                {
+                    "label": "Agency",
+                    "type": "selector",
+                    "value": "MDOS",
+                    "options": [
+                        "MDOS",
+                        "LEO ",
+                        "LARA",
+                        "MDHHS",
+                        "MDARD",
+                        "MDOT",
+                        "MDE",
+                        "Mi Child Support"
+                    ]
+                },
+                {
+                    "label": "Application client is trying to access",
+                    "type": "text",
+                    "value": "CARS"
+                },
+                {
+                    "label": "PIN verified or Questions Answered",
+                    "type": "selector",
+                    "value": "N/A",
+                    "options": [
+                        "N/A",
+                        "PIN",
+                        "Experian"
+                    ]
+                },
+                {
+                    "label": "Name",
+                    "type": "text"
+                },
+                {
+                    "label": "UserID",
+                    "type": "text"
+                },
+                {
+                    "label": "Phone",
+                    "type": "text"
+                },
+                {
+                    "label": "Email",
+                    "type": "text"
+                },
+                {
+                    "type": "text",
+                    "label": "Issue",
+                    "value": "Password reset "
+                }
+            ],
+            "metrics": {
+                "usageCount": 28,
+                "usagePerDay": 0,
+                "commonWorkLog": []
+            }
+        },
+        {
+            "issue": "MiLogin",
+            "name": " MiLogin PW Reset – Citizen Duplicate/Inactive Account",
+            "kba": "KBA00013115",
+            "fields": [
+                {
+                    "label": "User type (Worker/For Business/Citizen)",
+                    "type": "selector",
+                    "options": [
+                        "Worker",
+                        "For Business",
+                        "Citizen"
+                    ],
+                    "value": "Citizen"
+                },
+                {
+                    "label": "Browser client is using",
+                    "type": "selector",
+                    "options": [
+                        "Chrome",
+                        "Safari",
+                        "Edge",
+                        "FireFox",
+                        "Duck Duck Go"
+                    ],
+                    "value": "Chrome"
+                },
+                {
+                    "label": "URL client is using",
+                    "type": "selector",
+                    "options": [
+                        "milogin.michigan.gov",
+                        "milogintp.michigan.gov"
+                    ],
+                    "value": "milogin.michigan.gov"
+                },
+                {
+                    "label": "Agency",
+                    "type": "selector",
+                    "value": "MDOS",
+                    "options": [
+                        "MDOS",
+                        "LEO ",
+                        "LARA",
+                        "MDHHS",
+                        "MDARD",
+                        "MDOT",
+                        "MDE",
+                        "Mi Child Support"
+                    ]
+                },
+                {
+                    "label": "Application client is trying to access",
+                    "type": "text",
+                    "value": "CARS"
+                },
+                {
+                    "label": "PIN verified or Questions Answered",
+                    "type": "selector",
+                    "value": "N/A",
+                    "options": [
+                        "N/A",
+                        "PIN",
+                        "Experian"
+                    ]
+                },
+                {
+                    "label": "Name",
+                    "type": "text"
+                },
+                {
+                    "label": "UserID",
+                    "type": "text"
+                },
+                {
+                    "label": "Phone",
+                    "type": "text"
+                },
+                {
+                    "label": "Email",
+                    "type": "text"
+                },
+                {
+                    "type": "selector",
+                    "label": "Issue",
+                    "value": "Duplicate account",
+                    "options": [
+                        "Duplicate account",
+                        "Inactive account"
+                    ]
+                }
+            ],
+            "metrics": {
+                "usageCount": 6,
+                "usagePerDay": 0,
+                "commonWorkLog": []
+            }
+        },
+        {
+            "issue": "Password (Other)",
+            "name": " OMNI Password Reset",
+            "kba": "KBA00001766",
+            "fields": [
+                {
+                    "label": "Omni User Code",
+                    "type": "text"
+                },
+                {
+                    "label": "Issue",
+                    "type": "text",
+                    "value": "OMNI Password reset "
+                }
+            ],
+            "metrics": {
+                "usageCount": 1,
+                "usagePerDay": 0,
+                "commonWorkLog": []
+            }
+        },
+        {
+            "issue": "OS/Software/Hardware Issues",
+            "name": " OOC Email - Windows Out of Compliance",
+            "kba": "KBA00068430",
+            "fields": [
+                {
+                    "label": "Point of Contact/Best Phone #",
+                    "type": "text"
+                },
+                {
+                    "label": "Work Days/Hours",
+                    "type": "text"
+                },
+                {
+                    "label": "Workstation ID",
+                    "type": "text"
+                },
+                {
+                    "label": "Operating System",
+                    "type": "text"
+                },
+                {
+                    "label": "OS Build",
+                    "type": "text"
+                },
+                {
+                    "label": "Exact error received (if applicable)",
+                    "type": "text",
+                    "value": "N/A"
+                },
+                {
+                    "label": "Client's issue",
+                    "type": "text",
+                    "value": "Windows OOC"
+                }
+            ],
+            "originalName": " OOC Email - Windows Out of Compliance Questions",
+            "metrics": {
+                "usageCount": 0,
+                "usagePerDay": 0,
+                "commonWorkLog": []
+            }
+        },
+        {
+            "issue": "OS/Software/Hardware Issues",
+            "name": " Peripheral Install",
+            "kba": "KBA00002890",
+            "fields": [
+                {
+                    "label": "Item Type (Scanner, Monitor, Video card, Memory)",
+                    "type": "selector",
+                    "options": [
+                        "Scanner",
+                        "Monitor",
+                        "Video card",
+                        "Memory"
+                    ],
+                    "value": "Scanner"
+                },
+                {
+                    "label": "RADAR [RADAR Link] if applicable",
+                    "type": "text",
+                    "value": "N/A"
+                },
+                {
+                    "label": "Connecting to Workstation(s)",
+                    "type": "text"
+                },
+                {
+                    "label": "Operating System",
+                    "type": "text"
+                },
+                {
+                    "label": "OS Build",
+                    "type": "text"
+                },
+                {
+                    "label": "IP Address",
+                    "type": "text"
+                },
+                {
+                    "label": "MAC Address",
+                    "type": "text"
+                },
+                {
+                    "label": "Additional Info",
+                    "type": "text",
+                    "value": "N/A"
+                }
+            ],
+            "metrics": {
+                "usageCount": 0,
+                "usagePerDay": 0,
+                "commonWorkLog": []
+            }
+        },
+        {
+            "issue": "OS/Software/Hardware Issues",
+            "name": " Software Request",
+            "kba": "KBA00009203",
+            "fields": [
+                {
+                    "label": "Workstation ID",
+                    "type": "text"
+                },
+                {
+                    "label": "Operating System",
+                    "type": "text"
+                },
+                {
+                    "label": "OS Build",
+                    "type": "text"
+                },
+                {
+                    "label": "IP Address",
+                    "type": "text"
+                },
+                {
+                    "label": "MAC Address",
+                    "type": "text"
+                },
+                {
+                    "label": "Point of Contact/Best Phone #",
+                    "type": "text"
+                },
+                {
+                    "label": "Work Days/Hours",
+                    "type": "text",
+                    "value": "M-F 8-5"
+                },
+                {
+                    "label": "Name",
+                    "type": "text"
+                },
+                {
+                    "label": "UserID",
+                    "type": "text"
+                },
+                {
+                    "label": "Application Name and Version",
+                    "type": "text"
+                },
+                {
+                    "label": "Additional information",
+                    "type": "text",
+                    "value": "N/A"
+                },
+                {
+                    "label": "Issue",
+                    "type": "text",
+                    "value": "Software install"
+                }
+            ],
+            "metrics": {
+                "usageCount": 4,
+                "usagePerDay": 0,
+                "commonWorkLog": []
+            }
+        },
+        {
+            "issue": "OS/Software/Hardware Issues",
+            "name": " Software break/fix: Document issue client is reporting",
+            "kba": "KBA00002244",
+            "fields": [
+                {
+                    "label": "Workstation",
+                    "type": "text"
+                },
+                {
+                    "label": "Operating System",
+                    "type": "text"
+                },
+                {
+                    "label": "OS Build",
+                    "type": "text"
+                },
+                {
+                    "label": "IP Address",
+                    "type": "text"
+                },
+                {
+                    "label": "MAC Address",
+                    "type": "text"
+                },
+                {
+                    "label": "Point of Contact/Best Phone #",
+                    "type": "text"
+                },
+                {
+                    "label": "Work Days/Hours",
+                    "type": "text",
+                    "value": "M-F 8-5"
+                },
+                {
+                    "label": "Domain",
+                    "type": "text",
+                    "value": "SOM"
+                },
+                {
+                    "label": "User ID",
+                    "type": "text"
+                },
+                {
+                    "label": "Exact error received",
+                    "type": "text",
+                    "value": "N/A"
+                },
+                {
+                    "label": "Issue",
+                    "type": "text"
+                }
+            ],
+            "metrics": {
+                "usageCount": 2,
+                "usagePerDay": 0,
+                "commonWorkLog": []
+            }
+        },
+        {
+            "issue": "VPN",
+            "name": " Wireless Issues - [Specify SOMFIREFLY, SOMGUEST, or Off-Site]",
+            "kba": "KBA00001753",
+            "fields": [
+                {
+                    "label": "Workstation",
+                    "type": "text"
+                },
+                {
+                    "label": "UserID",
+                    "type": "text"
+                },
+                {
+                    "label": "When did the issue start",
+                    "type": "text"
+                },
+                {
+                    "label": "Address of the building (when applicable)",
+                    "type": "text",
+                    "value": "N/A"
+                },
+                {
+                    "label": "Location in the building(when applicable)",
+                    "type": "text",
+                    "value": "N/A"
+                },
+                {
+                    "label": "Issue",
+                    "type": "text"
+                }
+            ],
+            "metrics": {
+                "usageCount": 0,
+                "usagePerDay": 0,
+                "commonWorkLog": []
+            }
+        },
+        {
+            "issue": "OS/Software/Hardware Issues",
+            "name": "Adobe Creative Cloud - [App Name] - [Issue]",
+            "kba": "KBA00049106",
+            "fields": [
+                {
+                    "label": "- Workstation ID",
+                    "type": "text"
+                },
+                {
+                    "label": "- Operating System",
+                    "type": "text"
+                },
+                {
+                    "label": "- OS Build",
+                    "type": "text"
+                },
+                {
+                    "label": "- IP Address",
+                    "type": "text"
+                },
+                {
+                    "label": "- MAC Address",
+                    "type": "text"
+                },
+                {
+                    "label": "Point of Contact/Best Phone #",
+                    "type": "text"
+                },
+                {
+                    "label": "Work Days/Hours",
+                    "type": "text",
+                    "value": "M-F 8-5"
+                },
+                {
+                    "label": "Issue",
+                    "type": "text"
+                }
+            ],
+            "metrics": {
+                "usageCount": 2,
+                "usagePerDay": 0,
+                "commonWorkLog": []
+            }
+        },
+        {
+            "issue": "Windows Account",
+            "name": "BitLocker - BitLocker recovery",
+            "kba": "KBA00003654",
+            "fields": [
+                {
+                    "label": "Workstation",
+                    "type": "text"
+                },
+                {
+                    "label": "System Model",
+                    "type": "text"
+                },
+                {
+                    "label": "Operating System",
+                    "type": "text"
+                },
+                {
+                    "label": "OS Build",
+                    "type": "text"
+                },
+                {
+                    "label": "IP Address",
+                    "type": "text"
+                },
+                {
+                    "label": "MAC Address",
+                    "type": "text"
+                },
+                {
+                    "label": "Domain",
+                    "type": "text",
+                    "value": "SOM"
+                },
+                {
+                    "label": "Point of Contact / Best Phone #",
+                    "type": "text"
+                },
+                {
+                    "label": "Work Days / Hours",
+                    "type": "text",
+                    "value": "M-F 8-5"
+                },
+                {
+                    "label": "Issue",
+                    "type": "text",
+                    "value": "BitLocker Recovery"
+                }
+            ],
+            "metrics": {
+                "usageCount": 3,
+                "usagePerDay": 0,
+                "commonWorkLog": []
+            }
+        },
+        {
+            "issue": "OS/Software/Hardware Issues",
+            "name": "CXone ContactCenter - ISSUE",
+            "kba": "KBA00040701",
+            "fields": [
+                {
+                    "label": "Contact Center",
+                    "type": "selector",
+                    "options": [
+                        "DHHS-Central Intake    ",
+                        "DHHS-Eligibility",
+                        "DHHS-MiCAL",
+                        "DHHS-MiSACWIS",
+                        "DHHS-OCS",
+                        "DTMB-CSC ",
+                        "DTMB-ORS",
+                        "TREASURY-City Taxes",
+                        "TREASURY-Collections",
+                        "TREASURY-TASB",
+                        "MDOS"
+                    ],
+                    "allowCustom": true
+                },
+                {
+                    "label": "Workstation ID",
+                    "type": "text"
+                },
+                {
+                    "label": "Operating System",
+                    "type": "text"
+                },
+                {
+                    "label": "OS Build",
+                    "type": "text"
+                },
+                {
+                    "label": "IP address",
+                    "type": "text"
+                },
+                {
+                    "label": "MAC Address",
+                    "type": "text"
+                },
+                {
+                    "label": "Point of Contact/Best Phone #",
+                    "type": "text"
+                },
+                {
+                    "label": "Work Days/Hours",
+                    "type": "text",
+                    "value": "M-F 8-5"
+                },
+                {
+                    "label": "Errors (if any)",
+                    "type": "text",
+                    "value": "N/A"
+                },
+                {
+                    "label": "Any attachments",
+                    "type": "text",
+                    "value": "N/A"
+                },
+                {
+                    "label": "Timestamps/Contact IDs (if any)",
+                    "type": "text",
+                    "value": "N/A"
+                },
+                {
+                    "label": "Issue",
+                    "type": "text"
+                }
+            ],
+            "metrics": {
+                "usageCount": 10,
+                "usagePerDay": 0,
+                "commonWorkLog": []
+            }
+        },
+        {
+            "issue": "VPN",
+            "name": "Cisco Secure Client - Importing new token",
+            "kba": "KBA00037608",
+            "fields": [
+                {
+                    "label": "Workstation",
+                    "type": "text"
+                },
+                {
+                    "label": "Operating System",
+                    "type": "text"
+                },
+                {
+                    "label": "OS Build",
+                    "type": "text"
+                },
+                {
+                    "label": "IP Address",
+                    "type": "text"
+                },
+                {
+                    "label": "MAC Address",
+                    "type": "text"
+                },
+                {
+                    "label": "User ID",
+                    "type": "text"
+                },
+                {
+                    "label": "Verify CRS or Experian",
+                    "type": "selector",
+                    "options": [
+                        "N/A",
+                        "CRS",
+                        "Experian"
+                    ],
+                    "value": "N/A"
+                },
+                {
+                    "label": "Contractor (Y/N)",
+                    "type": "selector",
+                    "options": [
+                        "Y",
+                        "N"
+                    ]
+                },
+                {
+                    "label": "Point of Contact/Best Phone #",
+                    "type": "text"
+                },
+                {
+                    "label": "Workdays/Hours",
+                    "type": "text",
+                    "value": "M-F 8-5"
+                },
+                {
+                    "label": "Client location (in office or off-site)",
+                    "type": "selector",
+                    "options": [
+                        "in office",
+                        "Off-site"
+                    ],
+                    "value": "Off-site"
+                },
+                {
+                    "label": "Connection type (LAN, Wi-Fi, Hotspot, Broadband Card)",
+                    "type": "selector",
+                    "options": [
+                        "LAN",
+                        "Wi-Fi",
+                        "Hotspot",
+                        "Broadband Card"
+                    ],
+                    "value": "Wi-Fi"
+                },
+                {
+                    "label": "Last time client successfully connected",
+                    "type": "text"
+                },
+                {
+                    "label": "Confirm Internet connection",
+                    "type": "text",
+                    "value": "Y"
+                },
+                {
+                    "label": "Verify soft/hard token serial #",
+                    "type": "text"
+                },
+                {
+                    "label": "Verify PC time/date",
+                    "type": "text",
+                    "value": "Y"
+                },
+                {
+                    "label": "Issue",
+                    "type": "text",
+                    "value": "Importing new token"
+                }
+            ],
+            "metrics": {
+                "usageCount": 3,
+                "usagePerDay": 0,
+                "commonWorkLog": []
+            }
+        },
+        {
+            "issue": "VPN",
+            "name": "Cisco Secure Client - Unable to connect to VPN",
+            "kba": "KBA00037608",
+            "fields": [
+                {
+                    "label": "Workstation",
+                    "type": "text"
+                },
+                {
+                    "label": "Operating System",
+                    "type": "text"
+                },
+                {
+                    "label": "OS Build",
+                    "type": "text"
+                },
+                {
+                    "label": "IP Address",
+                    "type": "text"
+                },
+                {
+                    "label": "MAC Address",
+                    "type": "text"
+                },
+                {
+                    "label": "User ID",
+                    "type": "text"
+                },
+                {
+                    "label": "Verify CRS or Experian",
+                    "type": "selector",
+                    "options": [
+                        "N/A",
+                        "CRS",
+                        "Experian"
+                    ],
+                    "value": "N/A"
+                },
+                {
+                    "label": "Contractor (Y/N)",
+                    "type": "selector",
+                    "options": [
+                        "Y",
+                        "N"
+                    ]
+                },
+                {
+                    "label": "Point of Contact/Best Phone #",
+                    "type": "text"
+                },
+                {
+                    "label": "Workdays/Hours",
+                    "type": "text",
+                    "value": "M-F 8-5"
+                },
+                {
+                    "label": "Client location (in office or off-site)",
+                    "type": "selector",
+                    "options": [
+                        "in office",
+                        "Off-site"
+                    ],
+                    "value": "Off-site"
+                },
+                {
+                    "label": "Connection type (LAN, Wi-Fi, Hotspot, Broadband Card)",
+                    "type": "selector",
+                    "options": [
+                        "LAN",
+                        "Wi-Fi",
+                        "Hotspot",
+                        "Broadband Card"
+                    ],
+                    "value": "Wi-Fi"
+                },
+                {
+                    "label": "Last time client successfully connected",
+                    "type": "text"
+                },
+                {
+                    "label": "Confirm Internet connection",
+                    "type": "text",
+                    "value": "Y"
+                },
+                {
+                    "label": "Verify soft/hard token serial #",
+                    "type": "text"
+                },
+                {
+                    "label": "Verify PC time/date",
+                    "type": "text",
+                    "value": "Y"
+                },
+                {
+                    "label": "Issue",
+                    "type": "text",
+                    "value": "Unable to connect to VPN"
+                }
+            ],
+            "metrics": {
+                "usageCount": 15,
+                "usagePerDay": 0,
+                "commonWorkLog": []
+            }
+        },
+        {
+            "issue": "VPN",
+            "name": "EAT - Unable to sign in to PC",
+            "kba": "KBA00079239",
+            "fields": [
+                {
+                    "label": "Point of Contact/Best Phone #",
+                    "type": "text"
+                },
+                {
+                    "label": "Days in Office/Hours",
+                    "type": "text",
+                    "value": "M-F 8-5"
+                },
+                {
+                    "label": "User ID",
+                    "type": "text"
+                },
+                {
+                    "label": "Workstation",
+                    "type": "text"
+                },
+                {
+                    "label": "Issue",
+                    "type": "text",
+                    "value": "Unable to sign in to PC"
+                },
+                {
+                    "label": "Client location (in office or off-site)",
+                    "type": "selector",
+                    "options": [
+                        "in office",
+                        "Off-site"
+                    ],
+                    "value": "Off-site"
+                },
+                {
+                    "label": "Verify soft/hard token/serial #",
+                    "type": "text"
+                }
+            ],
+            "metrics": {
+                "usageCount": 7,
+                "usagePerDay": 0,
+                "commonWorkLog": []
+            }
+        },
+        {
+            "issue": "Password (Other)",
+            "name": "MI HR / Lawson Password Reset",
+            "kba": "KBA00020513",
+            "fields": [
+                {
+                    "label": "Issue",
+                    "type": "text",
+                    "value": "Mi HR password reset "
+                },
+                {
+                    "label": "If remoting into client's workstation",
+                    "type": "text"
+                },
+                {
+                    "label": "Workstation ID",
+                    "type": "text",
+                    "value": "N/A"
+                },
+                {
+                    "label": "Operating System",
+                    "type": "text",
+                    "value": "N/A"
+                },
+                {
+                    "label": "OS Build",
+                    "type": "text",
+                    "value": "N/A"
+                },
+                {
+                    "label": "IP Address",
+                    "type": "text",
+                    "value": "N/A"
+                },
+                {
+                    "label": "MAC Address",
+                    "type": "text",
+                    "value": "N/A"
+                },
+                {
+                    "label": "Point of Contact/Best Phone #",
+                    "type": "text"
+                },
+                {
+                    "label": "Work Days/Hours",
+                    "type": "text",
+                    "value": "M-F 8-5"
+                }
+            ],
+            "metrics": {
+                "usageCount": 6,
+                "usagePerDay": 0,
+                "commonWorkLog": []
+            }
+        },
+        {
+            "issue": "Mi.gov",
+            "name": "Mi.gov - SOS inquiry ",
+            "kba": "KBA00002289",
+            "fields": [
+                {
+                    "label": "Name",
+                    "type": "text"
+                },
+                {
+                    "label": "Phone Number",
+                    "type": "text"
+                },
+                {
+                    "label": "Issue",
+                    "type": "text",
+                    "value": "SOS Inquiry"
+                }
+            ],
+            "metrics": {
+                "usageCount": 20,
+                "usagePerDay": 0,
+                "commonWorkLog": []
+            }
+        },
+        {
+            "issue": "MiLogin",
+            "name": "MiLogin Citizen/Business Profile Update",
+            "kba": "KBA00013115",
+            "fields": [
+                {
+                    "label": "If remoting into client's workstation or assigning INC to another group (not required for Citizen)",
+                    "type": "text",
+                    "value": "N/A"
+                },
+                {
+                    "label": "Workstation ID",
+                    "type": "text",
+                    "value": "N/A"
+                },
+                {
+                    "label": "Operating System",
+                    "type": "text",
+                    "value": "N/A"
+                },
+                {
+                    "label": "OS Build",
+                    "type": "text",
+                    "value": "N/A"
+                },
+                {
+                    "label": "IP Address",
+                    "type": "text",
+                    "value": "N/A"
+                },
+                {
+                    "label": "MAC Address",
+                    "type": "text",
+                    "value": "N/A"
+                },
+                {
+                    "label": "User type (Worker/For Business/Citizen)",
+                    "type": "selector",
+                    "options": [
+                        "For Business",
+                        "Citizen"
+                    ],
+                    "value": "Citizen"
+                },
+                {
+                    "label": "Browser client is using",
+                    "type": "selector",
+                    "options": [
+                        "Chrome",
+                        "Safari ",
+                        "Edge",
+                        "Firefox",
+                        "Duck Duck Go"
+                    ],
+                    "value": "Chrome"
+                },
+                {
+                    "label": "URL client is using",
+                    "type": "selector",
+                    "options": [
+                        "milogin.michigan.gov",
+                        "milogintp.michigan.gov"
+                    ],
+                    "value": "milogin.michigan.gov"
+                },
+                {
+                    "label": "Agency",
+                    "type": "text",
+                    "value": "MDOS"
+                },
+                {
+                    "label": "Application client is trying to access",
+                    "type": "text",
+                    "value": "CARS"
+                },
+                {
+                    "label": "ID verified",
+                    "type": "selector",
+                    "options": [
+                        "N/A",
+                        "PIN",
+                        "Experian"
+                    ],
+                    "value": "N/A"
+                },
+                {
+                    "label": "Name",
+                    "type": "text"
+                },
+                {
+                    "label": "UserID",
+                    "type": "text"
+                },
+                {
+                    "label": "Point of Contact/Best Phone #",
+                    "type": "text"
+                },
+                {
+                    "label": "Email",
+                    "type": "text"
+                },
+                {
+                    "label": "Work Days/Hours",
+                    "type": "text",
+                    "value": "N/A"
+                },
+                {
+                    "label": "Issue",
+                    "type": "text",
+                    "value": "Profile update"
+                }
+            ],
+            "metrics": {
+                "usageCount": 51,
+                "usagePerDay": 0,
+                "commonWorkLog": []
+            }
+        },
+        {
+            "issue": "MiLogin",
+            "name": "MiLogin Login Issue",
+            "kba": "KBA00013115",
+            "fields": [
+                {
+                    "label": "User type (Worker/For Business/Citizen)",
+                    "type": "selector",
+                    "options": [
+                        "Worker",
+                        "For Business",
+                        "Citizen"
+                    ],
+                    "value": "Citizen"
+                },
+                {
+                    "label": "Agency",
+                    "type": "text",
+                    "value": "MDOS"
+                },
+                {
+                    "label": "Application client is trying to access",
+                    "type": "text",
+                    "value": "CARS"
+                },
+                {
+                    "label": "Browser client is using",
+                    "type": "selector",
+                    "options": [
+                        "Chrome",
+                        "Safari",
+                        "Edge",
+                        "FireFox",
+                        "Duck Duck Go"
+                    ],
+                    "value": "Chrome"
+                },
+                {
+                    "label": "Client's contact information",
+                    "type": "text"
+                },
+                {
+                    "label": "Issue",
+                    "type": "text"
+                }
+            ],
+            "metrics": {
+                "usageCount": 30,
+                "usagePerDay": 0,
+                "commonWorkLog": []
+            }
+        },
+        {
+            "issue": "OS/Software/Hardware Issues",
+            "name": "OOC Email - Windows Out of Compliance Remediation",
+            "kba": "KBA00068430",
+            "fields": [
+                {
+                    "label": "Point of Contact/Best Phone #",
+                    "type": "text"
+                },
+                {
+                    "label": "Work Days/Hours",
+                    "type": "text"
+                },
+                {
+                    "label": "Workstation ID",
+                    "type": "text"
+                },
+                {
+                    "label": "Operating System",
+                    "type": "text"
+                },
+                {
+                    "label": "OS Build",
+                    "type": "text"
+                },
+                {
+                    "label": "IP Address",
+                    "type": "text"
+                },
+                {
+                    "label": "MAC Address",
+                    "type": "text"
+                },
+                {
+                    "label": "Exact error received (if applicable)",
+                    "type": "text",
+                    "value": "N/A"
+                },
+                {
+                    "label": "Issue",
+                    "type": "text",
+                    "value": "Windows OOC"
+                }
+            ],
+            "metrics": {
+                "usageCount": 7,
+                "usagePerDay": 0,
+                "commonWorkLog": []
+            }
+        },
+        {
+            "issue": "OS/Software/Hardware Issues",
+            "name": "OS Issue",
+            "kba": "KBA00058931",
+            "fields": [
+                {
+                    "label": "Workstation ID",
+                    "type": "text"
+                },
+                {
+                    "label": "Operating System",
+                    "type": "text"
+                },
+                {
+                    "label": "OS Build",
+                    "type": "text"
+                },
+                {
+                    "label": "IP Address",
+                    "type": "text"
+                },
+                {
+                    "label": "MAC Address",
+                    "type": "text"
+                },
+                {
+                    "label": "Point of Contact/Best Phone #",
+                    "type": "text"
+                },
+                {
+                    "label": "Work Days/Hours",
+                    "type": "text",
+                    "value": "M-F 8-5"
+                },
+                {
+                    "label": "Location: (Floor/suite#/pillar, building name, direction)",
+                    "type": "selector",
+                    "options": [
+                        "Floor",
+                        "suite#",
+                        "pillar, building name, direction"
+                    ],
+                    "value": "Not needed"
+                },
+                {
+                    "label": "Issue",
+                    "type": "text"
+                }
+            ],
+            "metrics": {
+                "usageCount": 12,
+                "usagePerDay": 0,
+                "commonWorkLog": []
+            }
+        },
+        {
+            "issue": "Outlook",
+            "name": "Outlook - ISSUE",
+            "kba": "KBA00035015",
+            "fields": [
+                {
+                    "label": "Workstation ID",
+                    "type": "text"
+                },
+                {
+                    "label": "Operating System",
+                    "type": "text"
+                },
+                {
+                    "label": "OS Build",
+                    "type": "text"
+                },
+                {
+                    "label": "IP Address",
+                    "type": "text"
+                },
+                {
+                    "label": "MAC Address",
+                    "type": "text"
+                },
+                {
+                    "label": "Point of Contact/Best Phone #",
+                    "type": "text"
+                },
+                {
+                    "label": "Work Days/Hours",
+                    "type": "text",
+                    "value": "M-F 8-5"
+                },
+                {
+                    "label": "Email Account with issue",
+                    "type": "text"
+                },
+                {
+                    "label": "Calendar name with issue",
+                    "type": "text",
+                    "value": "N/A"
+                },
+                {
+                    "label": "Issue",
+                    "type": "text"
+                }
+            ],
+            "metrics": {
+                "usageCount": 6,
+                "usagePerDay": 0,
+                "commonWorkLog": []
+            }
+        },
+        {
+            "issue": "Smart Device",
+            "name": "Smart Device - Email access",
+            "kba": "KBA00026203",
+            "fields": [
+                {
+                    "label": "Best contact method – Email, MS Teams, or Phone number#",
+                    "type": "text"
+                },
+                {
+                    "label": "Can you access email on your state computer (Yes or No)",
+                    "type": "selector",
+                    "options": [
+                        "Y",
+                        "N"
+                    ]
+                },
+                {
+                    "label": "Work Days/Hours",
+                    "type": "text",
+                    "value": "M-F 8-5"
+                },
+                {
+                    "label": "Location: (State office / offsite / home)",
+                    "type": "selector",
+                    "options": [
+                        "State office",
+                        "Off-site"
+                    ],
+                    "value": "Off-site"
+                },
+                {
+                    "label": "Employee UserID",
+                    "type": "text"
+                },
+                {
+                    "label": "Device Phone Number",
+                    "type": "text"
+                },
+                {
+                    "label": "Device Type",
+                    "type": "text"
+                },
+                {
+                    "label": "Carrier",
+                    "type": "text"
+                },
+                {
+                    "label": "Manufacturer",
+                    "type": "text",
+                    "value": "Apple"
+                },
+                {
+                    "label": "Personal or State-Issued",
+                    "type": "selector",
+                    "options": [
+                        "Personal",
+                        "State-Issued"
+                    ],
+                    "value": "State"
+                },
+                {
+                    "label": "Serial Number",
+                    "type": "text"
+                },
+                {
+                    "label": "IMEI",
+                    "type": "text"
+                },
+                {
+                    "label": "IMEI2 (if assigning to another team)",
+                    "type": "text",
+                    "value": "N/A"
+                },
+                {
+                    "label": "Issue",
+                    "type": "text",
+                    "value": "Email Access"
+                }
+            ],
+            "metrics": {
+                "usageCount": 3,
+                "usagePerDay": 0,
+                "commonWorkLog": []
+            }
+        },
+        {
+            "issue": "Smart Device",
+            "name": "Smart Device - Passcode Lockout",
+            "kba": "KBA00026203",
+            "fields": [
+                {
+                    "label": "Best contact method – Email, MS Teams, or Phone number#",
+                    "type": "text"
+                },
+                {
+                    "label": "Can you access email on your state computer (Yes or No)",
+                    "type": "selector",
+                    "options": [
+                        "Y",
+                        "N"
+                    ]
+                },
+                {
+                    "label": "Work Days/Hours",
+                    "type": "text",
+                    "value": "M-F 8-5"
+                },
+                {
+                    "label": "Location: (State office / offsite / home)",
+                    "type": "selector",
+                    "options": [
+                        "State office",
+                        "Off-site"
+                    ],
+                    "value": "Off-site"
+                },
+                {
+                    "label": "Employee UserID",
+                    "type": "text"
+                },
+                {
+                    "label": "Device Phone Number",
+                    "type": "text"
+                },
+                {
+                    "label": "Device Type",
+                    "type": "text"
+                },
+                {
+                    "label": "Carrier",
+                    "type": "text"
+                },
+                {
+                    "label": "Manufacturer",
+                    "type": "text",
+                    "value": "Apple"
+                },
+                {
+                    "label": "Personal or State-Issued",
+                    "type": "selector",
+                    "options": [
+                        "Personal",
+                        "State-Issued"
+                    ],
+                    "value": "State"
+                },
+                {
+                    "label": "Serial Number",
+                    "type": "text"
+                },
+                {
+                    "label": "IMEI",
+                    "type": "text"
+                },
+                {
+                    "label": "IMEI2 (if assigning to another team)",
+                    "type": "text",
+                    "value": "N/A"
+                },
+                {
+                    "label": "Issue",
+                    "type": "text",
+                    "value": "Passcode Lockout"
+                }
+            ],
+            "metrics": {
+                "usageCount": 19,
+                "usagePerDay": 0,
+                "commonWorkLog": []
+            }
+        },
+        {
+            "issue": "Smart Device",
+            "name": "Smart Device Setup (Deployment)",
+            "kba": "KBA00026203",
+            "fields": [
+                {
+                    "label": "Best contact method – Email, MS Teams, or Phone number#",
+                    "type": "text"
+                },
+                {
+                    "label": "Can you access email on your state computer (Yes or No)",
+                    "type": "selector",
+                    "options": [
+                        "Y",
+                        "N"
+                    ]
+                },
+                {
+                    "label": "Work Days/Hours",
+                    "type": "text",
+                    "value": "M-F 8-5"
+                },
+                {
+                    "label": "Location: (State office / offsite / home)",
+                    "type": "selector",
+                    "options": [
+                        "State office",
+                        "Off-site"
+                    ],
+                    "value": "Off-site"
+                },
+                {
+                    "label": "Employee UserID",
+                    "type": "text"
+                },
+                {
+                    "label": "Device Phone Number",
+                    "type": "text"
+                },
+                {
+                    "label": "Device Type",
+                    "type": "text"
+                },
+                {
+                    "label": "Carrier",
+                    "type": "text"
+                },
+                {
+                    "label": "Manufacturer",
+                    "type": "text",
+                    "value": "Apple"
+                },
+                {
+                    "label": "Personal or State-Issued",
+                    "type": "selector",
+                    "options": [
+                        "Personal",
+                        "State-Issued"
+                    ],
+                    "value": "State"
+                },
+                {
+                    "label": "Serial Number",
+                    "type": "text"
+                },
+                {
+                    "label": "IMEI",
+                    "type": "text"
+                },
+                {
+                    "label": "IMEI2 (if assigning to another team)",
+                    "type": "text",
+                    "value": "N/A"
+                },
+                {
+                    "label": "Issue",
+                    "type": "text",
+                    "value": "Device Set-up"
+                }
+            ],
+            "metrics": {
+                "usageCount": 0,
+                "usagePerDay": 0,
+                "commonWorkLog": []
+            }
+        },
+        {
+            "issue": "Windows Account",
+            "name": "Windows Account - Locked account",
+            "kba": "KBA00002765",
+            "fields": [
+                {
+                    "label": "Issue",
+                    "type": "text",
+                    "value": "Locked account"
+                }
+            ],
+            "metrics": {
+                "usageCount": 25,
+                "usagePerDay": 0,
+                "commonWorkLog": []
+            }
+        },
+        {
+            "issue": "Windows Account",
+            "name": "Windows Account - Password reset",
+            "kba": "KBA00002765",
+            "fields": [
+                {
+                    "label": "Issue",
+                    "type": "text",
+                    "value": "Password reset"
+                }
+            ],
+            "metrics": {
+                "usageCount": 39,
+                "usagePerDay": 0,
+                "commonWorkLog": []
+            }
+        },
+        {
+            "issue": "Network",
+            "name": "Wireless Issues - [Specify SOMFIREFLY, SOMGUEST, or Off-Site]",
+            "kba": "KBA00001753",
+            "fields": [
+                {
+                    "label": "Workstation",
+                    "type": "text"
+                },
+                {
+                    "label": "UserID",
+                    "type": "text"
+                },
+                {
+                    "label": "When did the issue start",
+                    "type": "text"
+                },
+                {
+                    "label": "Address of the building (when applicable)",
+                    "type": "text",
+                    "value": "N/A"
+                },
+                {
+                    "label": "Location in the building(when applicable)",
+                    "type": "text",
+                    "value": "N/A"
+                },
+                {
+                    "label": "Issue",
+                    "type": "text"
+                }
+            ],
+            "metrics": {
+                "usageCount": 1,
+                "usagePerDay": 0,
+                "commonWorkLog": []
+            }
+        }
+    ]
+}

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useIssueStorage } from '@hooks/useIssueStorage';
 import { useTemplateStorage } from '@hooks/useTemplateStorage';
+import { confirmMatchingTemplates } from '@utils/parseInput';
 import Issue from '@/app/dataTypes/Issue';
 import Template from '@/app/dataTypes/Template';
 
@@ -32,6 +33,32 @@ function ExportToolContent() {
     link.click();
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
+  };
+
+  const validateDataConsistency = (issues: Issue[], templates: Template[]): { isValid: boolean, errors: string[] } => {
+    const errors: string[] = [];
+
+    // Check if all template names in issues have corresponding templates
+    for (const issue of issues) {
+      for (const templateName of issue.templateNames) {
+        const matchingTemplate = templates.find(t => t.name === templateName);
+        if (!matchingTemplate) {
+          errors.push(`Issue "${issue.name}" references missing template: "${templateName}"`);
+        } else if (matchingTemplate.issue !== issue.name) {
+          errors.push(`Template "${templateName}" belongs to issue "${matchingTemplate.issue}" but is referenced by issue "${issue.name}"`);
+        }
+      }
+    }
+
+    // Check if all templates have corresponding issues
+    const issueNames = issues.map(i => i.name);
+    for (const template of templates) {
+      if (!issueNames.includes(template.issue)) {
+        errors.push(`Template "${template.name}" references missing issue: "${template.issue}"`);
+      }
+    }
+
+    return { isValid: errors.length === 0, errors };
   };
 
   const exportIssues = () => {
@@ -69,6 +96,15 @@ function ExportToolContent() {
   };
 
   const exportAll = () => {
+    // Validate data consistency before exporting
+    const validation = validateDataConsistency(issues, templates);
+    if (!validation.isValid) {
+      const errorMessage = `Data validation failed:\n${validation.errors.join('\n')}`;
+      setExportStatus(errorMessage);
+      setTimeout(() => setExportStatus(''), 10000); // Show longer for errors
+      return;
+    }
+
     const exportData = {
       exportDate: new Date().toISOString(),
       totalIssues: issues.length,
@@ -161,8 +197,14 @@ function ExportToolContent() {
 
           {/* Export Status */}
           {exportStatus && (
-            <div className="mt-4 p-3 bg-green-100 border border-green-200 rounded-md">
-              <p className="text-sm text-green-800">{exportStatus}</p>
+            <div className={`mt-4 p-3 border rounded-md ${exportStatus.includes('failed') || exportStatus.includes('validation') 
+              ? 'bg-red-100 border-red-200' 
+              : 'bg-green-100 border-green-200'
+            }`}>
+              <p className={`text-sm whitespace-pre-line ${exportStatus.includes('failed') || exportStatus.includes('validation')
+                ? 'text-red-800'
+                : 'text-green-800'
+              }`}>{exportStatus}</p>
             </div>
           )}
 
@@ -175,6 +217,7 @@ function ExportToolContent() {
               <li>• Files are named with the current date for easy identification</li>
               <li>• Individual exports contain only the specific data type</li>
               <li>• Complete export includes both issues and templates</li>
+              <li>• Data consistency is validated before exporting to ensure imports will work</li>
             </ul>
           </div>
         </div>
